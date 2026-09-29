@@ -82,6 +82,7 @@ require_no_stubs = true
 require_main = true
 source_manifest = "sources.txt"
 link_flags = "$link_flags"
+skip_comments = true
 EOF
 
 # 3. Translate to V (the Clang AST of sqlite3.c is ~740 MB: a large initial GC
