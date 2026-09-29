@@ -18,7 +18,7 @@ types `Sqlite3` and `Sqlite3_stmt`. [`example.v`](example.v) shows prepared
 statements and `sqlite3_exec()` callbacks:
 
 ```
-$ v -old-compiler run .
+$ v -old-compiler -w run .
 SQLite 3.53.4
 inserted 3 rows, last rowid 3
 1: alice 9.5
@@ -30,7 +30,8 @@ sum=55 approx=3.143
 Notes:
 
 - Build with `-old-compiler`: V's new backend computes one `offsetof`
-  expression in SQLite incorrectly. Add `-prod` for an optimized build.
+  expression in SQLite incorrectly. `-w` hides V's warnings about the
+  translated C code. Add `-prod` for an optimized build.
 - C code is translated for one target: the declarations and constants of the
   system headers (struct layouts, `F_SETLK`, ...) are those of the machine that
   ran c2v. This `sqlite.v` was generated on macOS 26 (arm64, Apple Clang 21).

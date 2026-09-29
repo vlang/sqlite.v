@@ -2,7 +2,7 @@
 //
 // Build and run it with:
 //
-//     v -old-compiler run .
+//     v -old-compiler -w run .
 module main
 
 const sqlite_ok = 0
