@@ -217,7 +217,6 @@ fn yy_shift(yyp_parser &YyParser, yy_new_state u16, yy_major u16, yy_minor Token
 	yytos.stateno = yy_new_state
 	yytos.major = yy_major
 	yytos.minor.yy0 = yy_minor
-	0
 }
 
 fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahead_token Token, p_parse &Parse) u16 {
@@ -249,23 +248,19 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[1].minor.yy144 = 7
 		}
 		u32(5), u32(6) {
-			0
 			unsafe { goto c2v_case_69_12
 			 }
 		}
 		u32(7) {
 			c2v_case_69_12:
-			0
 			unsafe { goto c2v_case_69_13
 			 }
 		}
 		u32(328) {
 			c2v_case_69_13:
-			0
 			yymsp[0].minor.yy144 = int(yymsp[0].major)
 		}
 		u32(8), u32(9) {
-			0
 			sqlite3_end_transaction(p_parse, int(yymsp[-1].major))
 		}
 		u32(10) {
@@ -284,43 +279,36 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			disable_lookaside(p_parse)
 		}
 		u32(15), u32(18) {
-			0
 			unsafe { goto c2v_case_69_30
 			 }
 		}
 		u32(47) {
 			c2v_case_69_30:
-			0
 			unsafe { goto c2v_case_69_31
 			 }
 		}
 		u32(62) {
 			c2v_case_69_31:
-			0
 			unsafe { goto c2v_case_69_32
 			 }
 		}
 		u32(72) {
 			c2v_case_69_32:
-			0
 			unsafe { goto c2v_case_69_33
 			 }
 		}
 		u32(81) {
 			c2v_case_69_33:
-			0
 			unsafe { goto c2v_case_69_34
 			 }
 		}
 		u32(100) {
 			c2v_case_69_34:
-			0
 			unsafe { goto c2v_case_69_35
 			 }
 		}
 		u32(246) {
 			c2v_case_69_35:
-			0
 			yymsp[1].minor.yy144 = 0
 		}
 		u32(16) {
@@ -364,13 +352,11 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			sqlite3_add_column(p_parse, yymsp[-1].minor.yy0, yymsp[0].minor.yy0)
 		}
 		u32(26), u32(65) {
-			0
 			unsafe { goto c2v_case_69_59
 			 }
 		}
 		u32(106) {
 			c2v_case_69_59:
-			0
 			yymsp[1].minor.yy0.n = u32(0)
 			yymsp[1].minor.yy0.z = 0
 		}
@@ -390,7 +376,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[1].minor.yy0 = yy_lookahead_token
 		}
 		u32(32), u32(67) {
-			0
 			p_parse.u1.cr.constraintName = yymsp[0].minor.yy0
 		}
 		u32(33) {
@@ -410,7 +395,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			p := token_expr(p_parse, 118, yymsp[0].minor.yy0)
 			if p {
 				sqlite3_expr_id_to_truefalse(p)
-				0
 			}
 			sqlite3_add_default_value(p_parse, p, yymsp[0].minor.yy0.z, yymsp[0].minor.yy0.z + yymsp[0].minor.yy0.n)
 		}
@@ -485,35 +469,29 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-2].minor.yy144 = 0
 		}
 		u32(61), u32(76) {
-			0
 			unsafe { goto c2v_case_69_130
 			 }
 		}
 		u32(173) {
 			c2v_case_69_130:
-			0
 			yymsp[-1].minor.yy144 = yymsp[0].minor.yy144
 		}
 		u32(63), u32(80) {
-			0
 			unsafe { goto c2v_case_69_134
 			 }
 		}
 		u32(219) {
 			c2v_case_69_134:
-			0
 			unsafe { goto c2v_case_69_135
 			 }
 		}
 		u32(222) {
 			c2v_case_69_135:
-			0
 			unsafe { goto c2v_case_69_136
 			 }
 		}
 		u32(247) {
 			c2v_case_69_136:
-			0
 			yymsp[-1].minor.yy144 = 1
 		}
 		u32(64) {
@@ -536,7 +514,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			sqlite3_defer_foreign_key(p_parse, yymsp[0].minor.yy144)
 		}
 		u32(73), u32(75) {
-			0
 			yymsp[1].minor.yy144 = 11
 		}
 		u32(74) {
@@ -546,7 +523,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[0].minor.yy144 = 4
 		}
 		u32(78), u32(174) {
-			0
 			yymsp[0].minor.yy144 = 5
 		}
 		u32(79) {
@@ -613,7 +589,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-2].minor.yy555 = p_rhs
 		}
 		u32(89), u32(91) {
-			0
 			yymsp[0].minor.yy144 = int(yymsp[0].major)
 		}
 		u32(90) {
@@ -637,7 +612,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			sqlite3_multi_values_end(p_parse, yymsp[0].minor.yy555)
 		}
 		u32(96), u32(97) {
-			0
 			yymsp[-4].minor.yy555 = sqlite3_multi_values(p_parse, yymsp[-4].minor.yy555, yymsp[-1].minor.yy14)
 		}
 		u32(98) {
@@ -647,31 +621,26 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[0].minor.yy144 = 2
 		}
 		u32(101), u32(134) {
-			0
 			unsafe { goto c2v_case_69_198
 			 }
 		}
 		u32(144) {
 			c2v_case_69_198:
-			0
 			unsafe { goto c2v_case_69_199
 			 }
 		}
 		u32(234) {
 			c2v_case_69_199:
-			0
 			unsafe { goto c2v_case_69_200
 			 }
 		}
 		u32(237) {
 			c2v_case_69_200:
-			0
 			unsafe { goto c2v_case_69_201
 			 }
 		}
 		u32(242) {
 			c2v_case_69_201:
-			0
 			yymsp[1].minor.yy14 = 0
 		}
 		u32(102) {
@@ -698,23 +667,19 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-4].minor.yy14 = sqlite3_expr_list_append(p_parse, yymsp[-4].minor.yy14, p_dot)
 		}
 		u32(105), u32(117) {
-			0
 			unsafe { goto c2v_case_69_211
 			 }
 		}
 		u32(258) {
 			c2v_case_69_211:
-			0
 			unsafe { goto c2v_case_69_212
 			 }
 		}
 		u32(259) {
 			c2v_case_69_212:
-			0
 			yymsp[-1].minor.yy0 = yymsp[0].minor.yy0
 		}
 		u32(107), u32(110) {
-			0
 			yymsp[1].minor.yy203 = 0
 		}
 		u32(108) {
@@ -779,12 +744,10 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			}
 		}
 		u32(116), u32(131) {
-			0
 			yymsp[1].minor.yy0.z = 0
 			yymsp[1].minor.yy0.n = u32(0)
 		}
 		u32(118), u32(120) {
-			0
 			yylhsminor.yy203 = sqlite3_src_list_append(p_parse, unsafe { nil }, &yymsp[0].minor.yy0, unsafe { nil })
 			if (int(p_parse.eParseMode) >= 2) && !isnil(yylhsminor.yy203) {
 				sqlite3_rename_token_map(p_parse, voidptr(c2v_at(&yylhsminor.yy203.a[0], isize(0)).zName), &yymsp[0].minor.yy0)
@@ -792,7 +755,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[0].minor.yy203 = yylhsminor.yy203
 		}
 		u32(119), u32(121) {
-			0
 			yylhsminor.yy203 = sqlite3_src_list_append(p_parse, unsafe { nil }, &yymsp[-2].minor.yy0, &yymsp[0].minor.yy0)
 			if (int(p_parse.eParseMode) >= 2) && !isnil(yylhsminor.yy203) {
 				sqlite3_rename_token_map(p_parse, voidptr(c2v_at(&yylhsminor.yy203.a[0], isize(0)).zName), &yymsp[0].minor.yy0)
@@ -855,7 +817,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-1].minor.yy0.n = u32(1)
 		}
 		u32(135), u32(145) {
-			0
 			yymsp[-2].minor.yy14 = yymsp[0].minor.yy14
 		}
 		u32(136) {
@@ -873,7 +834,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[0].minor.yy144 = 1
 		}
 		u32(140), u32(143) {
-			0
 			yymsp[1].minor.yy144 = -1
 		}
 		u32(141) {
@@ -883,59 +843,49 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-1].minor.yy144 = 1
 		}
 		u32(146), u32(148) {
-			0
 			unsafe { goto c2v_case_69_286
 			 }
 		}
 		u32(153) {
 			c2v_case_69_286:
-			0
 			unsafe { goto c2v_case_69_287
 			 }
 		}
 		u32(155) {
 			c2v_case_69_287:
-			0
 			unsafe { goto c2v_case_69_288
 			 }
 		}
 		u32(232) {
 			c2v_case_69_288:
-			0
 			unsafe { goto c2v_case_69_289
 			 }
 		}
 		u32(233) {
 			c2v_case_69_289:
-			0
 			unsafe { goto c2v_case_69_290
 			 }
 		}
 		u32(252) {
 			c2v_case_69_290:
-			0
 			yymsp[1].minor.yy454 = 0
 		}
 		u32(147), u32(154) {
-			0
 			unsafe { goto c2v_case_69_294
 			 }
 		}
 		u32(156) {
 			c2v_case_69_294:
-			0
 			unsafe { goto c2v_case_69_295
 			 }
 		}
 		u32(231) {
 			c2v_case_69_295:
-			0
 			unsafe { goto c2v_case_69_296
 			 }
 		}
 		u32(251) {
 			c2v_case_69_296:
-			0
 			yymsp[-1].minor.yy454 = yymsp[0].minor.yy454
 		}
 		u32(149) {
@@ -1055,7 +1005,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-4].minor.yy454 = yylhsminor.yy454
 		}
 		u32(183), u32(184) {
-			0
 			yymsp[0].minor.yy454 = token_expr(p_parse, int(yymsp[0].major), yymsp[0].minor.yy0)
 		}
 		u32(185) {
@@ -1145,37 +1094,31 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-2].minor.yy454 = sqlite3_expr_and(p_parse, yymsp[-2].minor.yy454, yymsp[0].minor.yy454)
 		}
 		u32(198), u32(199) {
-			0
 			unsafe { goto c2v_case_69_396
 			 }
 		}
 		u32(200) {
 			c2v_case_69_396:
-			0
 			unsafe { goto c2v_case_69_397
 			 }
 		}
 		u32(201) {
 			c2v_case_69_397:
-			0
 			unsafe { goto c2v_case_69_398
 			 }
 		}
 		u32(202) {
 			c2v_case_69_398:
-			0
 			unsafe { goto c2v_case_69_399
 			 }
 		}
 		u32(203) {
 			c2v_case_69_399:
-			0
 			unsafe { goto c2v_case_69_400
 			 }
 		}
 		u32(204) {
 			c2v_case_69_400:
-			0
 			yymsp[-2].minor.yy454 = sqlite3_pe_xpr(p_parse, int(yymsp[-1].major), yymsp[-2].minor.yy454, yymsp[0].minor.yy454)
 		}
 		u32(205) {
@@ -1230,7 +1173,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-4].minor.yy454 = sqlite3_pe_xpr_is(p_parse, 46, yymsp[-4].minor.yy454, yymsp[0].minor.yy454)
 		}
 		u32(214), u32(215) {
-			0
 			yymsp[-1].minor.yy454 = sqlite3_pe_xpr(p_parse, int(yymsp[-1].major), yymsp[0].minor.yy454, unsafe { nil })
 		}
 		u32(216) {
@@ -1250,7 +1192,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-2].minor.yy454 = yylhsminor.yy454
 		}
 		u32(218), u32(221) {
-			0
 			yymsp[0].minor.yy144 = 0
 		}
 		u32(220) {
@@ -1383,7 +1324,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[0].minor.yy14 = sqlite3_expr_list_append(p_parse, unsafe { nil }, yymsp[0].minor.yy454)
 		}
 		u32(238), u32(243) {
-			0
 			yymsp[-2].minor.yy14 = yymsp[-1].minor.yy14
 		}
 		u32(239) {
@@ -1393,7 +1333,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			}
 		}
 		u32(240), u32(281) {
-			0
 			yymsp[0].minor.yy144 = 2
 		}
 		u32(241) {
@@ -1453,7 +1392,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[1].minor.yy144 = 33
 		}
 		u32(265), u32(266) {
-			0
 			yymsp[0].minor.yy286.a = int(yymsp[0].major)
 			yymsp[0].minor.yy286.b = 0
 		}
@@ -1462,11 +1400,9 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-2].minor.yy286.b = yymsp[0].minor.yy132
 		}
 		u32(268), u32(286) {
-			0
 			yymsp[1].minor.yy454 = 0
 		}
 		u32(269), u32(287) {
-			0
 			yymsp[-1].minor.yy454 = yymsp[0].minor.yy454
 		}
 		u32(270) {
@@ -1584,17 +1520,14 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			sqlite3_vtab_arg_init(p_parse)
 		}
 		u32(306), u32(307) {
-			0
 			unsafe { goto c2v_case_69_576
 			 }
 		}
 		u32(308) {
 			c2v_case_69_576:
-			0
 			sqlite3_vtab_arg_extend(p_parse, &yymsp[0].minor.yy0)
 		}
 		u32(309), u32(310) {
-			0
 			sqlite3_with_push(p_parse, yymsp[0].minor.yy59, U8(1))
 		}
 		u32(311) {
@@ -1661,18 +1594,15 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-5].minor.yy211 = yylhsminor.yy211
 		}
 		u32(329), u32(331) {
-			0
 			yylhsminor.yy509 = yymsp[0].minor.yy509
 			yymsp[0].minor.yy509 = yylhsminor.yy509
 		}
 		u32(330), u32(332) {
-			0
 			unsafe { goto c2v_case_69_628
 			 }
 		}
 		u32(334) {
 			c2v_case_69_628:
-			0
 			yylhsminor.yy509.eType = int(yymsp[-1].major)
 			yylhsminor.yy509.pExpr = 0
 			yymsp[-1].minor.yy509 = yylhsminor.yy509
@@ -1689,7 +1619,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[-1].minor.yy462 = yymsp[0].minor.yy462
 		}
 		u32(337), u32(338) {
-			0
 			yymsp[-1].minor.yy462 = U8(yymsp[-1].major)
 		}
 		u32(339) {
@@ -1739,59 +1668,9 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 			yymsp[0].minor.yy454 = yylhsminor.yy454
 		}
 		else {
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
 		}
 	}
 
-	0
 	yygoto = int(yy_rule_info_lhs[yyruleno])
 	yysize = int(yy_rule_info_nr_hs[yyruleno])
 	yyact = yy_find_reduce_action(yymsp[yysize].stateno, u16(yygoto))
@@ -1799,7 +1678,6 @@ fn yy_reduce(yyp_parser &YyParser, yyruleno u32, yy_lookahead_2 int, yy_lookahea
 	yyp_parser.yytos = yymsp
 	yymsp.stateno = u16(yyact)
 	yymsp.major = u16(yygoto)
-	0
 	return yyact
 }
 

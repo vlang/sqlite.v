@@ -284,9 +284,7 @@ fn sqlite3_delete_from(p_parse &Parse, p_tab_list &SrcList, p_where &Expr, p_ord
 			i_addr_once := 0
 			if e_one_pass == 2 {
 				i_addr_once = sqlite3_vdbe_add_op0(v, 15)
-				0
 			}
-			0
 			sqlite3_open_table_and_indices(p_parse, p_tab, 116, U8(8), i_tab_cur, a_to_open, &i_data_cur, &i_idx_cur)
 			if e_one_pass == 2 {
 				sqlite3_vdbe_jump_here_or_pop_inst(v, i_addr_once)
@@ -295,11 +293,9 @@ fn sqlite3_delete_from(p_parse &Parse, p_tab_list &SrcList, p_where &Expr, p_ord
 		if e_one_pass != 0 {
 			if !(int(p_tab.eTabType) == 1) && int(a_to_open[i_data_cur - i_tab_cur]) {
 				sqlite3_vdbe_add_op4_int(v, 28, i_data_cur, addr_bypass, i_key, int(n_key))
-				0
 			}
 		} else if p_pk {
 			addr_loop = sqlite3_vdbe_add_op1(v, 36, i_eph_cur)
-			0
 			if (int(p_tab.eTabType) == 1) {
 				sqlite3_vdbe_add_op3(v, 96, i_eph_cur, 0, i_key)
 			} else {
@@ -307,7 +303,6 @@ fn sqlite3_delete_from(p_parse &Parse, p_tab_list &SrcList, p_where &Expr, p_ord
 			}
 		} else {
 			addr_loop = sqlite3_vdbe_add_op3(v, 48, i_row_set, 0, i_key)
-			0
 		}
 		if (int(p_tab.eTabType) == 1) {
 			pvt_ab := &i8(voidptr(sqlite3_get_vt_able(db, p_tab)))
@@ -330,7 +325,6 @@ fn sqlite3_delete_from(p_parse &Parse, p_tab_list &SrcList, p_where &Expr, p_ord
 			sqlite3_where_end(pwi_nfo)
 		} else if p_pk {
 			sqlite3_vdbe_add_op2(v, 40, i_eph_cur, addr_loop + 1)
-			0
 			sqlite3_vdbe_jump_here(v, addr_loop)
 		} else {
 			sqlite3_vdbe_goto(v, addr_loop)
@@ -359,13 +353,10 @@ fn sqlite3_generate_row_delete(p_parse &Parse, p_tab &Table, p_trigger &Trigger,
 	i_old := 0
 	i_label := 0
 	op_seek := U8(0)
-	0
 	i_label = sqlite3_vdbe_make_label(p_parse)
 	op_seek = U8(if ((p_tab.tabFlags & u32(128)) == u32(0)) { 31 } else { 28 })
 	if int(e_mode) == 0 {
 		sqlite3_vdbe_add_op4_int(v, int(op_seek), i_data_cur, i_label, i_pk, int(n_pk))
-		0
-		0
 	}
 	if sqlite3_fk_required(p_parse, p_tab, unsafe { nil }, 0) || !isnil(p_trigger) {
 		mask := u32(0)
@@ -377,8 +368,6 @@ fn sqlite3_generate_row_delete(p_parse &Parse, p_tab &Table, p_trigger &Trigger,
 		p_parse.nMem += (1 + int(p_tab.nCol))
 		sqlite3_vdbe_add_op2(v, 82, i_pk, i_old)
 		for i_col = 0; i_col < int(p_tab.nCol); i_col++ {
-			0
-			0
 			if mask == u32(4294967295) || (i_col <= 31 && (mask & ((u32(1)) << i_col)) != u32(0)) {
 				kk := int(sqlite3_table_column_to_storage(p_tab, I16(i_col)))
 				sqlite3_expr_code_get_column_of_table(v, p_tab, i_data_cur, i_col, i_old + kk + 1)
@@ -388,9 +377,6 @@ fn sqlite3_generate_row_delete(p_parse &Parse, p_tab &Table, p_trigger &Trigger,
 		sqlite3_code_row_trigger(p_parse, p_trigger, 129, unsafe { nil }, 1, p_tab, i_old, int(onconf), i_label)
 		if addr_start < sqlite3_vdbe_current_addr(v) {
 			sqlite3_vdbe_add_op4_int(v, int(op_seek), i_data_cur, i_label, i_pk, int(n_pk))
-			0
-			0
-			0
 			i_idx_no_seek = -1
 		}
 		sqlite3_fk_check(p_parse, p_tab, i_old, 0, unsafe { nil }, 0)
@@ -418,7 +404,6 @@ fn sqlite3_generate_row_delete(p_parse &Parse, p_tab &Table, p_trigger &Trigger,
 		sqlite3_code_row_trigger(p_parse, p_trigger, 129, unsafe { nil }, 2, p_tab, i_old, int(onconf), i_label)
 	}
 	sqlite3_vdbe_resolve_label(v, i_label)
-	0
 }
 
 @[c:'sqlite3GenerateRowIndexDelete']
@@ -450,7 +435,6 @@ fn sqlite3_generate_row_index_delete(p_parse &Parse, p_tab &Table, i_data_cur in
 			unsafe { goto c2v_for_next_113
 			 }
 		}
-		0
 		r1 = sqlite3_generate_index_key(p_parse, p_idx, i_data_cur, 0, 1, &i_part_idx_label, p_prior, r1)
 		sqlite3_vdbe_add_op3(v, 142, i_idx_cur + i, r1, if int(p_idx.uniqNotNull) {
 			int(p_idx.nKeyCol)

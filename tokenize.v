@@ -65,11 +65,6 @@ fn sqlite3_get_token(z &u8, token_type &int) I64 {
 	c := 0
 	match int(ai_class[(unsafe { *z })]) {
 		7 {
-			0
-			0
-			0
-			0
-			0
 			for i = I64(1); (int(sqlite3CtypeMap[u8(z[i])]) & 1); i++ {
 			}
 			unsafe { *token_type = 184 }
@@ -195,9 +190,6 @@ fn sqlite3_get_token(z &u8, token_type &int) I64 {
 		}
 		8 {
 			delim := int(z[0])
-			0
-			0
-			0
 			for i = I64(1); true; i++ {
 				c = int(z[i])
 				if !(c != 0) {
@@ -233,17 +225,6 @@ fn sqlite3_get_token(z &u8, token_type &int) I64 {
 		}
 		3 {
 			c2v_case_70_19:
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
-			0
 			unsafe { *token_type = 156 }
 			if int(z[0]) == `0` && (int(z[1]) == `x` || int(z[1]) == `X`) && (int(sqlite3CtypeMap[u8(z[2])]) & 8) {
 				for i = I64(3); 1; i++ {
@@ -324,10 +305,6 @@ fn sqlite3_get_token(z &u8, token_type &int) I64 {
 		}
 		4, 5 {
 			n := I64(0)
-			0
-			0
-			0
-			0
 			unsafe { *token_type = 157 }
 			for i = I64(1); true; i++ {
 				c = int(z[i])
@@ -378,8 +355,6 @@ fn sqlite3_get_token(z &u8, token_type &int) I64 {
 			return keyword_code(&i8(voidptr(z)), i, token_type)
 		}
 		0 {
-			0
-			0
 			if int(z[1]) == `\'` {
 				unsafe { *token_type = 155 }
 				for i = I64(2); (int(sqlite3CtypeMap[u8(z[i])]) & 8); i++ {
@@ -437,7 +412,6 @@ fn sqlite3_run_parser(p_parse &Parse, z_sql &i8) int {
 	mx_sql_len := I64(0)
 	p_parent_parse := unsafe { &Parse(nil) }
 	s_engine := YyParser{}
-	0
 	mx_sql_len = I64(db.aLimit[1])
 	if db.nVdbeActive == 0 {
 		C.c2v_atomic_store_n__int_int_int_((&db.u1.isInterrupted), 0, 0)

@@ -200,7 +200,6 @@ fn memdb_lock(p_file &Sqlite3_file, e_lock int) int {
 				unsafe { goto c2v_switch_end_12
 				 }
 
-				0
 				unsafe { goto c2v_case_12_2
 				 }
 			}
@@ -583,7 +582,6 @@ fn sqlite3_deserialize(db &Sqlite3, z_schema &i8, p_data &u8, sz_db Sqlite3_int6
 		z_schema = db.aDb[0].zDbSName
 	}
 	i_db = sqlite3_find_db_name(db, z_schema)
-	0
 	if i_db < 2 && i_db != 0 {
 		rc = 1
 		unsafe { goto end_deserialize

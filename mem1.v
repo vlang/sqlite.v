@@ -8,10 +8,8 @@ __global _sqliteZone_ &C.malloc_zone_t
 fn sqlite3_mem_malloc(n_byte int) voidptr {
 	c2v_gc_register_thread()
 	p := &voidptr(0)
-	0
 	p = C.malloc_zone_malloc(_sqliteZone_, usize(n_byte))
 	if usize(p) == usize(0) {
-		0
 		sqlite3_log(7, c'failed to allocate %u bytes of memory', n_byte)
 	}
 	return p
@@ -21,7 +19,6 @@ fn sqlite3_mem_malloc(n_byte int) voidptr {
 fn sqlite3_mem_free(p_prior voidptr) {
 	c2v_gc_register_thread()
 	C.malloc_zone_free(_sqliteZone_, voidptr(p_prior))
-	0
 }
 
 @[c:'sqlite3MemSize']
@@ -39,7 +36,6 @@ fn sqlite3_mem_realloc(p_prior voidptr, n_byte int) voidptr {
 	c2v_gc_register_thread()
 	p := C.malloc_zone_realloc(_sqliteZone_, voidptr(p_prior), usize(n_byte))
 	if usize(p) == usize(0) {
-		0
 		sqlite3_log(7, c'failed memory resize %u to %u bytes', (if _sqliteZone_ {
 			_sqliteZone_.size(_sqliteZone_, voidptr(p_prior))
 		} else {

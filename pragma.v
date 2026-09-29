@@ -285,7 +285,6 @@ fn integrity_check_result_row(v &Vdbe) int {
 	addr := 0
 	sqlite3_vdbe_add_op2(v, 86, 3, 1)
 	addr = sqlite3_vdbe_add_op3(v, 61, 1, sqlite3_vdbe_current_addr(v) + 2, 1)
-	0
 	sqlite3_vdbe_add_op0(v, 72)
 	return addr
 }
@@ -437,7 +436,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 			sqlite3_vdbe_uses_btree(v, i_db)
 			if isnil(z_right) {
 				p_parse.nMem += 2
-				0
 				a_op = sqlite3_vdbe_add_op_list(v, 9, &sqlite3_pragma_get_cache_size[0], i_ln)
 				if 0 {
 					unsafe { goto c2v_switch_end_51
@@ -622,7 +620,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 
 					mut a_op := &VdbeOp(0)
 					i_addr := sqlite3_vdbe_current_addr(v)
-					0
 					a_op = sqlite3_vdbe_add_op_list(v, 5, &sqlite3_pragma_set_meta6[0], i_ln)
 					if 0 {
 						unsafe { goto c2v_switch_end_51
@@ -647,11 +644,9 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 			sqlite3_begin_write_operation(p_parse, 0, i_db)
 			sqlite3_vdbe_add_op2(v, 73, i_limit, 1)
 			addr = sqlite3_vdbe_add_op1(v, 64, i_db)
-			0
 			sqlite3_vdbe_add_op1(v, 86, 1)
 			sqlite3_vdbe_add_op2(v, 88, 1, -1)
 			sqlite3_vdbe_add_op2(v, 61, 1, addr)
-			0
 			sqlite3_vdbe_jump_here(v, addr)
 		}
 		6 {
@@ -1128,7 +1123,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 					p_parse.nTab = i
 				}
 				addr_top = sqlite3_vdbe_add_op1(v, 36, 0)
-				0
 				i = 1
 				for pfk = p_tab.u.tab.pFKey; pfk;  {
 					p_parent = sqlite3_find_table(db, pfk.zTo, z_db)
@@ -1147,16 +1141,13 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 						}
 						sqlite3_expr_code_get_column_of_table(v, p_tab, 0, i_col, reg_row + j)
 						sqlite3_vdbe_add_op2(v, 51, reg_row + j, addr_ok)
-						0
 					}
 					if p_idx {
 						sqlite3_vdbe_add_op4(v, 98, reg_row, pfk.nCol, 0, sqlite3_index_affinity_str(db, p_idx), pfk.nCol)
 						sqlite3_vdbe_add_op4_int(v, 29, i, addr_ok, reg_row, pfk.nCol)
-						0
 					} else if p_parent {
 						jmp := sqlite3_vdbe_current_addr(v) + 2
 						sqlite3_vdbe_add_op3(v, 30, i, jmp, reg_row)
-						0
 						sqlite3_vdbe_goto(v, addr_ok)
 					}
 					if ((p_tab.tabFlags & u32(128)) == u32(0)) {
@@ -1172,7 +1163,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 					pfk = pfk.pNextFrom
 				}
 				sqlite3_vdbe_add_op2(v, 40, 0, addr_top + 1)
-				0
 				sqlite3_vdbe_jump_here(v, addr_top)
 			}
 		}
@@ -1274,7 +1264,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 				sqlite3_vdbe_add_op4(v, 157, 1, cnt, 8, &i8(voidptr(a_root)), (-15))
 				sqlite3_vdbe_change_p5(v, U16(i))
 				addr = sqlite3_vdbe_add_op1(v, 51, 2)
-				0
 				sqlite3_vdbe_add_op4(v, 118, 0, 3, 0, sqlite3_mp_rintf(db, c'*** in database %s ***\n', voidptr(db.aDb[i].zDbSName)), (-7))
 				sqlite3_vdbe_add_op3(v, 112, 2, 3, 3)
 				integrity_check_result_row(v)
@@ -1304,7 +1293,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 					for p_idx = p_tab.pIndex; p_idx; p_idx = p_idx.pNext {
 						if usize(p_idx.pPartIdxWhere) == usize(0) {
 							addr = sqlite3_vdbe_add_op3(v, 54, 8 + cnt, 0, 8 + i_tab)
-							0
 							sqlite3_vdbe_load_string(v, 4, p_idx.zName)
 							sqlite3_vdbe_add_op3(v, 112, 4, 2, 3)
 							integrity_check_result_row(v)
@@ -1350,7 +1338,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 						j++
 					}
 					sqlite3_vdbe_add_op2(v, 36, i_data_cur, 0)
-					0
 					loop_top = sqlite3_vdbe_add_op2(v, 88, 7, 1)
 					if ((p_tab.tabFlags & u32(128)) == u32(0)) {
 						mx_col = -1
@@ -1374,9 +1361,7 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 							a1 := 0
 							z_err := &i8(0)
 							a1 = sqlite3_vdbe_add_op4_int(v, 42, i_data_cur, 0, r2, int(p_pk.nKeyCol))
-							0
 							sqlite3_vdbe_add_op1(v, 51, r2)
-							0
 							z_err = sqlite3_mp_rintf(db, c'row not in PRIMARY KEY order for %s', voidptr(p_tab.zName))
 							sqlite3_vdbe_add_op4(v, 118, 0, 3, 0, z_err, (-7))
 							integrity_check_result_row(v)
@@ -1425,11 +1410,9 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 							}
 							p1 = i_data_cur
 							if !((p_tab.tabFlags & u32(128)) == u32(0)) {
-								0
 								p3 = sqlite3_table_column_to_index(sqlite3_primary_key_index(p_tab), j)
 							} else {
 								p3 = int(sqlite3_table_column_to_storage(p_tab, I16(j)))
-								0
 							}
 						}
 						label_error = sqlite3_vdbe_make_label(p_parse)
@@ -1437,7 +1420,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 						if p_col.notNull {
 							jmp3 := 0
 							jmp2 := sqlite3_vdbe_add_op4_int(v, 18, p1, label_ok, p3, p4)
-							0
 							if p1 < 0 {
 								sqlite3_vdbe_change_p5(v, U16(15))
 								jmp3 = jmp2
@@ -1446,7 +1428,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 								sqlite3_vdbe_add_op3(v, 96, p1, p3, 3)
 								sqlite3_column_default(v, p_tab, j, 3)
 								jmp3 = sqlite3_vdbe_add_op2(v, 52, 3, label_ok)
-								0
 							}
 							z_err = sqlite3_mp_rintf(db, c'NULL value in %s.%s', voidptr(p_tab.zName), voidptr(p_col.zCnName))
 							sqlite3_vdbe_add_op4(v, 118, 0, 3, 0, z_err, (-7))
@@ -1468,26 +1449,22 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 
 							sqlite3_vdbe_add_op4_int(v, 18, p1, label_ok, p3, p4)
 							sqlite3_vdbe_change_p5(v, U16(sqlite3_pragma_a_std_type_mask[int(p_col.eCType) - 1]))
-							0
 							z_err = sqlite3_mp_rintf(db, c'non-%s value in %s.%s', voidptr(sqlite3StdType[int(p_col.eCType) - 1]), voidptr(p_tab.zName), voidptr(p_tab.aCol[j].zCnName))
 							sqlite3_vdbe_add_op4(v, 118, 0, 3, 0, z_err, (-7))
 						} else if !b_strict && int(p_col.affinity) == 66 {
 							sqlite3_vdbe_add_op4_int(v, 18, p1, label_ok, p3, p4)
 							sqlite3_vdbe_change_p5(v, U16(28))
-							0
 							z_err = sqlite3_mp_rintf(db, c'NUMERIC value in %s.%s', voidptr(p_tab.zName), voidptr(p_tab.aCol[j].zCnName))
 							sqlite3_vdbe_add_op4(v, 118, 0, 3, 0, z_err, (-7))
 						} else if !b_strict && int(p_col.affinity) >= 67 {
 							sqlite3_vdbe_add_op4_int(v, 18, p1, label_ok, p3, p4)
 							sqlite3_vdbe_change_p5(v, U16(27))
-							0
 							if p1 >= 0 {
 								sqlite3_expr_code_get_column_of_table(v, p_tab, i_data_cur, j, 3)
 							}
 							sqlite3_vdbe_add_op4(v, 98, 3, 1, 0, c'C', (-1))
 							sqlite3_vdbe_add_op4_int(v, 18, -1, label_ok, 3, p4)
 							sqlite3_vdbe_change_p5(v, U16(28))
-							0
 							z_err = sqlite3_mp_rintf(db, c'TEXT value in %s.%s', voidptr(p_tab.zName), voidptr(p_tab.aCol[j].zCnName))
 							sqlite3_vdbe_add_op4(v, 118, 0, 3, 0, z_err, (-7))
 						}
@@ -1535,9 +1512,7 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 							p_prior = p_idx
 							sqlite3_vdbe_add_op2(v, 88, 8 + j, 1)
 							sqlite3_vdbe_add_op4_int(v, 29, i_idx_cur + j, ck_uniq, r1, int(p_idx.nColumn))
-							0
 							jmp2 = sqlite3_vdbe_add_op3(v, 47, i_idx_cur + j, ck_uniq, r1)
-							0
 							sqlite3_vdbe_change_p4(v, -1, &i8(voidptr(p_idx)), (-6))
 							sqlite3_vdbe_add_op4(v, 118, 0, 3, 0, sqlite3_mp_rintf(db, c'index %s stores an imprecise floating-point value for row ', voidptr(p_idx.zName)), (-7))
 							sqlite3_vdbe_add_op3(v, 112, 7, 3, 3)
@@ -1556,7 +1531,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 								jmp7 := 0
 								sqlite3_vdbe_add_op2(v, 144, i_idx_cur + j, 3)
 								jmp7 = sqlite3_vdbe_add_op3(v, 54, 3, 0, r1 + int(p_idx.nColumn) - 1)
-								0
 								sqlite3_vdbe_load_string(v, 3, c'rowid not at end-of-record for row ')
 								sqlite3_vdbe_add_op3(v, 112, 7, 3, 3)
 								sqlite3_vdbe_load_string(v, 4, c' of index ')
@@ -1573,7 +1547,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 								}
 								sqlite3_vdbe_add_op3(v, 96, i_idx_cur + j, kk, 3)
 								sqlite3_vdbe_add_op3(v, 53, 3, label6, r1 + kk)
-								0
 							}
 							if label6 {
 								jmp6 := sqlite3_vdbe_add_op0(v, 9)
@@ -1593,14 +1566,11 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 										continue
 									}
 									sqlite3_vdbe_add_op2(v, 51, r1 + kk, uniq_ok)
-									0
 								}
 								jmp6 = sqlite3_vdbe_add_op1(v, 40, i_idx_cur + j)
-								0
 								sqlite3_vdbe_goto(v, uniq_ok)
 								sqlite3_vdbe_jump_here(v, jmp6)
 								sqlite3_vdbe_add_op4_int(v, 42, i_idx_cur + j, uniq_ok, r1, int(p_idx.nKeyCol))
-								0
 								sqlite3_vdbe_load_string(v, 3, c'non-unique entry in index ')
 								sqlite3_vdbe_goto(v, jmp5)
 								sqlite3_vdbe_resolve_label(v, uniq_ok)
@@ -1613,7 +1583,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 						}
 					}
 					sqlite3_vdbe_add_op2(v, 40, i_data_cur, loop_top)
-					0
 					sqlite3_vdbe_jump_here(v, loop_top - 1)
 					if p_pk {
 						sqlite3_release_temp_range(p_parse, r2, int(p_pk.nKeyCol))
@@ -1659,7 +1628,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 					p_tab.nTabRef++
 					sqlite3_vdbe_append_p4(v, voidptr(p_tab), (-17))
 					a1 = sqlite3_vdbe_add_op1(v, 51, 3)
-					0
 					integrity_check_result_row(v)
 					sqlite3_vdbe_jump_here(v, a1)
 					continue
@@ -1799,7 +1767,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 				}
 
 				mut a_op := &VdbeOp(0)
-				0
 				a_op = sqlite3_vdbe_add_op_list(v, 2, &sqlite3_pragma_set_cookie[0], 0)
 				if 0 {
 					unsafe { goto c2v_switch_end_51
@@ -1838,7 +1805,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 				}
 
 				mut a_op := &VdbeOp(0)
-				0
 				a_op = sqlite3_vdbe_add_op_list(v, 3, &sqlite3_pragma_read_cookie[0], 0)
 				if 0 {
 					unsafe { goto c2v_switch_end_51
@@ -1971,10 +1937,8 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 						} else {
 							-1
 						}, int(sz_threshold) + int(i_range))
-						0
 					} else {
 						sqlite3_vdbe_add_op2(v, 36, i_tab_cur, int(u32(sqlite3_vdbe_current_addr(v) + 2) + (op_mask & u32(1))))
-						0
 					}
 					z_sub_sql = sqlite3_mp_rintf(db, c'ANALYZE "%w"."%w"', voidptr(db.aDb[i_db].zDbSName), voidptr(p_tab.zName))
 					if op_mask & u32(1) {
@@ -2048,7 +2012,6 @@ fn sqlite3_pragma(p_parse &Parse, p_id1 &Token, p_id2 &Token, p_value &Token, mi
 	c2v_switch_end_51:
 
 	if (int(p_pragma.mPragFlg) & 4) && !isnil(z_right) {
-		0
 	}
 	pragma_out:
 	sqlite3_db_free(db, voidptr(z_left))

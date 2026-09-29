@@ -65,7 +65,6 @@ fn sqlite3_init_callback(p_init voidptr, argc int, argv &&u8, not_used &&u8) int
 		rc := 0
 		saved_i_db := db.init.iDb
 		p_stmt := &Sqlite3_stmt(0)
-		0
 		db.init.iDb = U8(i_db)
 		if sqlite3_get_ui_nt32(argv[3], &db.init.newTnum) == 0 || (db.init.newTnum > p_data.mxPage && p_data.mxPage > Pgno(0)) {
 			if sqlite3Config.bExtraSchemaChecks {
@@ -429,7 +428,6 @@ fn sqlite3_prepare_vdup12(db &Sqlite3, z_sql &i8, n_bytes int, prep_flags u32, p
 				if rc {
 					z_db := db.aDb[i].zDbSName
 					sqlite3_error_with_msg(db, rc, c'database schema is locked: %s', voidptr(z_db))
-					0
 					unsafe { goto end_prepare
 					 }
 				}
@@ -442,8 +440,6 @@ fn sqlite3_prepare_vdup12(db &Sqlite3, z_sql &i8, n_bytes int, prep_flags u32, p
 	if n_bytes >= 0 && (n_bytes == 0 || int(z_sql[n_bytes - 1]) != 0) {
 		z_sql_copy := &i8(0)
 		mx_len := db.aLimit[1]
-		0
-		0
 		if n_bytes > mx_len {
 			sqlite3_error_with_msg(db, 18, c'statement too long')
 			rc = sqlite3_api_exit(db, 18)

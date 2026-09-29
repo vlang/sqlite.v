@@ -15,12 +15,10 @@ fn query_shared_cache_table_lock(p &Btree, i_tab Pgno, e_lock U8) int {
 		return 0
 	}
 	if usize(p_bt.pWriter) != usize(p) && (int(p_bt.btsFlags) & 64) != 0 {
-		0
 		return 6 | (1 << 8)
 	}
 	for p_iter = p_bt.pLock; p_iter; p_iter = p_iter.pNext {
 		if usize(p_iter.pBtree) != usize(p) && p_iter.iTable == i_tab && int(p_iter.eLock) != int(e_lock) {
-			0
 			if int(e_lock) == 2 {
 				p_bt.btsFlags |= 128
 			}
@@ -35,7 +33,6 @@ fn set_shared_cache_table_lock(p &Btree, i_table Pgno, e_lock U8) int {
 	p_bt := p.pBt
 	p_lock := unsafe { &BtLock(nil) }
 	p_iter := &BtLock(0)
-	0
 	for p_iter = p_bt.pLock; p_iter; p_iter = p_iter.pNext {
 		if p_iter.iTable == i_table && usize(p_iter.pBtree) == usize(p) {
 			p_lock = p_iter
@@ -62,7 +59,6 @@ fn set_shared_cache_table_lock(p &Btree, i_table Pgno, e_lock U8) int {
 fn clear_all_shared_cache_table_locks(p &Btree) {
 	p_bt := p.pBt
 	pp_iter := &p_bt.pLock
-	0
 	for unsafe { *pp_iter != nil } {
 		p_lock := (unsafe { *pp_iter })
 		if usize(p_lock.pBtree) == usize(p) {
@@ -85,7 +81,6 @@ fn clear_all_shared_cache_table_locks(p &Btree) {
 @[c:'downgradeAllSharedCacheTableLocks']
 fn downgrade_all_shared_cache_table_locks(p &Btree) {
 	p_bt := p.pBt
-	0
 	if usize(p_bt.pWriter) == usize(p) {
 		p_lock := &BtLock(0)
 		p_bt.pWriter = 0
@@ -228,7 +223,6 @@ fn save_cursors_on_list(p &BtCursor, i_root Pgno, p_except &BtCursor) int {
 					return rc
 				}
 			} else {
-				0
 				btree_release_all_cursor_pages(p)
 			}
 		}
@@ -384,7 +378,6 @@ fn ptrmap_put(p_bt &BtShared, key Pgno, e_type U8, parent Pgno, prc &int) {
 	}
 	p_ptrmap = &U8(sqlite3_pager_get_data(p_db_page))
 	if int(e_type) != int(p_ptrmap[offset]) || sqlite3_get4byte(unsafe { p_ptrmap + (offset + 1) }) != parent {
-		0
 		rc = sqlite3_pager_write(p_db_page)
 		unsafe { *prc = rc }
 		if rc == 0 {
@@ -433,8 +426,6 @@ fn btree_parse_cell_adjust_size_for_overflow(p_page &MemPage, p_cell &U8, p_info
 	min_local = int(p_page.minLocal)
 	max_local = int(p_page.maxLocal)
 	surplus = int(u32(min_local) + (p_info.nPayload - u32(min_local)) % (p_page.pBt.usableSize - u32(4)))
-	0
-	0
 	if surplus <= max_local {
 		p_info.nLocal = U16(surplus)
 	} else {
@@ -523,8 +514,6 @@ fn btree_parse_cell_ptr(p_page &MemPage, p_cell &U8, p_info &CellInfo) {
 	p_info.nKey = unsafe { *&I64(c2v_address_of(&i_key)) }
 	p_info.nPayload = u32(n_payload)
 	p_info.pPayload = p_iter
-	0
-	0
 	if n_payload <= U64(p_page.maxLocal) {
 		p_info.nSize = U16(int(U16(n_payload)) + int(U16((i64((isize(p_iter) - isize(p_cell)) / isize(sizeof(U8)))))))
 		if int(p_info.nSize) < 4 {
@@ -557,8 +546,6 @@ fn btree_parse_cell_ptr_index(p_page &MemPage, p_cell &U8, p_info &CellInfo) {
 	p_info.nKey = I64(n_payload)
 	p_info.nPayload = n_payload
 	p_info.pPayload = p_iter
-	0
-	0
 	if n_payload <= u32(p_page.maxLocal) {
 		p_info.nSize = U16(int(U16(n_payload)) + int(U16((i64((isize(p_iter) - isize(p_cell)) / isize(sizeof(U8)))))))
 		if int(p_info.nSize) < 4 {
@@ -593,15 +580,11 @@ fn cell_size_ptr(p_page &MemPage, p_cell &U8) U16 {
 		}
 	}
 	c2v_pointer_postfix(voidptr(&p_iter), p_iter, isize(1))
-	0
-	0
 	if n_size <= u32(p_page.maxLocal) {
 		n_size += u32((i64((isize(p_iter) - isize(p_cell)) / isize(sizeof(U8)))))
 	} else {
 		min_local := int(p_page.minLocal)
 		n_size = u32(min_local) + (n_size - u32(min_local)) % (p_page.pBt.usableSize - u32(4))
-		0
-		0
 		if n_size > u32(p_page.maxLocal) {
 			n_size = u32(min_local)
 		}
@@ -628,8 +611,6 @@ fn cell_size_ptr_idx_leaf(p_page &MemPage, p_cell &U8) U16 {
 		}
 	}
 	c2v_pointer_postfix(voidptr(&p_iter), p_iter, isize(1))
-	0
-	0
 	if n_size <= u32(p_page.maxLocal) {
 		n_size += u32((i64((isize(p_iter) - isize(p_cell)) / isize(sizeof(U8)))))
 		if n_size < u32(4) {
@@ -638,8 +619,6 @@ fn cell_size_ptr_idx_leaf(p_page &MemPage, p_cell &U8) U16 {
 	} else {
 		min_local := int(p_page.minLocal)
 		n_size = u32(min_local) + (n_size - u32(min_local)) % (p_page.pBt.usableSize - u32(4))
-		0
-		0
 		if n_size > u32(p_page.maxLocal) {
 			n_size = u32(min_local)
 		}
@@ -656,7 +635,6 @@ fn cell_size_ptr_no_payload(p_page &MemPage, p_cell &U8) U16 {
 
 	p_end = p_iter + 9
 	for int((unsafe { *c2v_pointer_postfix(voidptr(&p_iter), p_iter, isize(1)) })) & 128 && usize(p_iter) < usize(p_end) {
-		0
 	}
 	return U16((i64((isize(p_iter) - isize(p_cell)) / isize(sizeof(U8)))))
 }
@@ -707,8 +685,6 @@ fn cell_size_ptr_table_leaf(p_page &MemPage, p_cell &U8) U16 {
 	if __c2v_condition_32 {
 		c2v_pointer_postfix(voidptr(&p_iter), p_iter, isize(1))
 	}
-	0
-	0
 	if n_size <= u32(p_page.maxLocal) {
 		n_size += u32((i64((isize(p_iter) - isize(p_cell)) / isize(sizeof(U8)))))
 		if n_size < u32(4) {
@@ -717,8 +693,6 @@ fn cell_size_ptr_table_leaf(p_page &MemPage, p_cell &U8) U16 {
 	} else {
 		min_local := int(p_page.minLocal)
 		n_size = u32(min_local) + (n_size - u32(min_local)) % (p_page.pBt.usableSize - u32(4))
-		0
-		0
 		if n_size > u32(p_page.maxLocal) {
 			n_size = u32(min_local)
 		}
@@ -737,7 +711,6 @@ fn ptrmap_put_ovfl_ptr(p_page &MemPage, p_src &MemPage, p_cell &U8, prc &int) {
 	if u32(info.nLocal) < info.nPayload {
 		ovfl := Pgno(0)
 		if ((Uptr(voidptr(p_cell)) < Uptr(voidptr(p_src.aDataEnd))) && (Uptr(voidptr((p_cell + int(info.nLocal)))) > Uptr(voidptr(p_src.aDataEnd)))) {
-			0
 			unsafe { *prc = sqlite3_corrupt_error(1591) }
 			return
 		}
@@ -828,8 +801,6 @@ fn defragment_page(p_page &MemPage, n_max_frag int) int {
 			p_addr := &U8(0)
 			p_addr = unsafe { data + (cell_offset + i * 2) }
 			pc = (int(p_addr[0]) << 8 | int(p_addr[1]))
-			0
-			0
 			if pc > i_cell_last {
 				return sqlite3_corrupt_error(1702)
 			}
@@ -838,8 +809,6 @@ fn defragment_page(p_page &MemPage, n_max_frag int) int {
 			if cbrk < i_cell_start || pc + size > usable_size {
 				return sqlite3_corrupt_error(1708)
 			}
-			0
-			0
 			p_addr[0] = U8((cbrk >> 8))
 			p_addr[1] = U8(cbrk)
 			C.memcpy(voidptr(unsafe { data + cbrk }), voidptr(unsafe { src + pc }), u64(size))
@@ -873,8 +842,6 @@ fn page_find_slot(p_pg &MemPage, n_byte int, p_rc &int) &U8 {
 		size = (int(p_tmp[0]) << 8 | int(p_tmp[1]))
 		x = size - n_byte
 		if x >= 0 {
-			0
-			0
 			if x < 4 {
 				if int(a_data[hdr + 7]) > 57 {
 					return unsafe { nil }
@@ -927,9 +894,6 @@ fn allocate_space(p_page &MemPage, n_byte int, p_idx &int) int {
 	} else if top > int(p_page.pBt.usableSize) {
 		return sqlite3_corrupt_error(1852)
 	}
-	0
-	0
-	0
 	if (int(data[hdr + 2]) || int(data[hdr + 1])) && gap + 2 <= top {
 		p_space := page_find_slot(p_page, n_byte, &rc)
 		if p_space {
@@ -945,7 +909,6 @@ fn allocate_space(p_page &MemPage, n_byte int, p_idx &int) int {
 			return rc
 		}
 	}
-	0
 	if gap + 2 + n_byte > top {
 		rc = defragment_page(p_page, (if 4 < (p_page.nFree - (2 + n_byte)) {
 			4
@@ -1183,13 +1146,10 @@ fn btree_cell_size_check(p_page &MemPage) int {
 	}
 	for i = 0; i < int(p_page.nCell); i++ {
 		pc = (int((unsafe { data + (cell_offset + i * 2) })[0]) << 8 | int((unsafe { data + (cell_offset + i * 2) })[1]))
-		0
-		0
 		if pc < i_cell_first || pc > i_cell_last {
 			return sqlite3_corrupt_error(2198)
 		}
 		sz = int(p_page.xCellSize(p_page, unsafe { data + pc }))
-		0
 		if pc + sz > usable_size {
 			return sqlite3_corrupt_error(2203)
 		}
@@ -1216,7 +1176,6 @@ fn btree_init_page(p_page &MemPage) int {
 	if u32(p_page.nCell) > ((p_bt.pageSize - u32(8)) / u32(6)) {
 		return sqlite3_corrupt_error(2249)
 	}
-	0
 	p_page.nFree = -1
 	p_page.isInit = U8(1)
 	if p_bt.db.flags & U64(2097152) {
@@ -1854,7 +1813,6 @@ fn lock_btree(p_bt &BtShared) int {
 				unsafe { goto page1_init_failed
 				 }
 			} else {
-				0
 				if is_open == 0 {
 					release_page_one(p_page1)
 					return 0
@@ -1862,7 +1820,6 @@ fn lock_btree(p_bt &BtShared) int {
 			}
 			rc = 26
 		} else {
-			0
 		}
 		if C.memcmp(voidptr(unsafe { page1 + 21 }), voidptr(c'@  '), u64(3)) != 0 {
 			unsafe { goto page1_init_failed
@@ -1978,7 +1935,6 @@ fn btree_begin_trans(p &Btree, wrflag int, p_schema_version &int) int {
 	p_pager := p_bt.pPager
 	rc := 0
 	sqlite3_btree_enter(p)
-	0
 	if int(p.inTrans) == 2 || (int(p.inTrans) == 1 && !wrflag) {
 		unsafe { goto trans_begun
 		 }
@@ -2004,7 +1960,6 @@ fn btree_begin_trans(p &Btree, wrflag int, p_schema_version &int) int {
 		}
 	}
 	if p_block {
-		0
 		rc = (6 | (1 << 8))
 		unsafe { goto trans_begun
 		 }
@@ -2019,12 +1974,10 @@ fn btree_begin_trans(p &Btree, wrflag int, p_schema_version &int) int {
 		p_bt.btsFlags |= 16
 	}
 	for {
-		0
 		for {
 			if !(usize(p_bt.pPage1) == usize(0) && 0 == c2v_assign[int](unsafe { &rc }, int(lock_btree(p_bt)))) {
 				break
 			}
-			0
 		}
 		if rc == 0 && wrflag {
 			if (int(p_bt.btsFlags) & 1) != 0 {
@@ -2045,7 +1998,6 @@ fn btree_begin_trans(p &Btree, wrflag int, p_schema_version &int) int {
 			break
 		}
 	}
-	0
 	if rc == 0 {
 		if int(p.inTrans) == 0 {
 			p_bt.nTransaction++
@@ -2083,7 +2035,6 @@ fn btree_begin_trans(p &Btree, wrflag int, p_schema_version &int) int {
 			rc = sqlite3_pager_open_savepoint(p_pager, p.db.nSavepoint)
 		}
 	}
-	0
 	sqlite3_btree_leave(p)
 	return rc
 }
@@ -2191,7 +2142,6 @@ fn relocate_page(p_bt &BtShared, p_db_page &MemPage, e_type U8, i_ptr_page Pgno,
 	if i_db_page < Pgno(3) {
 		return sqlite3_corrupt_error(3961)
 	}
-	0
 	rc = sqlite3_pager_movepage(p_pager, p_db_page.pDbPage, i_free_page, is_commit)
 	if rc != 0 {
 		return rc
@@ -2362,7 +2312,6 @@ fn auto_vacuum_commit(p &Btree) int {
 	p_pager := &Pager(0)
 	p_bt := &BtShared(0)
 	db := &Sqlite3(0)
-	0
 	p_bt = p.pBt
 	p_pager = p_bt.pPager
 	invalidate_all_overflow_cache(p_bt)
@@ -2463,7 +2412,6 @@ fn btree_end_transaction(p &Btree) {
 		p.inTrans = U8(0)
 		unlock_btree_if_unused(p_bt)
 	}
-	0
 }
 
 @[c:'sqlite3BtreeCommitPhaseTwo']
@@ -2472,7 +2420,6 @@ fn sqlite3_btree_commit_phase_two(p &Btree, b_cleanup int) int {
 		return 0
 	}
 	sqlite3_btree_enter(p)
-	0
 	if int(p.inTrans) == 2 {
 		rc := 0
 		p_bt := p.pBt
@@ -2532,11 +2479,9 @@ fn sqlite3_btree_trip_all_cursors(p_btree &Btree, err_code int, write_only int) 
 @[c:'btreeSetNPage']
 fn btree_set_np_age(p_bt &BtShared, p_page1 &MemPage) {
 	n_page := int(sqlite3_get4byte(unsafe { p_page1.aData + 28 }))
-	0
 	if n_page == 0 {
 		sqlite3_pager_pagecount(p_bt.pPager, &n_page)
 	}
-	0
 	p_bt.nPage = u32(n_page)
 }
 
@@ -2561,7 +2506,6 @@ fn sqlite3_btree_rollback(p &Btree, trip_code int, write_only int) int {
 			rc = rc2
 		}
 	}
-	0
 	if int(p.inTrans) == 2 {
 		rc2 := 0
 		rc2 = sqlite3_pager_rollback(p_bt.pPager)
@@ -2721,7 +2665,6 @@ fn get_cell_info(p_cur &BtCursor) {
 		p_cur.curFlags |= 2
 		btree_parse_cell(p_cur.pPage, int(p_cur.ix), &p_cur.info)
 	} else {
-		0
 	}
 }
 
@@ -2850,7 +2793,6 @@ fn access_payload(p_cur &BtCursor, offset u32, amt u32, p_buf &u8, e_op int) int
 		next_page = sqlite3_get4byte(unsafe { a_payload + p_cur.info.nLocal })
 		if (int(p_cur.curFlags) & 4) == 0 {
 			n_ovfl := I64(p_cur.info.nPayload)
-			0
 			n_ovfl = (n_ovfl - I64(p_cur.info.nLocal) + I64(ovfl_size) - I64(1)) / I64(ovfl_size)
 			if usize(p_cur.aOverflow) == usize(0) || n_ovfl * I64(int(sizeof(Pgno))) > I64(sqlite3_malloc_size(voidptr(p_cur.aOverflow))) {
 				a_new := &Pgno(0)
@@ -3007,8 +2949,6 @@ fn move_to_child(p_cur &BtCursor, new_pgno u32) int {
 @[c:'moveToParent']
 fn move_to_parent(p_cur &BtCursor) {
 	p_leaf := &MemPage(0)
-	0
-	0
 	p_cur.info.nSize = U16(0)
 	p_cur.curFlags &= ~(2 | 4)
 	p_cur.ix = p_cur.aiIdx[int(p_cur.iPage) - 1]
@@ -3391,10 +3331,6 @@ fn sqlite3_btree_index_moveto(p_cur &BtCursor, p_idx_key &UnpackedRecord, p_res 
 					n_overrun := 18
 					p_page.xParseCell(p_page, p_cell_body, &p_cur.info)
 					n_cell = int(p_cur.info.nKey)
-					0
-					0
-					0
-					0
 					if n_cell < 2 || u32(n_cell) / p_cur.pBt.usableSize > p_cur.pBt.nPage {
 						rc = sqlite3_corrupt_error(6180)
 						unsafe { goto moveto_index_finish
@@ -3653,7 +3589,6 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 	p_page1 = p_bt.pPage1
 	mx_page = btree_pagecount(p_bt)
 	n = sqlite3_get4byte(unsafe { p_page1.aData + 36 })
-	0
 	if n >= mx_page {
 		return sqlite3_corrupt_error(6538)
 	}
@@ -3687,7 +3622,6 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 			} else {
 				i_trunk = sqlite3_get4byte(unsafe { p_page1.aData + 32 })
 			}
-			0
 			if i_trunk > mx_page || n_search++ > n {
 				rc = sqlite3_corrupt_error(6594)
 			} else {
@@ -3709,7 +3643,6 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 				C.memcpy(voidptr(unsafe { p_page1.aData + 32 }), voidptr(unsafe { p_trunk.aData + 0 }), u64(4))
 				unsafe { *pp_page = p_trunk }
 				p_trunk = 0
-				0
 			} else if k > u32((p_bt.usableSize / u32(4) - u32(2))) {
 				rc = sqlite3_corrupt_error(6623)
 				unsafe { goto end_allocate_page
@@ -3742,7 +3675,6 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 						unsafe { goto end_allocate_page
 						 }
 					}
-					0
 					rc = btree_get_unused_page(p_bt, i_new_trunk, &&MemPage(&&MemPage(c2v_address_of(&p_new_trunk))), 0)
 					if rc != 0 {
 						unsafe { goto end_allocate_page
@@ -3770,7 +3702,6 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 					}
 				}
 				p_trunk = 0
-				0
 			} else if k > u32(0) {
 				closest := u32(0)
 				i_page := Pgno(0)
@@ -3801,17 +3732,14 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 					closest = u32(0)
 				}
 				i_page = sqlite3_get4byte(unsafe { a_data + (u32(8) + closest * u32(4)) })
-				0
 				if i_page > mx_page || i_page < Pgno(2) {
 					rc = sqlite3_corrupt_error(6722)
 					unsafe { goto end_allocate_page
 					 }
 				}
-				0
 				if !search_list || (i_page == nearby || (i_page < nearby && int(e_mode) == 2)) {
 					no_content := 0
 					unsafe { *p_pgno = i_page }
-					0
 					rc = sqlite3_pager_write(p_trunk.pDbPage)
 					if rc {
 						unsafe { goto end_allocate_page
@@ -3855,7 +3783,6 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 		}
 		if int(p_bt.autoVacuum) && (ptrmap_pageno(p_bt, p_bt.nPage) == p_bt.nPage) {
 			p_pg := unsafe { &MemPage(nil) }
-			0
 			rc = btree_get_unused_page(p_bt, p_bt.nPage, &&MemPage(&&MemPage(c2v_address_of(&p_pg))), b_no_content)
 			if rc == 0 {
 				rc = sqlite3_pager_write(p_pg.pDbPage)
@@ -3880,7 +3807,6 @@ fn allocate_btree_page(p_bt &BtShared, pp_page &&MemPage, p_pgno &Pgno, nearby P
 			release_page((unsafe { *pp_page }))
 			unsafe { *pp_page = 0 }
 		}
-		0
 	}
 	end_allocate_page:
 	release_page(p_trunk)
@@ -3964,7 +3890,6 @@ fn free_page2(p_bt &BtShared, p_mem_page &MemPage, i_page Pgno) int {
 				}
 				rc = btree_set_has_content(p_bt, i_page)
 			}
-			0
 			unsafe { goto freepage_out
 			 }
 		}
@@ -3981,7 +3906,6 @@ fn free_page2(p_bt &BtShared, p_mem_page &MemPage, i_page Pgno) int {
 	sqlite3_put4byte(p_page.aData, i_trunk)
 	sqlite3_put4byte(unsafe { p_page.aData + 4 }, u32(0))
 	sqlite3_put4byte(unsafe { p_page1.aData + 32 }, i_page)
-	0
 	freepage_out:
 	if p_page {
 		p_page.isInit = U8(0)
@@ -4005,8 +3929,6 @@ fn clear_cell_overflow(p_page &MemPage, p_cell &u8, p_info &CellInfo) int {
 	rc := 0
 	n_ovfl := 0
 	ovfl_page_size := u32(0)
-	0
-	0
 	if usize(p_cell + p_info.nSize) > usize(p_page.aDataEnd) {
 		return sqlite3_corrupt_error(6996)
 	}
@@ -4094,22 +4016,17 @@ fn fill_in_cell(p_page &MemPage, p_cell &u8, px &BtreePayload, pn_size &int) int
 	p_payload = unsafe { p_cell + n_header }
 	if n_payload <= int(p_page.maxLocal) {
 		n = n_header + n_payload
-		0
-		0
 		if n < 4 {
 			n = 4
 			p_payload[n_payload] = u8(0)
 		}
 		unsafe { *pn_size = n }
-		0
 		C.memcpy(voidptr(p_payload), voidptr(p_src), u64(n_src))
 		C.memset(voidptr(p_payload + n_src), 0, u64(n_payload - n_src))
 		return 0
 	}
 	mn = int(p_page.minLocal)
 	n = int(u32(mn) + u32((n_payload - mn)) % (p_page.pBt.usableSize - u32(4)))
-	0
-	0
 	if n > int(p_page.maxLocal) {
 		n = mn
 	}
@@ -4190,8 +4107,6 @@ fn drop_cell(p_page &MemPage, idx int, sz int, prc &int) {
 	ptr = unsafe { p_page.aCellIdx + (2 * idx) }
 	pc = u32((int(ptr[0]) << 8 | int(ptr[1])))
 	hdr = int(p_page.hdrOffset)
-	0
-	0
 	if pc + u32(sz) > p_page.pBt.usableSize {
 		unsafe { *prc = sqlite3_corrupt_error(7289) }
 		return
@@ -4627,14 +4542,12 @@ fn balance_quick(p_parent &MemPage, p_page &MemPage, p_space &U8) int {
 		p_cell = (p_page.aData + (int(p_page.maskPage) & (int((unsafe { p_page.aCellIdx + (2 * (int(p_page.nCell) - 1)) })[0]) << 8 | int((unsafe { p_page.aCellIdx + (2 * (int(p_page.nCell) - 1)) })[1]))))
 		p_stop = unsafe { p_cell + 9 }
 		for (int((unsafe { *(c2v_pointer_postfix(voidptr(&p_cell), p_cell, isize(1))) })) & 128) && usize(p_cell) < usize(p_stop) {
-			0
 		}
 		p_stop = unsafe { p_cell + 9 }
 		for {
 			if !((int(c2v_assign[u8]((c2v_pointer_postfix(voidptr(&p_out), p_out, isize(1))), u8((unsafe { *(c2v_pointer_postfix(voidptr(&p_cell), p_cell, isize(1))) })))) & 128) && usize(p_cell) < usize(p_stop)) {
 				break
 			}
-			0
 		}
 		if rc == 0 {
 			rc = insert_cell(p_parent, int(p_parent.nCell), p_space, int((i64((isize(p_out) - isize(p_space)) / isize(sizeof(U8))))), unsafe { nil }, p_page.pgno)
@@ -4950,7 +4863,6 @@ fn balance_nonroot(p_parent &MemPage, i_parent_idx int, a_ovfl_space &U8, is_roo
 			 }
 		}
 	}
-	0
 	page_flags = int(ap_old[0].aData[0])
 	for i = 0; i < k; i++ {
 		p_new := &MemPage(0)
@@ -5013,7 +4925,6 @@ fn balance_nonroot(p_parent &MemPage, i_parent_idx int, a_ovfl_space &U8, is_roo
 			ap_new[ib].pgno = pgno_a
 		}
 	}
-	0
 	sqlite3_put4byte(p_right, ap_new[n_new - 1].pgno)
 	if (page_flags & 8) == 0 && n_old != n_new {
 		p_old := &MemPage(0)
@@ -5126,7 +5037,6 @@ fn balance_nonroot(p_parent &MemPage, i_parent_idx int, a_ovfl_space &U8, is_roo
 	}
 	if is_root && int(p_parent.nCell) == 0 && int(p_parent.hdrOffset) <= ap_new[0].nFree {
 		rc = defragment_page(ap_new[0], -1)
-		0
 		copy_node_content(ap_new[0], p_parent, &rc)
 		free_page(ap_new[0], &rc)
 	} else if int(p_bt.autoVacuum) && !leaf_correction {
@@ -5135,7 +5045,6 @@ fn balance_nonroot(p_parent &MemPage, i_parent_idx int, a_ovfl_space &U8, is_roo
 			ptrmap_put(p_bt, key, U8(5), ap_new[i].pgno, &rc)
 		}
 	}
-	0
 	for i = n_new; i < n_old; i++ {
 		free_page(ap_old[i], &rc)
 	}
@@ -5168,7 +5077,6 @@ fn balance_deeper(p_root &MemPage, pp_child &&MemPage) int {
 		release_page(p_child)
 		return rc
 	}
-	0
 	C.memcpy(p_child.aiOvfl, p_root.aiOvfl, u64(p_root.nOverflow) * sizeof(U16))
 	C.memcpy(p_child.apOvfl, p_root.apOvfl, u64(p_root.nOverflow) * sizeof(&U8))
 	p_child.nOverflow = p_root.nOverflow
@@ -5193,8 +5101,6 @@ fn balance(p_cur &BtCursor) int {
 	rc := 0
 	a_balance_quick_space := [13]U8{}
 	p_free := unsafe { &U8(nil) }
-	0
-	0
 	for {
 		i_page := 0
 		p_page := p_cur.pPage
@@ -5207,7 +5113,6 @@ fn balance(p_cur &BtCursor) int {
 			i_page = int(p_cur.iPage)
 			if i_page == 0 {
 				if int(p_page.nOverflow) && c2v_assign[int](unsafe { &rc }, int(another_valid_cursor(p_cur))) == 0 {
-					0
 					rc = balance_deeper(p_page, &&MemPage(unsafe { &p_cur.apPage[0] + 1 }))
 					if rc == 0 {
 						p_cur.iPage = I8(1)
@@ -5230,7 +5135,6 @@ fn balance(p_cur &BtCursor) int {
 				}
 				if rc == 0 {
 					if int(p_page.intKeyLeaf) && int(p_page.nOverflow) == 1 && int(p_page.aiOvfl[0]) == int(p_page.nCell) && p_parent.pgno != Pgno(1) && int(p_parent.nCell) == i_idx {
-						0
 						rc = balance_quick(p_parent, p_page, &a_balance_quick_space[0])
 					} else {
 						p_space := &U8(sqlite3_page_malloc(int(p_cur.pBt.pageSize)))
@@ -5368,8 +5272,6 @@ fn sqlite3_btree_insert(p_cur &BtCursor, px &BtreePayload, flags int, seek_resul
 		}
 	}
 	if int(p_cur.eState) >= 3 {
-		0
-		0
 		rc = move_to_root(p_cur)
 		if rc && rc != 16 {
 			return rc
@@ -5428,7 +5330,6 @@ fn sqlite3_btree_insert(p_cur &BtCursor, px &BtreePayload, flags int, seek_resul
 			return rc
 		}
 	}
-	0
 	new_cell = p.pBt.pTmpSpace
 	if flags & 128 {
 		rc = 0
@@ -5478,8 +5379,6 @@ fn sqlite3_btree_insert(p_cur &BtCursor, px &BtreePayload, flags int, seek_resul
 		} else {
 			rc = 0
 		}
-		0
-		0
 		p_cur.curFlags &= ~4
 		if int(info.nSize) == sz_new && u32(info.nLocal) == info.nPayload && (!p.pBt.autoVacuum || sz_new < int(p_page.minLocal)) {
 			if usize(old_cell) < usize(p_page.aData + p_page.hdrOffset + 10) {
@@ -5699,7 +5598,6 @@ fn sqlite3_btree_delete(p_cur &BtCursor, flags U8) int {
 	} else {
 		rc = 0
 	}
-	0
 	drop_cell(p_page, i_cell_idx, int(info.nSize), &rc)
 	if rc {
 		return rc
@@ -5904,7 +5802,6 @@ fn clear_database_page(p_bt &BtShared, pgno Pgno, free_page_flag int, pn_change 
 		} else {
 			rc = 0
 		}
-		0
 		if rc {
 			unsafe { goto cleardatabasepage_out
 			 }
@@ -5921,7 +5818,6 @@ fn clear_database_page(p_bt &BtShared, pgno Pgno, free_page_flag int, pn_change 
 		}
 	}
 	if pn_change {
-		0
 		unsafe { *pn_change += I64(p_page.nCell) }
 	}
 	if free_page_flag {
@@ -6499,7 +6395,6 @@ fn sqlite3_btree_integrity_check(db &Sqlite3, p &Btree, a_root &Pgno, a_cnt &Mem
 	z_err := [100]i8{}
 	b_partial := 0
 	b_ck_freelist := 1
-	0
 	if a_root[0] == Pgno(0) {
 		b_partial = 1
 		if a_root[1] != Pgno(1) {
@@ -6507,7 +6402,6 @@ fn sqlite3_btree_integrity_check(db &Sqlite3, p &Btree, a_root &Pgno, a_cnt &Mem
 		}
 	}
 	sqlite3_btree_enter(p)
-	0
 	C.memset(voidptr(&s_check), 0, sizeof(s_check))
 	s_check.db = db
 	s_check.pBt = p_bt
@@ -6558,7 +6452,6 @@ fn sqlite3_btree_integrity_check(db &Sqlite3, p &Btree, a_root &Pgno, a_cnt &Mem
 			check_append_msg(&s_check, c'incremental_vacuum enabled with a max rootpage of zero')
 		}
 	}
-	0
 	p_bt.db.flags &= ~U64(2097152)
 	for i = Pgno(0); int(i) < n_root && s_check.mxErr; i++ {
 		s_check.nRow = I64(0)
@@ -6750,6 +6643,5 @@ fn sqlite3_btree_sharable(p &Btree) int {
 
 @[c:'sqlite3BtreeConnectionCount']
 fn sqlite3_btree_connection_count(p &Btree) int {
-	0
 	return p.pBt.nRef
 }

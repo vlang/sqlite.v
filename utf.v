@@ -114,7 +114,6 @@ fn sqlite3_vdbe_mem_translate(p_mem &Mem, desired_enc U8) int {
 						c = u32(65533)
 					}
 				}
-				0
 				if c <= u32(65535) {
 					mut __c2v_lhs_tmp_24 := unsafe { c2v_pointer_postfix(voidptr(&z), z, isize(1)) }
 					unsafe { *__c2v_lhs_tmp_24 = U8((c & u32(255))) }
@@ -130,7 +129,6 @@ fn sqlite3_vdbe_mem_translate(p_mem &Mem, desired_enc U8) int {
 					mut __c2v_lhs_tmp_29 := unsafe { c2v_pointer_postfix(voidptr(&z), z, isize(1)) }
 					unsafe { *__c2v_lhs_tmp_29 = U8((u32(220) + ((c >> 8) & u32(3)))) }
 				}
-				0
 			}
 		} else {
 			for usize(z_in) < usize(z_term) {
@@ -144,7 +142,6 @@ fn sqlite3_vdbe_mem_translate(p_mem &Mem, desired_enc U8) int {
 						c = u32(65533)
 					}
 				}
-				0
 				if c <= u32(65535) {
 					mut __c2v_lhs_tmp_30 := unsafe { c2v_pointer_postfix(voidptr(&z), z, isize(1)) }
 					unsafe { *__c2v_lhs_tmp_30 = U8(((c >> 8) & u32(255))) }
@@ -160,7 +157,6 @@ fn sqlite3_vdbe_mem_translate(p_mem &Mem, desired_enc U8) int {
 					mut __c2v_lhs_tmp_35 := unsafe { c2v_pointer_postfix(voidptr(&z), z, isize(1)) }
 					unsafe { *__c2v_lhs_tmp_35 = U8((c & u32(255))) }
 				}
-				0
 			}
 		}
 		p_mem.n = int((i64((isize(z) - isize(z_out)) / isize(sizeof(u8)))))
@@ -203,7 +199,6 @@ fn sqlite3_vdbe_mem_translate(p_mem &Mem, desired_enc U8) int {
 					mut __c2v_lhs_tmp_46 := unsafe { c2v_pointer_postfix(voidptr(&z), z, isize(1)) }
 					unsafe { *__c2v_lhs_tmp_46 = u8(128 + int(U8((c & u32(63))))) }
 				}
-				0
 			}
 		} else {
 			for usize(z_in) < usize(z_term) {
@@ -241,7 +236,6 @@ fn sqlite3_vdbe_mem_translate(p_mem &Mem, desired_enc U8) int {
 					mut __c2v_lhs_tmp_56 := unsafe { c2v_pointer_postfix(voidptr(&z), z, isize(1)) }
 					unsafe { *__c2v_lhs_tmp_56 = u8(128 + int(U8((c & u32(63))))) }
 				}
-				0
 			}
 		}
 		p_mem.n = int((i64((isize(z) - isize(z_out)) / isize(sizeof(u8)))))
@@ -302,7 +296,6 @@ fn sqlite3_utf8_char_len(z_in &i8, n_byte int) int {
 				c2v_pointer_postfix(voidptr(&z), z, isize(1))
 			}
 		}
-		0
 		r++
 	}
 	return r

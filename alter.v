@@ -208,7 +208,6 @@ fn sqlite3_alter_finish_add_column(p_parse &Parse, p_col_def &Token) {
 		sqlite3_vdbe_uses_btree(v, i_db)
 		sqlite3_vdbe_add_op2(v, 88, r1, -2)
 		sqlite3_vdbe_add_op2(v, 61, r1, sqlite3_vdbe_current_addr(v) + 2)
-		0
 		sqlite3_vdbe_add_op3(v, 102, i_db, 2, 3)
 		sqlite3_release_temp_reg(p_parse, r1)
 		rename_reload_schema(p_parse, i_db, U16(3))
@@ -375,7 +374,6 @@ struct RenameCtx {
 @[c:'sqlite3RenameTokenMap']
 fn sqlite3_rename_token_map(p_parse &Parse, p_ptr voidptr, p_token &Token) voidptr {
 	p_new := &RenameToken(0)
-	0
 	if (int(p_parse.eParseMode) != 3) {
 		p_new = sqlite3_db_malloc_zero(p_parse.db, U64(sizeof(RenameToken)))
 		if p_new {
@@ -391,7 +389,6 @@ fn sqlite3_rename_token_map(p_parse &Parse, p_ptr voidptr, p_token &Token) voidp
 @[c:'sqlite3RenameTokenRemap']
 fn sqlite3_rename_token_remap(p_parse &Parse, p_to voidptr, p_from voidptr) {
 	p := &RenameToken(0)
-	0
 	for p = p_parse.pRename; p; p = p.pNext {
 		if usize(p.p) == usize(p_from) {
 			p.p = p_to
@@ -458,8 +455,6 @@ fn rename_unmap_select_cb(p_walker &Walker, p &Select) int {
 	if p_parse.nErr {
 		return 2
 	}
-	0
-	0
 	if p.selFlags & u32((2097152 | 67108864)) {
 		return 1
 	}
@@ -551,8 +546,6 @@ fn rename_token_find(p_parse &Parse, p_ctx &RenameCtx, p_ptr voidptr) &RenameTok
 fn rename_column_select_cb(p_walker &Walker, p &Select) int {
 	c2v_gc_register_thread()
 	if p.selFlags & u32((2097152 | 67108864)) {
-		0
-		0
 		return 1
 	}
 	rename_walk_with(p_walker, p)
@@ -582,7 +575,6 @@ fn rename_column_token_next(p_ctx &RenameCtx) &RenameToken {
 		}
 	}
 	for pp = &p_ctx.pList; usize((unsafe { *pp })) != usize(p_best); pp = &(unsafe { *pp }).pNext {
-		0
 	}
 	unsafe { *pp = p_best.pNext }
 	return p_best
@@ -666,7 +658,6 @@ fn rename_parse_sql(p &Parse, z_db &i8, db &Sqlite3, z_sql &i8, b_temp int) int 
 	p.db = db
 	p.nQueryLoop = LogEst(1)
 	flags = db.flags
-	0
 	db.flags |= (U64(64) << 32)
 	rc = sqlite3_run_parser(p, z_sql)
 	db.flags = flags
@@ -1069,8 +1060,6 @@ fn rename_table_select_cb(p_walker &Walker, p_select &Select) int {
 	p := p_walker.u.pRename
 	p_src := p_select.pSrc
 	if p_select.selFlags & u32((2097152 | 67108864)) {
-		0
-		0
 		return 1
 	}
 	if (usize(p_src) == usize(0)) {
@@ -1486,7 +1475,6 @@ fn sqlite3_alter_drop_column(p_parse &Parse, p_src &SrcList, p_name &Token) {
 		i_cur = __c2v_postfix_value_8
 		sqlite3_open_table(p_parse, i_cur, i_db, p_tab, 116)
 		addr = sqlite3_vdbe_add_op1(v, 36, i_cur)
-		0
 		reg = c2v_prefix_add(unsafe { &p_parse.nMem }, 1)
 		if ((p_tab.tabFlags & u32(128)) == u32(0)) {
 			sqlite3_vdbe_add_op2(v, 137, i_cur, reg)
@@ -1539,7 +1527,6 @@ fn sqlite3_alter_drop_column(p_parse &Parse, p_src &SrcList, p_name &Token) {
 		}
 		sqlite3_vdbe_change_p5(v, U16(2))
 		sqlite3_vdbe_add_op2(v, 40, i_cur, addr + 1)
-		0
 		sqlite3_vdbe_jump_here(v, addr)
 	}
 	exit_drop_column:

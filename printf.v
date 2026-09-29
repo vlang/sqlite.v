@@ -176,7 +176,6 @@ fn sqlite3_str_vappendf(p_accum &Sqlite3_str, fmt &i8, ap C.va_list) {
 						}
 						wx = wx * u32(10) + u32(c) - u32(`0`)
 					}
-					0
 					width = int(wx & u32(2147483647))
 					if c != `.` && c != `l` {
 						done = EtByte(1)
@@ -218,7 +217,6 @@ fn sqlite3_str_vappendf(p_accum &Sqlite3_str, fmt &i8, ap C.va_list) {
 							px = px * u32(10) + u32(c) - u32(`0`)
 							c = unsafe { *c2v_pointer_prefix(voidptr(&fmt), fmt, isize(1)) }
 						}
-						0
 						precision = int(px & u32(2147483647))
 					}
 					if c == `l` {
@@ -277,8 +275,6 @@ fn sqlite3_str_vappendf(p_accum &Sqlite3_str, fmt &i8, ap C.va_list) {
 						v = I64(C.va_arg(int, ap))
 					}
 					if v < I64(0) {
-						0
-						0
 						longvalue = Sqlite_uint64(~v)
 						longvalue++
 						prefix = i8(`-`)
@@ -706,7 +702,6 @@ fn sqlite3_str_vappendf(p_accum &Sqlite3_str, fmt &i8, ap C.va_list) {
 									c2v_pointer_postfix(voidptr(&z), z, isize(1))
 								}
 							}
-							0
 						}
 						length = int((i64((isize(z) - isize(&u8(voidptr(bufpt)))) / isize(sizeof(u8)))))
 					} else {
@@ -959,8 +954,6 @@ fn sqlite3_record_error_offset_of_expr(db &Sqlite3, p_expr &Expr) {
 fn sqlite3_str_accum_enlarge(p &StrAccum, n I64) int {
 	z_new := &i8(0)
 	if p.accError {
-		0
-		0
 		return 0
 	}
 	if p.mxAlloc == u32(0) {
@@ -1010,7 +1003,6 @@ fn sqlite3_str_accum_enlarge_if_needed(p &StrAccum, n I64) int {
 
 fn sqlite3_str_appendchar(p &Sqlite3_str, n int, c i8) {
 	c2v_gc_register_thread()
-	0
 	if I64(p.nChar) + I64(n) >= I64(p.nAlloc) && c2v_assign[int](unsafe { &n }, int(sqlite3_str_accum_enlarge(unsafe { &StrAccum(p) }, I64(n)))) <= 0 {
 		return
 	}

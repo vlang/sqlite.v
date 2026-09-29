@@ -11,13 +11,11 @@ fn sqlite3_os_close(p_id &Sqlite3_file) {
 
 @[c:'sqlite3OsRead']
 fn sqlite3_os_read(id &Sqlite3_file, p_buf voidptr, amt int, offset I64) int {
-	0
 	return id.pMethods.xRead(id, voidptr(p_buf), amt, offset)
 }
 
 @[c:'sqlite3OsWrite']
 fn sqlite3_os_write(id &Sqlite3_file, p_buf voidptr, amt int, offset I64) int {
-	0
 	return id.pMethods.xWrite(id, voidptr(p_buf), amt, offset)
 }
 
@@ -28,19 +26,16 @@ fn sqlite3_os_truncate(id &Sqlite3_file, size I64) int {
 
 @[c:'sqlite3OsSync']
 fn sqlite3_os_sync(id &Sqlite3_file, flags int) int {
-	0
 	return if flags { id.pMethods.xSync(id, flags) } else { 0 }
 }
 
 @[c:'sqlite3OsFileSize']
 fn sqlite3_os_file_size(id &Sqlite3_file, p_size &I64) int {
-	0
 	return id.pMethods.xFileSize(id, unsafe { &Sqlite3_int64(p_size) })
 }
 
 @[c:'sqlite3OsLock']
 fn sqlite3_os_lock(id &Sqlite3_file, lock_type int) int {
-	0
 	return id.pMethods.xLock(id, lock_type)
 }
 
@@ -51,7 +46,6 @@ fn sqlite3_os_unlock(id &Sqlite3_file, lock_type int) int {
 
 @[c:'sqlite3OsCheckReservedLock']
 fn sqlite3_os_check_reserved_lock(id &Sqlite3_file, p_res_out &int) int {
-	0
 	return id.pMethods.xCheckReservedLock(id, p_res_out)
 }
 
@@ -101,13 +95,11 @@ fn sqlite3_os_shm_unmap(id &Sqlite3_file, delete_flag int) int {
 
 @[c:'sqlite3OsShmMap']
 fn sqlite3_os_shm_map(id &Sqlite3_file, i_page int, pgsz int, b_extend int, pp &voidptr) int {
-	0
 	return id.pMethods.xShmMap(id, i_page, pgsz, b_extend, pp)
 }
 
 @[c:'sqlite3OsFetch']
 fn sqlite3_os_fetch(id &Sqlite3_file, i_off I64, i_amt int, pp &voidptr) int {
-	0
 	return id.pMethods.xFetch(id, i_off, i_amt, pp)
 }
 
@@ -119,26 +111,22 @@ fn sqlite3_os_unfetch(id &Sqlite3_file, i_off I64, p voidptr) int {
 @[c:'sqlite3OsOpen']
 fn sqlite3_os_open(p_vfs &Sqlite3_vfs, z_path &i8, p_file &Sqlite3_file, flags int, p_flags_out &int) int {
 	rc := 0
-	0
 	rc = p_vfs.xOpen(p_vfs, z_path, p_file, flags & 17334143, p_flags_out)
 	return rc
 }
 
 @[c:'sqlite3OsDelete']
 fn sqlite3_os_delete(p_vfs &Sqlite3_vfs, z_path &i8, dir_sync int) int {
-	0
 	return if !isnil(p_vfs.xDelete) { p_vfs.xDelete(p_vfs, z_path, dir_sync) } else { 0 }
 }
 
 @[c:'sqlite3OsAccess']
 fn sqlite3_os_access(p_vfs &Sqlite3_vfs, z_path &i8, flags int, p_res_out &int) int {
-	0
 	return p_vfs.xAccess(p_vfs, z_path, flags, p_res_out)
 }
 
 @[c:'sqlite3OsFullPathname']
 fn sqlite3_os_full_pathname(p_vfs &Sqlite3_vfs, z_path &i8, n_path_out int, z_path_out &i8) int {
-	0
 	z_path_out[0] = i8(0)
 	return p_vfs.xFullPathname(p_vfs, z_path, n_path_out, z_path_out)
 }

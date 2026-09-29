@@ -162,7 +162,6 @@ fn pcache1_alloc(n_byte int) voidptr {
 			sqlite3_status_up(2, sz)
 			sqlite3_mutex_leave(pcache1_g.mutex)
 		}
-		0
 	}
 	return p
 }
@@ -183,7 +182,6 @@ fn pcache1_free(p voidptr) {
 		C.c2v_atomic_store_n__int_int_int_((&pcache1_g.bUnderPressure), (pcache1_g.nFreeSlot < pcache1_g.nReserve), 0)
 		sqlite3_mutex_leave(pcache1_g.mutex)
 	} else {
-		0
 		n_freed := 0
 		n_freed = sqlite3_malloc_size(voidptr(p))
 		sqlite3_mutex_enter(pcache1_g.mutex)
@@ -308,7 +306,6 @@ fn pcache1_remove_from_hash(p_page &PgHdr1, free_flag int) {
 	pp := &&PgHdr1(0)
 	h = p_page.iKey % p_cache.nHash
 	for pp = unsafe { p_cache.apHash + h }; usize((unsafe { *pp })) != usize(p_page); pp = &(unsafe { *pp }).pNext {
-		0
 	}
 	unsafe { *pp = (*pp).pNext }
 	p_cache.nPage--

@@ -272,18 +272,15 @@ fn sqlite3_vdbe_explain(p_parse &Parse, b_push U8, z_fmt &i8, ...) int {
 		v = p_parse.pVdbe
 		i_this = v.nOp
 		addr = sqlite3_vdbe_add_op4(v, 190, i_this, p_parse.addrExplain, 0, z_msg, (-7))
-		0
 		if b_push {
 			p_parse.addrExplain = i_this
 		}
-		0
 	}
 	return addr
 }
 
 @[c:'sqlite3VdbeExplainPop']
 fn sqlite3_vdbe_explain_pop(p_parse &Parse) {
-	0
 	p_parse.addrExplain = sqlite3_vdbe_explain_parent(p_parse)
 }
 
@@ -912,10 +909,7 @@ fn release_mem_array(p &Mem, n int) {
 			return
 		}
 		for {
-			0
-			0
 			if int(p.flags) & (32768 | 4096) {
-				0
 				sqlite3_vdbe_mem_release(p)
 				p.flags = U16(0)
 			} else if p.szMalloc {
@@ -1262,7 +1256,6 @@ fn close_all_cursors(p &Vdbe) {
 	if p.pFrame {
 		p_frame := &VdbeFrame(0)
 		for p_frame = p.pFrame; p_frame.pParent; p_frame = p_frame.pParent {
-			0
 		}
 		sqlite3_vdbe_frame_restore(p_frame)
 		p.pFrame = 0
@@ -1396,7 +1389,6 @@ fn vdbe_commit(db &Sqlite3, p &Vdbe) int {
 			retry_count++
 			sqlite3_randomness(int(sizeof(i_random)), voidptr(&i_random))
 			sqlite3_snprintf(13, unsafe { z_super + n_main_file }, c'-mj%06X9%02X', (i_random >> 8) & u32(16777215), i_random & u32(255))
-			0
 			rc = sqlite3_os_access(p_vfs, z_super, 0, &res)
 			if !(rc == 0 && res) {
 				break
@@ -1449,7 +1441,6 @@ fn vdbe_commit(db &Sqlite3, p &Vdbe) int {
 		if rc {
 			return rc
 		}
-		0
 		sqlite3_begin_benign_malloc()
 		for i = 0; i < db.nDb; i++ {
 			p_bt := db.aDb[i].pBt
@@ -1458,7 +1449,6 @@ fn vdbe_commit(db &Sqlite3, p &Vdbe) int {
 			}
 		}
 		sqlite3_end_benign_malloc()
-		0
 		sqlite3_vtab_commit(db)
 	}
 	return rc
@@ -1546,7 +1536,6 @@ fn sqlite3_vdbe_halt(p &Vdbe) int {
 		p.rc = 7
 	}
 	close_all_cursors(p)
-	0
 	if p.bIsReader {
 		mrc := 0
 		e_statement_op := 0
@@ -1654,12 +1643,10 @@ fn sqlite3_vdbe_halt(p &Vdbe) int {
 		db.nVdbeRead--
 	}
 	p.eVdbeState = U8(3)
-	0
 	if db.mallocFailed {
 		p.rc = 7
 	}
 	if db.autoCommit {
-		0
 	}
 	return if p.rc == 5 { 5 } else { 0 }
 }
@@ -1698,7 +1685,6 @@ fn sqlite3_vdbe_reset(p &Vdbe) int {
 		sqlite3_vdbe_halt(p)
 	}
 	if p.pc >= 0 {
-		0
 		if !isnil(db.pErr) || !isnil(p.zErrMsg) {
 			sqlite3_vdbe_transfer_error(p)
 		} else {
@@ -1728,7 +1714,6 @@ fn sqlite3_vdbe_delete_aux_data(db &Sqlite3, pp &&AuxData, i_op int, mask int) {
 	for unsafe { *pp != nil } {
 		p_aux := (unsafe { *pp })
 		if (i_op < 0) || (p_aux.iAuxOp == i_op && p_aux.iAuxArg >= 0 && (p_aux.iAuxArg > 31 || !(u32(mask) & ((u32(1)) << p_aux.iAuxArg)))) {
-			0
 			if p_aux.xDeleteAux {
 				p_aux.xDeleteAux(voidptr(p_aux.pAux))
 			}
@@ -1843,9 +1828,7 @@ fn serial_get(buf &u8, serial_type u32, p_mem &Mem) {
 	if serial_type == u32(6) {
 		p_mem.u.i = unsafe { *&I64(c2v_address_of(&x)) }
 		p_mem.flags = U16(4)
-		0
 	} else {
-		0
 		C.memcpy(voidptr(&p_mem.u.r), voidptr(&x), sizeof(x))
 		p_mem.flags = U16(if ((x & ((U64(2047)) << 52)) == ((U64(2047)) << 52) && (x & (((U64(1)) << 52) - U64(1))) != U64(0)) {
 			1
@@ -1860,7 +1843,6 @@ fn serial_get7(buf &u8, p_mem &Mem) int {
 	x := U64(((u32(buf[0]) << 24) | u32((int(buf[1]) << 16)) | u32((int(buf[2]) << 8)) | u32(buf[3])))
 	y := ((u32((buf + 4)[0]) << 24) | u32((int((buf + 4)[1]) << 16)) | u32((int((buf + 4)[2]) << 8)) | u32((buf + 4)[3]))
 	x = (x << 32) + U64(y)
-	0
 	C.memcpy(voidptr(&p_mem.u.r), voidptr(&x), sizeof(x))
 	if ((x & ((U64(2047)) << 52)) == ((U64(2047)) << 52) && (x & (((U64(1)) << 52) - U64(1))) != U64(0)) {
 		p_mem.flags = U16(1)
@@ -1886,31 +1868,26 @@ fn sqlite3_vdbe_serial_get(buf &u8, serial_type u32, p_mem &Mem) {
 		u32(1) {
 			p_mem.u.i = I64((I8(buf[0])))
 			p_mem.flags = U16(4)
-			0
 			return
 		}
 		u32(2) {
 			p_mem.u.i = I64((256 * int(I8(buf[0])) | int(buf[1])))
 			p_mem.flags = U16(4)
-			0
 			return
 		}
 		u32(3) {
 			p_mem.u.i = I64((65536 * int(I8(buf[0])) | (int(buf[1]) << 8) | int(buf[2])))
 			p_mem.flags = U16(4)
-			0
 			return
 		}
 		u32(4) {
 			p_mem.u.i = I64((16777216 * int(I8(buf[0])) | (int(buf[1]) << 16) | (int(buf[2]) << 8) | int(buf[3])))
 			p_mem.flags = U16(4)
-			0
 			return
 		}
 		u32(5) {
 			p_mem.u.i = I64(((u32((buf + 2)[0]) << 24) | u32((int((buf + 2)[1]) << 16)) | u32((int((buf + 2)[2]) << 8)) | u32((buf + 2)[3]))) + ((I64(1)) << 32) * I64((256 * int(I8(buf[0])) | int(buf[1])))
 			p_mem.flags = U16(4)
-			0
 			return
 		}
 		u32(6), u32(7) {
@@ -2005,8 +1982,6 @@ fn sqlite3_vdbe_record_unpack(n_key int, p_key voidptr, p &UnpackedRecord) {
 	if d > u32(n_key) && int(u) {
 		sqlite3_vdbe_mem_set_null(p_mem - (int(u) < int(p.nField)))
 	}
-	0
-	0
 	p.nField = u
 }
 
@@ -2103,9 +2078,6 @@ fn sqlite3_int_float_compare(i I64, r f64) int {
 		if i > y {
 			return 1
 		}
-		0
-		0
-		0
 		return if ((f64(i)) < r) { -1 } else { ((f64(i)) > r) }
 	}
 }
@@ -2123,12 +2095,7 @@ fn sqlite3_mem_compare(p_mem1 &Mem, p_mem2 &Mem, p_coll &CollSeq) int {
 		return (f2 & 1) - (f1 & 1)
 	}
 	if combined_flags & (4 | 8 | 32) {
-		0
-		0
-		0
 		if (f1 & f2 & (4 | 32)) != 0 {
-			0
-			0
 			if p_mem1.u.i < p_mem2.u.i {
 				return -1
 			}
@@ -2147,8 +2114,6 @@ fn sqlite3_mem_compare(p_mem1 &Mem, p_mem2 &Mem, p_coll &CollSeq) int {
 			return 0
 		}
 		if (f1 & (4 | 32)) != 0 {
-			0
-			0
 			if (f2 & 8) != 0 {
 				return sqlite3_int_float_compare(p_mem1.u.i, p_mem2.u.r)
 			} else if (f2 & (4 | 32)) != 0 {
@@ -2165,8 +2130,6 @@ fn sqlite3_mem_compare(p_mem1 &Mem, p_mem2 &Mem, p_coll &CollSeq) int {
 		}
 		if (f1 & 8) != 0 {
 			if (f2 & (4 | 32)) != 0 {
-				0
-				0
 				return -sqlite3_int_float_compare(p_mem2.u.i, p_mem1.u.r)
 			} else {
 				return -1
@@ -2193,29 +2156,23 @@ fn vdbe_record_decode_int(serial_type u32, a_key &U8) I64 {
 	y := u32(0)
 	match serial_type {
 		u32(0), u32(1) {
-			0
 			return I64((I8(a_key[0])))
 		}
 		u32(2) {
-			0
 			return I64((256 * int(I8(a_key[0])) | int(a_key[1])))
 		}
 		u32(3) {
-			0
 			return I64((65536 * int(I8(a_key[0])) | (int(a_key[1]) << 8) | int(a_key[2])))
 		}
 		u32(4) {
-			0
 			y = ((u32(a_key[0]) << 24) | u32((int(a_key[1]) << 16)) | u32((int(a_key[2]) << 8)) | u32(a_key[3]))
 			return I64((unsafe { *&int(c2v_address_of(&y)) }))
 		}
 		u32(5) {
-			0
 			return I64(((u32((a_key + 2)[0]) << 24) | u32((int((a_key + 2)[1]) << 16)) | u32((int((a_key + 2)[2]) << 8)) | u32((a_key + 2)[3]))) + ((I64(1)) << 32) * I64((256 * int(I8(a_key[0])) | int(a_key[1])))
 		}
 		u32(6) {
 			x := U64(((u32(a_key[0]) << 24) | u32((int(a_key[1]) << 16)) | u32((int(a_key[2]) << 8)) | u32(a_key[3])))
-			0
 			x = (x << 32) | U64(((u32((a_key + 4)[0]) << 24) | u32((int((a_key + 4)[1]) << 16)) | u32((int((a_key + 4)[2]) << 8)) | u32((a_key + 4)[3])))
 			return I64((unsafe { *&I64(c2v_address_of(&x)) }))
 		}
@@ -2264,10 +2221,7 @@ fn sqlite3_vdbe_record_compare_with_skip(n_key1 int, p_key1 voidptr, ppk_ey2 &Un
 	for {
 		serial_type := u32(0)
 		if int(p_rhs.flags) & (4 | 32) {
-			0
-			0
 			serial_type = u32(a_key1[idx1])
-			0
 			if serial_type >= u32(10) {
 				rc = if serial_type == u32(10) { -1 } else { 1 }
 			} else if serial_type == u32(0) {
@@ -2310,15 +2264,12 @@ fn sqlite3_vdbe_record_compare_with_skip(n_key1 int, p_key1 voidptr, ppk_ey2 &Un
 			if serial_type >= u32(128) {
 				sqlite3_get_varint32((unsafe { a_key1 + idx1 }), &u32(c2v_address_of(&serial_type)))
 			}
-			0
 			if serial_type < u32(12) {
 				rc = -1
 			} else if !(serial_type & u32(1)) {
 				rc = 1
 			} else {
 				mem1.n = int((serial_type - u32(12)) / u32(2))
-				0
-				0
 				if (d1 + u32(mem1.n)) > u32(n_key1) || int(c2v_assign[&KeyInfo](unsafe { &p_key_info }, ppk_ey2.pKeyInfo).nAllField) <= i {
 					ppk_ey2.errCode = U8(sqlite3_corrupt_error(4853))
 					return 0
@@ -2341,13 +2292,10 @@ fn sqlite3_vdbe_record_compare_with_skip(n_key1 int, p_key1 voidptr, ppk_ey2 &Un
 			if serial_type >= u32(128) {
 				sqlite3_get_varint32((unsafe { a_key1 + idx1 }), &u32(c2v_address_of(&serial_type)))
 			}
-			0
 			if serial_type < u32(12) || (serial_type & u32(1)) {
 				rc = -1
 			} else {
 				n_str := int((serial_type - u32(12)) / u32(2))
-				0
-				0
 				if (d1 + u32(n_str)) > u32(n_key1) {
 					ppk_ey2.errCode = U8(sqlite3_corrupt_error(4883))
 					return 0
@@ -2416,34 +2364,27 @@ fn vdbe_record_compare_int(n_key1 int, p_key1 voidptr, ppk_ey2 &UnpackedRecord) 
 	x := U64(0)
 	v := I64(0)
 	lhs := I64(0)
-	0
 	match serial_type {
 		1 {
 			lhs = I64((I8(a_key[0])))
-			0
 		}
 		2 {
 			lhs = I64((256 * int(I8(a_key[0])) | int(a_key[1])))
-			0
 		}
 		3 {
 			lhs = I64((65536 * int(I8(a_key[0])) | (int(a_key[1]) << 8) | int(a_key[2])))
-			0
 		}
 		4 {
 			y = ((u32(a_key[0]) << 24) | u32((int(a_key[1]) << 16)) | u32((int(a_key[2]) << 8)) | u32(a_key[3]))
 			lhs = I64((unsafe { *&int(c2v_address_of(&y)) }))
-			0
 		}
 		5 {
 			lhs = I64(((u32((a_key + 2)[0]) << 24) | u32((int((a_key + 2)[1]) << 16)) | u32((int((a_key + 2)[2]) << 8)) | u32((a_key + 2)[3]))) + ((I64(1)) << 32) * I64((256 * int(I8(a_key[0])) | int(a_key[1])))
-			0
 		}
 		6 {
 			x = U64(((u32(a_key[0]) << 24) | u32((int(a_key[1]) << 16)) | u32((int(a_key[2]) << 8)) | u32(a_key[3])))
 			x = (x << 32) | U64(((u32((a_key + 4)[0]) << 24) | u32((int((a_key + 4)[1]) << 16)) | u32((int((a_key + 4)[2]) << 8)) | u32((a_key + 4)[3])))
 			lhs = unsafe { *&I64(c2v_address_of(&x)) }
-			0
 		}
 		8 {
 			lhs = I64(0)
@@ -2479,7 +2420,6 @@ fn vdbe_record_compare_string(n_key1 int, p_key1 voidptr, ppk_ey2 &UnpackedRecor
 	a_key1 := &U8(p_key1)
 	serial_type := 0
 	res := 0
-	0
 	serial_type = int(i8(a_key1[1]))
 	vrcs_restart:
 	if serial_type < 12 {
@@ -2545,9 +2485,6 @@ fn sqlite3_vdbe_find_compare(p &UnpackedRecord) RecordCompare {
 			p.u.i = p.aMem[0].u.i
 			return vdbe_record_compare_int
 		}
-		0
-		0
-		0
 		if (flags & (8 | 32 | 1 | 16)) == 0 && usize((&p.pKeyInfo.aColl[0])[0]) == usize(0) {
 			p.u.z = p.aMem[0].z
 			p.n = p.aMem[0].n
@@ -2577,9 +2514,6 @@ fn sqlite3_vdbe_idx_rowid(db &Sqlite3, p_cur &BtCursor, rowid &I64) int {
 	if sz_hdr >= u32(128) {
 		sqlite3_get_varint32((&U8(voidptr(m.z))), &u32(c2v_address_of(&sz_hdr)))
 	}
-	0
-	0
-	0
 	if (sz_hdr < u32(3) || sz_hdr > u32(m.n)) {
 		unsafe { goto idx_rowid_corruption
 		 }
@@ -2588,20 +2522,11 @@ fn sqlite3_vdbe_idx_rowid(db &Sqlite3, p_cur &BtCursor, rowid &I64) int {
 	if type_rowid >= u32(128) {
 		sqlite3_get_varint32((&U8(voidptr(unsafe { m.z + (sz_hdr - u32(1)) }))), &u32(c2v_address_of(&type_rowid)))
 	}
-	0
-	0
-	0
-	0
-	0
-	0
-	0
-	0
 	if (type_rowid < u32(1) || type_rowid > u32(9) || type_rowid == u32(7)) {
 		unsafe { goto idx_rowid_corruption
 		 }
 	}
 	len_rowid = u32(sqlite3_small_type_sizes[type_rowid])
-	0
 	if (u32(m.n) < sz_hdr + len_rowid) {
 		unsafe { goto idx_rowid_corruption
 		 }
@@ -2611,7 +2536,6 @@ fn sqlite3_vdbe_idx_rowid(db &Sqlite3, p_cur &BtCursor, rowid &I64) int {
 	sqlite3_vdbe_mem_release_malloc(&m)
 	return 0
 	idx_rowid_corruption:
-	0
 	sqlite3_vdbe_mem_release_malloc(&m)
 	return sqlite3_corrupt_error(5256)
 }

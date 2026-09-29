@@ -385,7 +385,6 @@ fn unix_check_reserved_lock(id &Sqlite3_file, p_res_out &int) int {
 	rc := 0
 	reserved := 0
 	p_file := &UnixFile(voidptr(id))
-	0
 	sqlite3_mutex_enter(p_file.pInode.pLockMutex)
 	if int(p_file.pInode.eFileLock) > 1 {
 		reserved = 1
@@ -404,7 +403,6 @@ fn unix_check_reserved_lock(id &Sqlite3_file, p_res_out &int) int {
 		}
 	}
 	sqlite3_mutex_leave(p_file.pInode.pLockMutex)
-	0
 	unsafe { *p_res_out = reserved }
 	return rc
 }
@@ -443,9 +441,7 @@ fn unix_lock(id &Sqlite3_file, e_file_lock int) int {
 	p_inode := &UnixInodeInfo(0)
 	lock_ := C.flock{}
 	t_errno := 0
-	0
 	if int(p_file.eFileLock) >= e_file_lock {
-		0
 		return 0
 	}
 	p_inode = p_file.pInode
@@ -532,7 +528,6 @@ fn unix_lock(id &Sqlite3_file, e_file_lock int) int {
 	}
 	end_lock:
 	sqlite3_mutex_leave(p_inode.pLockMutex)
-	0
 	return rc
 }
 
@@ -552,7 +547,6 @@ fn posix_unlock(id &Sqlite3_file, e_file_lock int, handle_nfs_unlock int) int {
 	p_inode := &UnixInodeInfo(0)
 	lock_ := C.flock{}
 	rc := 0
-	0
 	if int(p_file.eFileLock) <= e_file_lock {
 		return 0
 	}
@@ -667,8 +661,6 @@ fn close_unix_file(id &Sqlite3_file) int {
 		robust_close(p_file, p_file.h, 2312)
 		p_file.h = -1
 	}
-	0
-	0
 	sqlite3_free(voidptr(p_file.pPreallocatedUnused))
 	C.memset(voidptr(p_file), 0, sizeof(UnixFile))
 	return 0
@@ -726,13 +718,11 @@ fn nolock_close(id &Sqlite3_file) int {
 fn dotlock_check_reserved_lock(id &Sqlite3_file, p_res_out &int) int {
 	c2v_gc_register_thread()
 	p_file := &UnixFile(voidptr(id))
-	0
 	if int(p_file.eFileLock) >= 1 {
 		unsafe { *p_res_out = 0 }
 	} else {
 		unsafe { *p_res_out = c2v_fnptr_666e20282669382c20696e742920696e74(voidptr(aSyscall[2].pCurrent))(&i8(p_file.lockingContext), 0) == 0 }
 	}
-	0
 	return 0
 }
 
@@ -770,7 +760,6 @@ fn dotlock_unlock(id &Sqlite3_file, e_file_lock int) int {
 	p_file := &UnixFile(voidptr(id))
 	z_lock_file := &i8(p_file.lockingContext)
 	rc := 0
-	0
 	if int(p_file.eFileLock) == e_file_lock {
 		return 0
 	}
@@ -817,7 +806,6 @@ fn robust_flock(fd int, op int) int {
 fn flock_check_reserved_lock(id &Sqlite3_file, p_res_out &int) int {
 	c2v_gc_register_thread()
 
-	0
 	unsafe { *p_res_out = 0 }
 	return 0
 }
@@ -840,7 +828,6 @@ fn flock_lock(id &Sqlite3_file, e_file_lock int) int {
 	} else {
 		p_file.eFileLock = u8(e_file_lock)
 	}
-	0
 	return rc
 }
 
@@ -848,7 +835,6 @@ fn flock_lock(id &Sqlite3_file, e_file_lock int) int {
 fn flock_unlock(id &Sqlite3_file, e_file_lock int) int {
 	c2v_gc_register_thread()
 	p_file := &UnixFile(voidptr(id))
-	0
 	if int(p_file.eFileLock) == e_file_lock {
 		return 0
 	}
@@ -894,12 +880,10 @@ fn afp_set_lock(path &i8, p_file &UnixFile, offset u64, length u64, set_lock_fla
 	pb.offset = offset
 	pb.length = length
 	pb.fd = p_file.h
-	0
 	err = C.fsctl(path, (u64((u32(u32(2147483648)) | u32(1073741824))) | ((sizeof(ByteRangeLockPB2) & u64(8191)) << 16) | u64((`z` << 8)) | u64(23)), voidptr(&pb), u32(0))
 	if err == -1 {
 		rc := 0
 		t_errno := (unsafe { *C.__error() })
-		0
 		rc = sqlite_error_from_posix_error(t_errno, if set_lock_flag {
 			(10 | (15 << 8))
 		} else {
@@ -921,7 +905,6 @@ fn afp_check_reserved_lock(id &Sqlite3_file, p_res_out &int) int {
 	reserved := 0
 	p_file := &UnixFile(voidptr(id))
 	context := &AfpLockingContext(0)
-	0
 	context = &AfpLockingContext(p_file.lockingContext)
 	if context.reserved {
 		unsafe { *p_res_out = 1 }
@@ -943,7 +926,6 @@ fn afp_check_reserved_lock(id &Sqlite3_file, p_res_out &int) int {
 		}
 	}
 	sqlite3_mutex_leave(p_file.pInode.pLockMutex)
-	0
 	unsafe { *p_res_out = reserved }
 	return rc
 }
@@ -955,9 +937,7 @@ fn afp_lock(id &Sqlite3_file, e_file_lock int) int {
 	p_file := &UnixFile(voidptr(id))
 	p_inode := p_file.pInode
 	context := &AfpLockingContext(p_file.lockingContext)
-	0
 	if int(p_file.eFileLock) >= e_file_lock {
-		0
 		return 0
 	}
 	p_inode = p_file.pInode
@@ -1056,7 +1036,6 @@ fn afp_lock(id &Sqlite3_file, e_file_lock int) int {
 	}
 	afp_end_lock:
 	sqlite3_mutex_leave(p_inode.pLockMutex)
-	0
 	return rc
 }
 
@@ -1068,7 +1047,6 @@ fn afp_unlock(id &Sqlite3_file, e_file_lock int) int {
 	p_inode := &UnixInodeInfo(0)
 	context := &AfpLockingContext(p_file.lockingContext)
 	skip_shared := 0
-	0
 	if int(p_file.eFileLock) <= e_file_lock {
 		return 0
 	}
@@ -1155,10 +1133,8 @@ fn nfs_unlock(id &Sqlite3_file, e_file_lock int) int {
 fn seek_and_read(id &UnixFile, offset Sqlite3_int64, p_buf voidptr, cnt int) int {
 	got := 0
 	prior := 0
-	0
 	for {
 		got = int(c2v_fnptr_666e2028696e742c20766f69647074722c207573697a652c2069363429206973697a65(voidptr(aSyscall[9].pCurrent))(id.h, voidptr(p_buf), usize(cnt), offset))
-		0
 		if got == cnt {
 			break
 		}
@@ -1182,8 +1158,6 @@ fn seek_and_read(id &UnixFile, offset Sqlite3_int64, p_buf voidptr, cnt int) int
 			break
 		}
 	}
-	0
-	0
 	return got + prior
 }
 
@@ -1227,15 +1201,12 @@ fn unix_read(id &Sqlite3_file, p_buf voidptr, amt int, offset Sqlite3_int64) int
 fn seek_and_write_fd(fd int, i_off I64, p_buf voidptr, n_buf int, pi_errno &int) int {
 	rc := 0
 	n_buf &= 131071
-	0
 	for {
 		rc = int(c2v_fnptr_666e2028696e742c20766f69647074722c207573697a652c2069363429206973697a65(voidptr(aSyscall[12].pCurrent))(fd, voidptr(p_buf), usize(n_buf), i_off))
 		if !(rc < 0 && (unsafe { *C.__error() }) == 4) {
 			break
 		}
 	}
-	0
-	0
 	if rc < 0 {
 		unsafe { *pi_errno = *C.__error() }
 	}
@@ -1261,8 +1232,6 @@ fn unix_write(id &Sqlite3_file, p_buf voidptr, amt int, offset Sqlite3_int64) in
 		offset += Sqlite3_int64(wrote)
 		p_buf = unsafe { (&i8(p_buf)) + wrote }
 	}
-	0
-	0
 	if amt > wrote {
 		if wrote < 0 && p_file.lastErrno != 28 {
 			return 10 | (3 << 8)
@@ -1299,7 +1268,6 @@ fn open_directory(z_filename &i8, p_fd &int) int {
 	z_dirname := [513]i8{}
 	sqlite3_snprintf(512, unsafe { &i8(&z_dirname[0]) }, c'%s', voidptr(z_filename))
 	for ii = int(C.strlen(unsafe { &i8(&z_dirname[0]) })); ii > 0 && int(z_dirname[ii]) != i8(`/`); ii-- {
-		0
 	}
 	if ii > 0 {
 		z_dirname[ii] = i8(`\0`)
@@ -1311,7 +1279,6 @@ fn open_directory(z_filename &i8, p_fd &int) int {
 	}
 	fd = robust_open(unsafe { &i8(&z_dirname[0]) }, 0 | 0, u32(0))
 	if fd >= 0 {
-		0
 	}
 	unsafe { *p_fd = fd }
 	if fd >= 0 {
@@ -1327,17 +1294,13 @@ fn unix_sync(id &Sqlite3_file, flags int) int {
 	p_file := &UnixFile(voidptr(id))
 	is_data_only := (flags & 16)
 	is_fullsync := int((flags & 15) == 3)
-	0
-	0
 	rc = full_fsync(p_file.h, is_fullsync, is_data_only)
-	0
 	if rc {
 		store_last_errno(p_file, (unsafe { *C.__error() }))
 		return unix_log_error_at_line((10 | (4 << 8)), c'full_fsync', p_file.zPath, 3934)
 	}
 	if int(p_file.ctrlFlags) & 8 {
 		dirfd := 0
-		0
 		rc = c2v_fnptr_666e20282669382c2026696e742920696e74(voidptr(aSyscall[17].pCurrent))(p_file.zPath, &dirfd)
 		if rc == 0 {
 			full_fsync(dirfd, 0, 0)
@@ -1355,7 +1318,6 @@ fn unix_truncate(id &Sqlite3_file, n_byte I64) int {
 	c2v_gc_register_thread()
 	p_file := &UnixFile(voidptr(id))
 	rc := 0
-	0
 	if p_file.szChunk > 0 {
 		n_byte = ((n_byte + I64(p_file.szChunk) - I64(1)) / I64(p_file.szChunk)) * I64(p_file.szChunk)
 	}
@@ -1377,7 +1339,6 @@ fn unix_file_size(id &Sqlite3_file, p_size &I64) int {
 	rc := 0
 	buf := C.stat{}
 	rc = c2v_fnptr_666e2028696e742c2026432e737461742920696e74(voidptr(aSyscall[5].pCurrent))((&UnixFile(voidptr(id))).h, &buf)
-	0
 	if rc != 0 {
 		store_last_errno(&UnixFile(voidptr(id)), (unsafe { *C.__error() }))
 		return 10 | (7 << 8)
@@ -1465,9 +1426,7 @@ fn unix_file_control(id &Sqlite3_file, op int, p_arg voidptr) int {
 		}
 		5 {
 			rc := 0
-			0
 			rc = fcntl_size_hint(p_file, (unsafe { *&I64(p_arg) }))
-			0
 			return rc
 		}
 		10 {
@@ -1750,7 +1709,6 @@ fn unix_open_shared_memory(p_db_fd &UnixFile) int {
 		p_shm_node.zFilename = &i8(voidptr(unsafe { p_shm_node + 1 }))
 		z_shm = p_shm_node.zFilename
 		sqlite3_snprintf(n_shm_filename, z_shm, c'%s-shm', voidptr(z_base_path))
-		0
 		p_shm_node.hShm = -1
 		p_db_fd.pInode.pShmNode = p_shm_node
 		p_shm_node.pInode = p_db_fd.pInode
@@ -1975,7 +1933,6 @@ fn unix_shm_lock(fd &Sqlite3_file, ofst int, n int, flags int) int {
 		}
 		sqlite3_mutex_leave(p_shm_node.pShmMutex)
 	}
-	0
 	return rc
 }
 
@@ -2240,7 +2197,6 @@ fn fill_in_unix_file(p_vfs &Sqlite3_vfs, h int, p_id &Sqlite3_file, z_filename &
 	p_locking_style := &Sqlite3_io_methods(0)
 	p_new := &UnixFile(voidptr(p_id))
 	rc := 0
-	0
 	p_new.h = h
 	p_new.pVfs = p_vfs
 	p_new.zPath = z_filename
@@ -2304,7 +2260,6 @@ fn fill_in_unix_file(p_vfs &Sqlite3_vfs, h int, p_id &Sqlite3_file, z_filename &
 		}
 	} else {
 		p_id.pMethods = p_locking_style
-		0
 		verify_db_file(p_new)
 	}
 	return rc
@@ -2352,7 +2307,6 @@ fn unix_get_tempname(n_buf int, z_buf &i8) int {
 	i_limit := 0
 	rc := 0
 	z_buf[0] = i8(0)
-	0
 	sqlite3_mutex_enter(sqlite3_mutex_alloc_vdup4(11))
 	z_dir = unix_temp_file_dir()
 	if usize(z_dir) == usize(0) {
@@ -2392,7 +2346,6 @@ fn find_reusable_fd(z_path &i8, flags int) &UnixUnusedFd {
 			sqlite3_mutex_enter(p_inode.pLockMutex)
 			flags &= (1 | 2)
 			for pp = &p_inode.pUnused; !isnil((unsafe { *pp })) && (unsafe { *pp }).flags != flags; pp = &(unsafe { *pp }).pNext {
-				0
 			}
 			p_unused = unsafe { *pp }
 			if p_unused {
@@ -2515,7 +2468,6 @@ fn unix_open(p_vfs &Sqlite3_vfs, z_path &i8, p_file &Sqlite3_file, flags int, p_
 			return rc
 		}
 		fd = robust_open(z_name, open_flags, open_mode)
-		0
 		if fd < 0 {
 			if is_new_jrnl && (unsafe { *C.__error() }) == 13 && c2v_fncall_666e20282669382c20696e742920696e74(voidptr(aSyscall[2].pCurrent), z_name, 0) {
 				rc = (8 | (6 << 8))
@@ -2620,7 +2572,6 @@ fn unix_delete(not_used &Sqlite3_vfs, z_path &i8, dir_sync int) int {
 	c2v_gc_register_thread()
 	rc := 0
 
-	0
 	if c2v_fnptr_666e20282669382920696e74(voidptr(aSyscall[16].pCurrent))(z_path) == (-1) {
 		if (unsafe { *C.__error() }) == 2 {
 			rc = (10 | (23 << 8))
@@ -2648,7 +2599,6 @@ fn unix_delete(not_used &Sqlite3_vfs, z_path &i8, dir_sync int) int {
 fn unix_access(not_used &Sqlite3_vfs, z_path &i8, flags int, p_res_out &int) int {
 	c2v_gc_register_thread()
 
-	0
 	if flags == 0 {
 		buf := C.stat{}
 		unsafe { *p_res_out = 0 == c2v_fnptr_666e20282669382c2026432e737461742920696e74(voidptr(aSyscall[4].pCurrent))(z_path, &buf) && (!((int(buf.st_mode) & 61440) == 32768) || buf.st_size > i64(0)) }
@@ -2892,7 +2842,6 @@ fn proxy_get_lock_path(db_path &i8, l_path &i8, max_len usize) int {
 	db_len := 0
 	i := 0
 	if !C.confstr(65537, l_path, max_len) {
-		0
 		return 10 | (15 << 8)
 	}
 	len = int(C.strlcat(l_path, c'sqliteplocks', max_len))
@@ -2906,7 +2855,6 @@ fn proxy_get_lock_path(db_path &i8, l_path &i8, max_len usize) int {
 	}
 	l_path[i + len] = i8(`\0`)
 	C.strlcat(l_path, c':auto:', max_len)
-	0
 	return 0
 }
 
@@ -2926,7 +2874,6 @@ fn proxy_create_lock_path(lock_path &i8) int {
 				if c2v_fnptr_666e20282669382c207533322920696e74(voidptr(aSyscall[18].pCurrent))(unsafe { &i8(&buf[0]) }, u32(493)) {
 					err := (unsafe { *C.__error() })
 					if err != 17 {
-						0
 						return err
 					}
 				}
@@ -2935,7 +2882,6 @@ fn proxy_create_lock_path(lock_path &i8) int {
 		}
 		buf[i] = lock_path[i]
 	}
-	0
 	return 0
 }
 
@@ -3170,7 +3116,6 @@ fn proxy_take_conch(p_file &UnixFile) int {
 		read_len := 0
 		try_old_lock_path := 0
 		force_new_lock_path := 0
-		0
 		rc = proxy_get_host_id(&my_host_id[0], &p_error)
 		if (rc & 255) == 10 {
 			store_last_errno(p_file, p_error)
@@ -3256,7 +3201,6 @@ fn proxy_take_conch(p_file &UnixFile) int {
 			}
 			conch_file.pMethod.xUnlock(&Sqlite3_file(voidptr(conch_file)), 1)
 			end_takeconch:
-			0
 			if rc == 0 && p_file.openFlags {
 				fd := 0
 				if p_file.h >= 0 {
@@ -3264,7 +3208,6 @@ fn proxy_take_conch(p_file &UnixFile) int {
 				}
 				p_file.h = -1
 				fd = robust_open(p_ctx.dbPath, p_file.openFlags, u32(0))
-				0
 				if fd >= 0 {
 					p_file.h = fd
 				} else {
@@ -3299,7 +3242,6 @@ fn proxy_take_conch(p_file &UnixFile) int {
 			} else {
 				conch_file.pMethod.xUnlock(&Sqlite3_file(voidptr(conch_file)), 0)
 			}
-			0
 			return rc
 			c2v_do_next_25:
 		}
@@ -3314,12 +3256,10 @@ fn proxy_release_conch(p_file &UnixFile) int {
 	conch_file := &UnixFile(0)
 	p_ctx = &ProxyLockingContext(p_file.lockingContext)
 	conch_file = p_ctx.conchFile
-	0
 	if p_ctx.conchHeld > 0 {
 		rc = conch_file.pMethod.xUnlock(&Sqlite3_file(voidptr(conch_file)), 0)
 	}
 	p_ctx.conchHeld = 0
-	0
 	return rc
 }
 
@@ -3404,7 +3344,6 @@ fn proxy_transform_unix_file(p_file &UnixFile, path &i8) int {
 	} else {
 		lock_path = &i8(path)
 	}
-	0
 	p_ctx = sqlite3_malloc64(Sqlite3_uint64(sizeof(ProxyLockingContext)))
 	if usize(p_ctx) == usize(0) {
 		return 7
@@ -3452,7 +3391,6 @@ fn proxy_transform_unix_file(p_file &UnixFile, path &i8) int {
 		sqlite3_free(voidptr(p_ctx.conchFilePath))
 		sqlite3_free(voidptr(p_ctx))
 	}
-	0
 	return rc
 }
 

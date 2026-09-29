@@ -202,13 +202,11 @@ fn sqlite3_upsert_do_update(p_parse &Parse, p_upsert &Upsert, p_tab &Table, p_id
 	p_top := p_upsert
 	i_data_cur = p_upsert.iDataCur
 	p_upsert = sqlite3_upsert_of_index(p_top, p_idx)
-	0
 	if !isnil(p_idx) && i_cur != i_data_cur {
 		if ((p_tab.tabFlags & u32(128)) == u32(0)) {
 			reg_rowid := sqlite3_get_temp_reg(p_parse)
 			sqlite3_vdbe_add_op2(v, 144, i_cur, reg_rowid)
 			sqlite3_vdbe_add_op3(v, 30, i_data_cur, 0, reg_rowid)
-			0
 			sqlite3_release_temp_reg(p_parse, reg_rowid)
 		} else {
 			p_pk := sqlite3_primary_key_index(p_tab)
@@ -219,11 +217,8 @@ fn sqlite3_upsert_do_update(p_parse &Parse, p_upsert &Upsert, p_tab &Table, p_id
 				k := 0
 				k = sqlite3_table_column_to_index(p_idx, int(p_pk.aiColumn[i]))
 				sqlite3_vdbe_add_op3(v, 96, i_cur, k, i_pk + i)
-				0
 			}
-			0
 			i = sqlite3_vdbe_add_op4_int(v, 29, i_data_cur, 0, i_pk, n_pk)
-			0
 			sqlite3_vdbe_add_op4(v, 72, 11, 2, 0, c'corrupt database', (-1))
 			sqlite3_may_abort(p_parse)
 			sqlite3_vdbe_jump_here(v, i)
@@ -237,5 +232,4 @@ fn sqlite3_upsert_do_update(p_parse &Parse, p_upsert &Upsert, p_tab &Table, p_id
 		}
 	}
 	sqlite3_update(p_parse, p_src, sqlite3_expr_list_dup(db, p_upsert.pUpsertSet, 0), sqlite3_expr_dup(db, p_upsert.pUpsertWhere, 0), 2, unsafe { nil }, unsafe { nil }, p_upsert)
-	0
 }

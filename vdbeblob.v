@@ -28,8 +28,6 @@ fn blob_seek_to_row(p &Incrblob, i_row Sqlite3_int64, pz_err &&u8) int {
 		pc := v.apCsr[0]
 		type_ := u32(0)
 		type_ = if int(pc.nHdrParsed) > int(p.iCol) { (&pc.aType[0])[p.iCol] } else { u32(0) }
-		0
-		0
 		if type_ < u32(12) {
 			z_err = sqlite3_mp_rintf(p.db, c'cannot open value of type %s', voidptr(if type_ == u32(0) {
 				c'null'

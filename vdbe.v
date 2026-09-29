@@ -85,9 +85,6 @@ fn apply_affinity(p_rec &Mem, affinity i8, enc U8) {
 	} else if int(affinity) == 66 {
 		if 0 == (int(p_rec.flags) & 2) {
 			if (int(p_rec.flags) & (8 | 4 | 32)) {
-				0
-				0
-				0
 				sqlite3_vdbe_mem_stringify(p_rec, enc, U8(1))
 			}
 		}
@@ -139,13 +136,8 @@ fn compute_numeric_type(p_mem &Mem) U16 {
 @[c:'numericType']
 fn numeric_type(p_mem &Mem) U16 {
 	if int(p_mem.flags) & (4 | 8 | 32 | 1) {
-		0
-		0
-		0
 		return U16(int(p_mem.flags) & (4 | 8 | 32 | 1))
 	}
-	0
-	0
 	return compute_numeric_type(p_mem)
 	return U16(0)
 }
@@ -161,7 +153,6 @@ fn out2_prerelease_with_clear(p_out &Mem) &Mem {
 fn out2_prerelease(p &Vdbe, p_op &VdbeOp) &Mem {
 	p_out := &Mem(0)
 	p_out = unsafe { p.aMem + p_op.p2 }
-	0
 	if ((int(p_out.flags) & (32768 | 4096)) != 0) {
 		return out2_prerelease_with_clear(p_out)
 	} else {
@@ -340,7 +331,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 		unsafe { goto no_mem
 		 }
 	}
-	0
 	p.rc = 0
 	p.iCurrentTime = I64(0)
 	db.busyHandler.nBusy = 0
@@ -348,7 +338,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 		unsafe { goto abort_due_to_interrupt
 		 }
 	}
-	0
 	for p_op = unsafe { a_op + p.pc }; 1; p_op = unsafe { p_op + 1 } {
 		n_vm_step++
 		n_field := 0
@@ -385,10 +374,8 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			10 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
-				0
 				p_in1.flags = U16(4)
 				p_in1.u.i = I64(int((i64((isize(p_op) - isize(a_op)) / isize(sizeof(Op))))))
-				0
 				unsafe { goto jump_to_p2_and_check_for_interrupt
 				 }
 			}
@@ -396,11 +383,9 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_in1 = unsafe { a_mem + p_op.p1 }
 				if int(p_in1.flags) & 4 {
 					if p_op.p3 {
-						0
 					}
 					p_op = unsafe { a_op + p_in1.u.i }
 				} else if p_op.p3 {
-					0
 				}
 			}
 			11 {
@@ -427,7 +412,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_in1.flags = U16(4)
 				pc_dest = int(p_in1.u.i)
 				p_in1.u.i = I64(int((i64((isize(p_op) - isize(a_op)) / isize(sizeof(Op))))))
-				0
 				p_op = unsafe { a_op + pc_dest }
 			}
 			71 {
@@ -475,10 +459,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 							sqlite3_vdbe_exec_az_type_inited = true
 						}
 
-						0
-						0
-						0
-						0
 						sqlite3_vdbe_error(p, c'%s constraint failed', voidptr(sqlite3_vdbe_exec_az_type[int(p_op.p5) - 1]))
 						if p_op.p4.z {
 							p.zErrMsg = sqlite3_mp_rintf(db, c'%z: %s', voidptr(p.zErrMsg), voidptr(p_op.p4.z))
@@ -548,7 +528,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_out.z = p_op.p4.z
 				p_out.n = p_op.p1
 				p_out.enc = encoding
-				0
 				if p_op.p3 > 0 {
 					p_in3 = unsafe { a_mem + p_op.p3 }
 					if p_in3.u.i == I64(p_op.p5) {
@@ -566,7 +545,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_out.n = 0
 				for cnt > 0 {
 					c2v_pointer_postfix(voidptr(&p_out), p_out, isize(1))
-					0
 					sqlite3_vdbe_mem_set_null(p_out)
 					p_out.flags = null_flag
 					p_out.n = 0
@@ -589,7 +567,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					sqlite3_vdbe_mem_set_str(p_out, p_op.p4.z, I64(p_op.p1), U8(0), unsafe { nil })
 				}
 				p_out.enc = encoding
-				0
 			}
 			80 {
 				p_var := &Mem(0)
@@ -605,7 +582,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				C.memcpy(voidptr(p_out), voidptr(p_var), (u64(usize(__offsetof(Mem, db)))))
 				p_out.flags &= ~(4096 | 16384)
 				p_out.flags |= 8192 | 64
-				0
 			}
 			81 {
 				n := 0
@@ -617,14 +593,11 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_in1 = unsafe { a_mem + p1 }
 				p_out = unsafe { a_mem + p2_2 }
 				for {
-					0
 					sqlite3_vdbe_mem_move(p_out, p_in1)
 					if (int(p_out.flags) & 16384) != 0 && sqlite3_vdbe_mem_make_writeable(p_out) {
 						unsafe { goto no_mem
 						 }
 					}
-					0
-					0
 					c2v_pointer_postfix(voidptr(&p_in1), p_in1, isize(1))
 					c2v_pointer_postfix(voidptr(&p_out), p_out, isize(1))
 					n--
@@ -639,17 +612,14 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_in1 = unsafe { a_mem + p_op.p1 }
 				p_out = unsafe { a_mem + p_op.p2 }
 				for {
-					0
 					sqlite3_vdbe_mem_shallow_copy(p_out, p_in1, 16384)
 					if (int(p_out.flags) & 16384) != 0 && sqlite3_vdbe_mem_make_writeable(p_out) {
 						unsafe { goto no_mem
 						 }
 					}
-					0
 					if (int(p_out.flags) & 2048) != 0 && (int(p_op.p5) & 2) != 0 {
 						p_out.flags &= ~2048
 					}
-					0
 					if (n--) == 0 {
 						break
 					}
@@ -696,10 +666,7 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_in1 = unsafe { a_mem + p_op.p1 }
 				p_in2 = unsafe { a_mem + p_op.p2 }
 				p_out = unsafe { a_mem + p_op.p3 }
-				0
 				flags1 = p_in1.flags
-				0
-				0
 				if (int(flags1) | int(p_in2.flags)) & 1 {
 					sqlite3_vdbe_mem_set_null(p_out)
 					unsafe { goto c2v_switch_end_23
@@ -757,7 +724,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_out.flags |= 512
 				p_out.n = int(n_byte)
 				p_out.enc = encoding
-				0
 			}
 			107, 108, 109, 110, 111 {
 				type1 := U16(0)
@@ -926,7 +892,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			88 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
-				0
 				sqlite3_vdbe_mem_integerify(p_in1)
 				mut __c2v_lhs_tmp_83 := unsafe { &U64(voidptr(&p_in1.u.i)) }
 				unsafe { *__c2v_lhs_tmp_83 += U64(p_op.p2) }
@@ -936,7 +901,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				if (int(p_in1.flags) & 4) == 0 {
 					apply_affinity(p_in1, i8(67), encoding)
 					if (int(p_in1.flags) & 4) == 0 {
-						0
 						if p_op.p2 == 0 {
 							rc = 20
 							unsafe { goto abort_due_to_error
@@ -947,26 +911,16 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						}
 					}
 				}
-				0
 				p_in1.flags = U16((int(p_in1.flags) & ~(3519 | 1024)) | 4)
 			}
 			89 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
 				if int(p_in1.flags) & (4 | 32) {
-					0
-					0
 					sqlite3_vdbe_mem_realify(p_in1)
-					0
 				}
 			}
 			90 {
-				0
-				0
-				0
-				0
-				0
 				p_in1 = unsafe { a_mem + p_op.p1 }
-				0
 				rc = (if (int(p_in1.flags) & 1024) { sqlite3_vdbe_mem_expand_blob(p_in1) } else { 0 })
 				if rc {
 					unsafe { goto abort_due_to_error
@@ -977,8 +931,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					unsafe { goto abort_due_to_error
 					 }
 				}
-				0
-				0
 			}
 			54, 53, 57, 56, 55, 58 {
 				res_2 := 0
@@ -994,40 +946,34 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				if (int(flags1) & int(flags3) & 4) != 0 {
 					if p_in3.u.i > p_in1.u.i {
 						if sqlite3aGTb[p_op.opcode] {
-							0
 							unsafe { goto jump_to_p2
 							 }
 						}
 						i_compare = 1
 					} else if p_in3.u.i < p_in1.u.i {
 						if sqlite3aLTb[p_op.opcode] {
-							0
 							unsafe { goto jump_to_p2
 							 }
 						}
 						i_compare = -1
 					} else {
 						if sqlite3aEQb[p_op.opcode] {
-							0
 							unsafe { goto jump_to_p2
 							 }
 						}
 						i_compare = 0
 					}
-					0
 					unsafe { goto c2v_switch_end_23
 					 }
 				}
 				if (int(flags1) | int(flags3)) & 1 {
 					if int(p_op.p5) & 128 {
-						0
 						if (int(flags1) & int(flags3) & 1) != 0 && (int(flags3) & 256) == 0 {
 							res_2 = 0
 						} else {
 							res_2 = (if (int(flags3) & 1) { -1 } else { 1 })
 						}
 					} else {
-						0
 						if int(p_op.p5) & 16 {
 							unsafe { goto jump_to_p2
 							 }
@@ -1052,11 +998,7 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						if (int(flags1) & 2) != 0 {
 							p_in1.flags &= ~(4 | 8 | 32)
 						} else if (int(flags1) & (4 | 8 | 32)) != 0 {
-							0
-							0
-							0
 							sqlite3_vdbe_mem_stringify(p_in1, encoding, U8(1))
-							0
 							flags1 = U16((int(p_in1.flags) & ~3519) | (int(flags1) & 3519))
 							if (usize(p_in1) == usize(p_in3)) {
 								flags3 = U16(int(flags1) | 2)
@@ -1065,11 +1007,7 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						if (int(flags3) & 2) != 0 {
 							p_in3.flags &= ~(4 | 8 | 32)
 						} else if (int(flags3) & (4 | 8 | 32)) != 0 {
-							0
-							0
-							0
 							sqlite3_vdbe_mem_stringify(p_in3, encoding, U8(1))
-							0
 							flags3 = U16((int(p_in3.flags) & ~3519) | (int(flags3) & 3519))
 						}
 					}
@@ -1085,14 +1023,12 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				i_compare = res_2
 				p_in3.flags = flags3
 				p_in1.flags = flags1
-				0
 				if res2 {
 					unsafe { goto jump_to_p2
 					 }
 				}
 			}
 			59 {
-				0
 				if i_compare == 0 {
 					unsafe { goto jump_to_p2
 					 }
@@ -1121,8 +1057,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p2_2 = p_op.p2
 				for i = 0; i < n; i++ {
 					idx = if a_permute { a_permute[i] } else { u32(i) }
-					0
-					0
 					p_coll = (&p_key_info_2.aColl[0])[i]
 					b_rev = (int(p_key_info_2.aSortFlags[i]) & 1)
 					i_compare = sqlite3_mem_compare(unsafe { a_mem + (u32(p1) + idx) }, unsafe { a_mem + (u32(p2_2) + idx) }, p_coll)
@@ -1139,13 +1073,10 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			14 {
 				if i_compare < 0 {
-					0
 					p_op = unsafe { a_op + (p_op.p1 - 1) }
 				} else if i_compare == 0 {
-					0
 					p_op = unsafe { a_op + (p_op.p2 - 1) }
 				} else {
-					0
 					p_op = unsafe { a_op + (p_op.p3 - 1) }
 				}
 			}
@@ -1211,25 +1142,21 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				if p.pFrame {
 					i_addr = u32(int((i64((isize(p_op) - isize(p.aOp)) / isize(sizeof(Op))))))
 					if (int(p.pFrame.aOnce[i_addr / u32(8)]) & (1 << (i_addr & u32(7)))) != 0 {
-						0
 						unsafe { goto jump_to_p2
 						 }
 					}
 					p.pFrame.aOnce[i_addr / u32(8)] |= 1 << (i_addr & u32(7))
 				} else {
 					if p.aOp[0].p1 == p_op.p1 {
-						0
 						unsafe { goto jump_to_p2
 						 }
 					}
 				}
-				0
 				p_op.p1 = p.aOp[0].p1
 			}
 			16 {
 				c := 0
 				c = sqlite3_vdbe_boolean_value(unsafe { a_mem + p_op.p1 }, p_op.p3)
-				0
 				if c {
 					unsafe { goto jump_to_p2
 					 }
@@ -1238,7 +1165,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			17 {
 				c := 0
 				c = !sqlite3_vdbe_boolean_value(unsafe { a_mem + p_op.p1 }, !p_op.p3)
-				0
 				if c {
 					unsafe { goto jump_to_p2
 					 }
@@ -1246,7 +1172,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			51 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
-				0
 				if (int(p_in1.flags) & 1) != 0 {
 					unsafe { goto jump_to_p2
 					 }
@@ -1276,37 +1201,14 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 								sqlite3_vdbe_exec_a_mask_inited = true
 							}
 
-							0
-							0
-							0
-							0
-							0
-							0
-							0
-							0
-							0
-							0
-							0
-							0
 							type_mask = U16(sqlite3_vdbe_exec_a_mask[serial_type])
 						}
 					} else {
 						type_mask = U16(1 << (p_op.p4.i - 1))
-						0
-						0
-						0
-						0
-						0
 					}
 				} else {
 					type_mask = U16(1 << (sqlite3_value_type(&Sqlite3_value(unsafe { a_mem + p_op.p3 })) - 1))
-					0
-					0
-					0
-					0
-					0
 				}
-				0
 				if int(type_mask) & int(p_op.p5) {
 					unsafe { goto jump_to_p2
 					 }
@@ -1321,7 +1223,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			52 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
-				0
 				if (int(p_in1.flags) & 1) == 0 {
 					unsafe { goto jump_to_p2
 					 }
@@ -1364,7 +1265,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 							pc_3.aRow = &U8(voidptr(p_reg.z))
 						} else {
 							p_dest = unsafe { a_mem + p_op.p3 }
-							0
 							sqlite3_vdbe_mem_set_null(p_dest)
 							unsafe { goto op_column_out
 							 }
@@ -1413,7 +1313,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						}
 					} else {
 						z_data = pc_3.aRow
-						0
 						unsafe { goto op_column_read_header
 						 }
 					}
@@ -1444,7 +1343,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						offset64 = U64(a_offset[i])
 						z_hdr = z_data + pc_3.iHdrOffset
 						z_end_hdr = z_data + a_offset[0]
-						0
 						for {
 							t = u32(z_hdr[0])
 							(&pc_3.aType[0])[i] = t
@@ -1483,7 +1381,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					}
 					if u32(pc_3.nHdrParsed) <= p2_2 {
 						p_dest = unsafe { a_mem + p_op.p3 }
-						0
 						if int(p_op.p4type) == (-11) {
 							sqlite3_vdbe_mem_shallow_copy(p_dest, p_op.p4.pMem, 8192)
 						} else {
@@ -1496,7 +1393,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					t = (&pc_3.aType[0])[p2_2]
 				}
 				p_dest = unsafe { a_mem + p_op.p3 }
-				0
 				if ((int(p_dest.flags) & (32768 | 4096)) != 0) {
 					sqlite3_vdbe_mem_set_null(p_dest)
 				}
@@ -1557,8 +1453,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					}
 				}
 				op_column_out:
-				0
-				0
 				unsafe { goto c2v_switch_end_23
 				 }
 
@@ -1620,12 +1514,7 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 								}
 							}
 							5 {
-								0
 								if int(p_in1.flags) & 4 {
-									0
-									0
-									0
-									0
 									if p_in1.u.i <= 140737488355327 && p_in1.u.i >= -140737488355328 {
 										p_in1.flags |= 32
 										p_in1.flags &= ~4
@@ -1643,7 +1532,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 							}
 						}
 					}
-					0
 					c2v_pointer_postfix(voidptr(&p_in1), p_in1, isize(1))
 				}
 				unsafe { goto c2v_switch_end_23
@@ -1662,10 +1550,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				for {
 					apply_affinity(p_in1, i8(z_affinity[0]), encoding)
 					if int(z_affinity[0]) == 69 && (int(p_in1.flags) & 4) != 0 {
-						0
-						0
-						0
-						0
 						if p_in1.u.i <= 140737488355327 && p_in1.u.i >= -140737488355328 {
 							p_in1.flags |= 32
 							p_in1.flags &= ~4
@@ -1675,7 +1559,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 							p_in1.flags &= ~(4 | 2)
 						}
 					}
-					0
 					c2v_pointer_postfix(voidptr(&z_affinity), z_affinity, isize(1))
 					if int(z_affinity[0]) == 0 {
 						break
@@ -1707,7 +1590,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				n_field_2 = p_op.p2
 				p_last = unsafe { p_data0 + (n_field_2 - 1) }
 				p_out = unsafe { a_mem + p_op.p3 }
-				0
 				if z_affinity {
 					p_rec = p_data0
 					for {
@@ -1716,7 +1598,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 							p_rec.flags |= 32
 							p_rec.flags &= ~4
 						}
-						0
 						c2v_pointer_postfix(voidptr(&z_affinity), z_affinity, isize(1))
 						c2v_pointer_postfix(voidptr(&p_rec), p_rec, isize(1))
 						if !(z_affinity[0]) {
@@ -1736,24 +1617,12 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					} else if int(p_rec.flags) & (4 | 32) {
 						i := p_rec.u.i
 						uu := U64(0)
-						0
-						0
 						if i < I64(0) {
 							uu = U64(~i)
 						} else {
 							uu = U64(i)
 						}
 						n_hdr++
-						0
-						0
-						0
-						0
-						0
-						0
-						0
-						0
-						0
-						0
 						if uu <= U64(127) {
 							if (i & I64(1)) == i && int(p.minWriteFileFormat) >= 4 {
 								p_rec.uTemp = u32(8) + u32(uu)
@@ -1812,8 +1681,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					}
 					c2v_pointer_postfix(voidptr(&p_rec), p_rec, isize(-1))
 				}
-				0
-				0
 				if n_hdr <= 126 {
 					n_hdr += 1
 				} else {
@@ -1842,7 +1709,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					p_out.u.nZero = int(n_zero)
 					p_out.flags |= 1024
 				}
-				0
 				z_hdr = &U8(voidptr(p_out.z))
 				z_payload = z_hdr + n_hdr
 				if n_hdr < 128 {
@@ -1862,7 +1728,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 							v := U64(0)
 							if serial_type == u32(7) {
 								C.memcpy(voidptr(&v), voidptr(&p_rec.u.r), sizeof(v))
-								0
 							} else {
 								v = U64(p_rec.u.i)
 							}
@@ -1938,7 +1803,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					}
 					c2v_pointer_postfix(voidptr(&p_rec), p_rec, isize(1))
 				}
-				0
 			}
 			100 {
 				n_entry := I64(0)
@@ -2172,8 +2036,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_bt = p_db_2.pBt
 				if p_bt {
 					rc = sqlite3_btree_begin_trans(p_bt, p_op.p2, &i_meta)
-					0
-					0
 					if rc != 0 {
 						if (rc & 255) == 5 {
 							p.pc = int((i64((isize(p_op) - isize(a_op)) / isize(sizeof(Op)))))
@@ -2224,7 +2086,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			102 {
 				p_db_2 := &Db(0)
-				0
 				p_db_2 = unsafe { db.aDb + p_op.p1 }
 				rc = sqlite3_btree_update_meta(p_db_2.pBt, p_op.p2, u32(p_op.p3))
 				if p_op.p2 == 1 {
@@ -2286,7 +2147,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				} else if int(p_op.p4type) == (-3) {
 					n_field = p_op.p4.i
 				}
-				0
 				p_cur = allocate_cursor(p, p_op.p1, n_field, U8(0))
 				if usize(p_cur) == usize(0) {
 					unsafe { goto no_mem
@@ -2300,8 +2160,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_cur.pKeyInfo = p_key_info
 				p_cur.isTable = U8(int(p_op.p4type) != (-9))
 				open_cursor_set_hints:
-				0
-				0
 				sqlite3_btree_cursor_hint_flags(p_cur.uc.pCursor, u32((int(p_op.p5) & (1 | 2))))
 				if rc {
 					unsafe { goto abort_due_to_error
@@ -2448,7 +2306,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						c := 0
 						if (int(new_type) & 8) == 0 {
 							if (int(new_type) & 1) || oc >= 23 {
-								0
 								unsafe { goto jump_to_p2
 								 }
 							} else {
@@ -2532,7 +2389,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					}
 				}
 				seek_not_found:
-				0
 				if res_3 {
 					unsafe { goto jump_to_p2
 					 }
@@ -2564,19 +2420,16 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					}
 					if res_4 > 0 && int(p_op.p5) == 0 {
 						seekscan_search_fail:
-						0
 						c2v_pointer_postfix(voidptr(&p_op), p_op, isize(1))
 						unsafe { goto jump_to_p2
 						 }
 					}
 					if res_4 >= 0 {
-						0
 						unsafe { goto jump_to_p2
 						 }
 						break
 					}
 					if n_step <= 0 {
-						0
 						break
 					}
 					n_step--
@@ -2606,7 +2459,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			25 {
 				p_cur_2 := &VdbeCursor(0)
 				p_cur_2 = p.apCsr[p_op.p1]
-				0
 				if usize(p_cur_2) == usize(0) || int(p_cur_2.nullRow) {
 					unsafe { goto jump_to_p2_and_check_for_interrupt
 					 }
@@ -2666,27 +2518,23 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				pc_4.deferredMoveto = U8(0)
 				pc_4.cacheStatus = u32(0)
 				if int(p_op.opcode) == 29 {
-					0
 					if already_exists {
 						unsafe { goto jump_to_p2
 						 }
 					}
 				} else {
 					if !already_exists {
-						0
 						unsafe { goto jump_to_p2
 						 }
 					}
 					if int(p_op.opcode) == 27 {
 						for ii = 0; ii < int(r_2.nField); ii++ {
 							if int(r_2.aMem[ii].flags) & 1 {
-								0
 								unsafe { goto jump_to_p2
 								 }
 							}
 						}
 					}
-					0
 					if int(p_op.opcode) == 26 {
 						pc_4.seekHit = U16(p_op.p4.i)
 					}
@@ -2694,10 +2542,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			30 {
 				p_in3 = unsafe { a_mem + p_op.p3 }
-				0
-				0
-				0
-				0
 				if (int(p_in3.flags) & (4 | 32)) == 0 {
 					x := p_in3[0]
 					apply_affinity(&x, i8(67), encoding)
@@ -2726,7 +2570,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				pc.nullRow = U8(0)
 				pc.cacheStatus = u32(0)
 				pc.deferredMoveto = U8(0)
-				0
 				pc.seekResult = res
 				if res != 0 {
 					if p_op.p2 == 0 {
@@ -2778,14 +2621,11 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				if p_op.p3 {
 					if p.pFrame {
 						for p_frame = p.pFrame; p_frame.pParent; p_frame = p_frame.pParent {
-							0
 						}
 						p_mem = unsafe { p_frame.aMem + p_op.p3 }
 					} else {
 						p_mem = unsafe { a_mem + p_op.p3 }
-						0
 					}
-					0
 					sqlite3_vdbe_mem_integerify(p_mem)
 					if p_mem.u.i == I64((((U64(2147483647)) << 32) | U64(u32(4294967295)))) || int(pc_5.useRandomRowid) {
 						rc = 13
@@ -2832,10 +2672,7 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				x := BtreePayload{}
 				p_data = unsafe { a_mem + p_op.p2 }
 				pc_5 = p.apCsr[p_op.p1]
-				0
-				0
 				p_key = unsafe { a_mem + p_op.p3 }
-				0
 				x.nKey = p_key.u.i
 				if int(p_op.p4type) == (-5) && !isnil(db.xUpdateCallback) {
 					z_db = db.aDb[pc_5.iDb].zDbSName
@@ -2890,7 +2727,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				unsafe { goto c2v_switch_end_23
 				 }
 
-				0
 				unsafe { goto c2v_case_23_133
 				 }
 			}
@@ -2902,7 +2738,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				opflags := 0
 				opflags = p_op.p2
 				pc_5 = p.apCsr[p_op.p1]
-				0
 				if int(p_op.p4type) == (-5) && !isnil(db.xUpdateCallback) {
 					z_db = db.aDb[pc_5.iDb].zDbSName
 					p_tab = p_op.p4.pTab
@@ -2941,7 +2776,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				n_key_col = p_op.p4.i
 				res_4 = 0
 				rc = sqlite3_vdbe_sorter_compare(pc_5, p_in3, n_key_col, &res_4)
-				0
 				if rc {
 					unsafe { goto abort_due_to_error
 					 }
@@ -2953,7 +2787,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				unsafe { goto c2v_switch_end_23
 				 }
 
-				0
 				unsafe { goto c2v_case_23_137
 				 }
 			}
@@ -2981,7 +2814,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					unsafe { goto too_big
 					 }
 				}
-				0
 				rc = sqlite3_vdbe_mem_from_btree_zero_offset(p_crsr_2, n, p_out)
 				if rc {
 					unsafe { goto abort_due_to_error
@@ -2993,9 +2825,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						 }
 					}
 				}
-				0
-				0
-				0
 			}
 			137 {
 				pc_5 := &VdbeCursor(0)
@@ -3077,7 +2906,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					 }
 				}
 				if p_op.p2 > 0 {
-					0
 					if res_4 {
 						unsafe { goto jump_to_p2
 						 }
@@ -3103,7 +2931,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					sz = I64(sqlite3_log_est(U64(sz)))
 				}
 				res_5 = sz >= I64(p_op.p3) && sz <= I64(p_op.p4.i)
-				0
 				if res_5 {
 					unsafe { goto jump_to_p2
 					 }
@@ -3136,7 +2963,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				}
 				pc_6.nullRow = U8(res_5)
 				if p_op.p2 > 0 {
-					0
 					if res_5 {
 						unsafe { goto jump_to_p2
 						 }
@@ -3154,7 +2980,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					unsafe { goto abort_due_to_error
 					 }
 				}
-				0
 				if res_5 {
 					unsafe { goto jump_to_p2
 					 }
@@ -3177,7 +3002,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				rc = sqlite3_btree_next(pc_2.uc.pCursor, p_op.p3)
 				next_tail:
 				pc_2.cacheStatus = u32(0)
-				0
 				if rc == 0 {
 					pc_2.nullRow = U8(0)
 					p.aCounter[p_op.p5]++
@@ -3197,7 +3021,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				pc_6 := &VdbeCursor(0)
 				x := BtreePayload{}
 				pc_6 = p.apCsr[p_op.p1]
-				0
 				p_in2 = unsafe { a_mem + p_op.p2 }
 				if int(p_op.p5) & 1 {
 					p.nChange++
@@ -3225,7 +3048,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			141 {
 				pc_6 := &VdbeCursor(0)
 				pc_6 = p.apCsr[p_op.p1]
-				0
 				p_in2 = unsafe { a_mem + p_op.p2 }
 				rc = (if (int(p_in2.flags) & 1024) { sqlite3_vdbe_mem_expand_blob(p_in2) } else { 0 })
 				if rc {
@@ -3244,7 +3066,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				res_5 := 0
 				r_3 := UnpackedRecord{}
 				pc_6 = p.apCsr[p_op.p1]
-				0
 				p_crsr_3 = pc_6.uc.pCursor
 				r_3.pKeyInfo = pc_6.pKeyInfo
 				r_3.nField = U16(p_op.p3)
@@ -3361,7 +3182,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				} else {
 					res_5++
 				}
-				0
 				if res_5 > 0 {
 					unsafe { goto jump_to_p2
 					 }
@@ -3370,7 +3190,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			146 {
 				i_moved := 0
 				i_db_2 := 0
-				0
 				p_out = out2_prerelease(p, unsafe { &VdbeOp(p_op) })
 				p_out.flags = U16(1)
 				if db.nVdbeRead > db.nVDestroy + 1 {
@@ -3396,13 +3215,11 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			147 {
 				n_change := I64(0)
-				0
 				n_change = I64(0)
 				rc = sqlite3_btree_clear_table(db.aDb[p_op.p2].pBt, int(u32(p_op.p1)), &n_change)
 				if p_op.p3 {
 					p.nChange += n_change
 					if p_op.p3 > 0 {
-						0
 						a_mem[p_op.p3].u.i += n_change
 					}
 				}
@@ -3427,7 +3244,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			149 {
 				pgno := Pgno(0)
 				p_db_2 := &Db(0)
-				0
 				p_out = out2_prerelease(p, unsafe { &VdbeOp(p_op) })
 				pgno = Pgno(0)
 				p_db_2 = unsafe { db.aDb + p_op.p1 }
@@ -3443,7 +3259,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				x_auth := unsafe { Sqlite3_xauth(nil) }
 				m_trace := U8(0)
 				saved_analysis_limit := 0
-				0
 				db.nSqlExec++
 				z_err = 0
 				x_auth = db.xAuth
@@ -3527,15 +3342,12 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				}
 			}
 			153 {
-				0
 				sqlite3_unlink_and_delete_table(db, p_op.p1, p_op.p4.z)
 			}
 			155 {
-				0
 				sqlite3_unlink_and_delete_index(db, p_op.p1, p_op.p4.z)
 			}
 			156 {
-				0
 				sqlite3_unlink_and_delete_trigger(db, p_op.p1, p_op.p4.z)
 			}
 			157 {
@@ -3559,7 +3371,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					pn_err.u.i -= I64(n_err - 1)
 					sqlite3_vdbe_mem_set_str(p_in1, z, I64(-1), U8(1), sqlite3_free)
 				}
-				0
 				sqlite3_vdbe_change_encoding(p_in1, int(encoding))
 				unsafe { goto check_for_interrupt
 				 }
@@ -3583,7 +3394,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				unsafe { goto c2v_switch_end_23
 				 }
 
-				0
 				unsafe { goto c2v_case_23_190
 				 }
 			}
@@ -3604,11 +3414,9 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_in1 = unsafe { a_mem + p_op.p1 }
 				if (int(p_in1.flags) & 16) == 0 || sqlite3_row_set_next(&RowSet(voidptr(p_in1.z)), &val) == 0 {
 					sqlite3_vdbe_mem_set_null(p_in1)
-					0
 					unsafe { goto jump_to_p2_and_check_for_interrupt
 					 }
 				} else {
-					0
 					sqlite3_vdbe_mem_set_int64(unsafe { a_mem + p_op.p3 }, val)
 				}
 				unsafe { goto check_for_interrupt
@@ -3628,7 +3436,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				}
 				if i_set {
 					exists = sqlite3_row_set_test(&RowSet(voidptr(p_in1.z)), i_set, p_in3.u.i)
-					0
 					if exists {
 						unsafe { goto jump_to_p2
 						 }
@@ -3652,7 +3459,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				if p_op.p5 {
 					t = p_program.token
 					for p_frame = p.pFrame; !isnil(p_frame) && usize(p_frame.token) != usize(t); p_frame = p_frame.pParent {
-						0
 					}
 					if p_frame {
 						unsafe { goto c2v_switch_end_23
@@ -3744,13 +3550,11 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			60 {
 				if p_op.p1 {
-					0
 					if db.nDeferredCons == I64(0) && db.nDeferredImmCons == I64(0) {
 						unsafe { goto jump_to_p2
 						 }
 					}
 				} else {
-					0
 					if p.nFkConstraint == I64(0) && db.nDeferredImmCons == I64(0) {
 						unsafe { goto jump_to_p2
 						 }
@@ -3761,7 +3565,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_frame := &VdbeFrame(0)
 				if p.pFrame {
 					for p_frame = p.pFrame; p_frame.pParent; p_frame = p_frame.pParent {
-						0
 					}
 					p_in1 = unsafe { p_frame.aMem + p_op.p1 }
 				} else {
@@ -3776,7 +3579,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			61 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
-				0
 				if p_in1.u.i > I64(0) {
 					p_in1.u.i -= I64(p_op.p3)
 					unsafe { goto jump_to_p2
@@ -3801,7 +3603,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 			}
 			62 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
-				0
 				if p_in1.u.i {
 					if p_in1.u.i > I64(0) {
 						p_in1.u.i--
@@ -3815,7 +3616,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				if p_in1.u.i > ((I64(-1)) - (I64(u32(4294967295)) | ((I64(2147483647)) << 32))) {
 					p_in1.u.i--
 				}
-				0
 				if p_in1.u.i == I64(0) {
 					unsafe { goto jump_to_p2
 					 }
@@ -3893,7 +3693,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_mem := &Mem(0)
 				p_mem = unsafe { a_mem + p_op.p1 }
 				if p_op.p3 {
-					0
 					rc = sqlite3_vdbe_mem_agg_value(p_mem, unsafe { a_mem + p_op.p3 }, p_op.p4.pFunc)
 					p_mem = unsafe { a_mem + p_op.p3 }
 				} else {
@@ -3905,8 +3704,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					 }
 				}
 				sqlite3_vdbe_change_encoding(p_mem, int(encoding))
-				0
-				0
 			}
 			3 {
 				i := 0
@@ -3932,7 +3729,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				unsafe { goto c2v_switch_end_23
 				 }
 
-				0
 				unsafe { goto c2v_case_23_207
 				 }
 			}
@@ -3998,7 +3794,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				unsafe { goto c2v_switch_end_23
 				 }
 
-				0
 				unsafe { goto c2v_case_23_209
 				 }
 			}
@@ -4018,7 +3813,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_bt := &Btree(0)
 				p_bt = db.aDb[p_op.p1].pBt
 				rc = sqlite3_btree_incr_vacuum(p_bt)
-				0
 				if rc {
 					if rc != 101 {
 						unsafe { goto abort_due_to_error
@@ -4189,7 +3983,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				p_query = unsafe { a_mem + p_op.p3 }
 				p_argc = unsafe { p_query + 1 }
 				p_cur_3 = p.apCsr[p_op.p1]
-				0
 				pvc_ur = p_cur_3.uc.pVCur
 				p_vtab = pvc_ur.pVtab
 				p_module = p_vtab.pModule
@@ -4207,7 +4000,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				}
 				res_6 = p_module.xEof(pvc_ur)
 				p_cur_3.nullRow = U8(0)
-				0
 				if res_6 {
 					unsafe { goto jump_to_p2
 					 }
@@ -4221,7 +4013,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				null_func := FuncDef{}
 				p_cur_3 := p.apCsr[p_op.p1]
 				p_dest = unsafe { a_mem + p_op.p3 }
-				0
 				if p_cur_3.nullRow {
 					sqlite3_vdbe_mem_set_null(p_dest)
 					unsafe { goto c2v_switch_end_23
@@ -4249,8 +4040,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					rc = s_context.isError
 				}
 				sqlite3_vdbe_change_encoding(p_dest, int(encoding))
-				0
-				0
 				if rc {
 					unsafe { goto abort_due_to_error
 					 }
@@ -4275,7 +4064,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					 }
 				}
 				res_6 = p_module.xEof(p_cur_3.uc.pVCur)
-				0
 				if !res_6 {
 					unsafe { goto jump_to_p2_and_check_for_interrupt
 					 }
@@ -4291,10 +4079,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				db.flags |= U64(67108864)
 				p_vtab = p_op.p4.pVtab.pVtab
 				p_name = unsafe { a_mem + p_op.p1 }
-				0
-				0
-				0
-				0
 				rc = sqlite3_vdbe_change_encoding(p_name, 1)
 				if rc {
 					unsafe { goto abort_due_to_error
@@ -4323,7 +4107,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					unsafe { goto no_mem
 					 }
 				}
-				0
 				p_vtab = p_op.p4.pVtab.pVtab
 				if usize(p_vtab) == usize(0) || (usize(p_vtab.pModule) == usize(0)) {
 					rc = 6
@@ -4337,7 +4120,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 					ap_arg = p.apArg
 					px_2 = unsafe { a_mem + p_op.p3 }
 					for i = 0; i < n_arg; i++ {
-						0
 						ap_arg[i] = px_2
 						c2v_pointer_postfix(voidptr(&px_2), px_2, isize(1))
 					}
@@ -4394,7 +4176,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						(&p_ctx_2.argv[0])[i] = unsafe { a_mem + (p_op.p2 + i) }
 					}
 				}
-				0
 				p_out.flags = U16((int(p_out.flags) & ~(3519 | 1024)) | 1)
 				p_ctx_2.pFunc.xSFunc(p_ctx_2, int(p_ctx_2.argc), &&Sqlite3_value(&p_ctx_2.argv[0]))
 				if p_ctx_2.isError {
@@ -4409,8 +4190,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 						 }
 					}
 				}
-				0
-				0
 			}
 			182 {
 				p_in1 = unsafe { a_mem + p_op.p1 }
@@ -4448,13 +4227,11 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 				h = filter_hash(a_mem, p_op)
 				h %= U64((p_in1.n * 8))
 				if (int(p_in1.z[h / U64(8)]) & (1 << u64((h & U64(7))))) == 0 {
-					0
 					p.aCounter[8]++
 					unsafe { goto jump_to_p2
 					 }
 				} else {
 					p.aCounter[7]++
-					0
 				}
 			}
 			186, 8 {
@@ -4510,7 +4287,6 @@ fn sqlite3_vdbe_exec(p &Vdbe) int {
 	}
 	p.rc = rc
 	sqlite3_system_error(db, rc)
-	0
 	sqlite3_vdbe_log_abort(p, rc, p_op, a_op)
 	if int(p.eVdbeState) == 2 {
 		sqlite3_vdbe_halt(p)

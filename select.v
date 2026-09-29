@@ -190,7 +190,6 @@ fn sqlite3_join_type(p_parse &Parse, pa &Token, pb &Token, pc &Token) int {
 				break
 			}
 		}
-		0
 		if j >= 7 {
 			jointype |= 128
 			break
@@ -269,7 +268,6 @@ fn table_and_column_index(p_src &SrcList, i_start int, i_end int, z_col &i8, pi_
 fn sqlite3_set_join_expr(p &Expr, i_table int, join_flag u32) {
 	for p {
 		p.flags |= u32(join_flag)
-		0
 		p.w.iJoin = i_table
 		if ((p.flags & u32(4096)) == u32(0)) {
 			if p.x.pList {
@@ -412,7 +410,6 @@ fn sqlite3_process_join(p_parse &Parse, p &Select) int {
 				p_eq = sqlite3_pe_xpr(p_parse, 54, p_e1, p_e2)
 				if p_eq {
 					p_eq.flags |= u32(join_type)
-					0
 					p_eq.w.iJoin = p_e2.iTable
 				}
 				p.pWhere = sqlite3_expr_and(p_parse, p.pWhere, p_eq)
@@ -503,7 +500,6 @@ fn push_onto_sorter(p_parse &Parse, p_sort &SortCtx, p_select &Select, reg_data 
 		} else {
 			addr_first = sqlite3_vdbe_add_op1(v, 122, p_sort.iECursor)
 		}
-		0
 		sqlite3_vdbe_add_op3(v, 92, reg_prev_key, reg_base, p_sort.nOBSat)
 		p_op = sqlite3_vdbe_get_op(v, p_sort.addrSortIndex)
 		if p_parse.db.mallocFailed {
@@ -513,19 +509,16 @@ fn push_onto_sorter(p_parse &Parse, p_sort &SortCtx, p_select &Select, reg_data 
 		pki = p_op.p4.pKeyInfo
 		C.memset(voidptr(pki.aSortFlags), 0, u64(pki.nKeyField))
 		sqlite3_vdbe_change_p4(v, -1, &i8(voidptr(pki)), (-9))
-		0
 		p_op.p4.pKeyInfo = sqlite3_key_info_from_expr_list(p_parse, p_sort.pOrderBy, nob_sat, int(pki.nAllField) - int(pki.nKeyField) - 1)
 		p_op = 0
 		addr_jmp = sqlite3_vdbe_current_addr(v)
 		sqlite3_vdbe_add_op3(v, 14, addr_jmp + 1, 0, addr_jmp + 1)
-		0
 		p_sort.labelBkOut = sqlite3_vdbe_make_label(p_parse)
 		p_sort.regReturn = c2v_prefix_add(unsafe { &p_parse.nMem }, 1)
 		sqlite3_vdbe_add_op2(v, 10, p_sort.regReturn, p_sort.labelBkOut)
 		sqlite3_vdbe_add_op1(v, 148, p_sort.iECursor)
 		if i_limit {
 			sqlite3_vdbe_add_op2(v, 17, i_limit, p_sort.labelDone)
-			0
 		}
 		sqlite3_vdbe_jump_here(v, addr_first)
 		sqlite3_expr_code_move(p_parse, reg_base, reg_prev_key, p_sort.nOBSat)
@@ -534,10 +527,8 @@ fn push_onto_sorter(p_parse &Parse, p_sort &SortCtx, p_select &Select, reg_data 
 	if i_limit {
 		i_csr := p_sort.iECursor
 		sqlite3_vdbe_add_op2(v, 62, i_limit, sqlite3_vdbe_current_addr(v) + 4)
-		0
 		sqlite3_vdbe_add_op2(v, 32, i_csr, 0)
 		i_skip = sqlite3_vdbe_add_op4_int(v, 41, i_csr, 0, reg_base + nob_sat, n_expr - nob_sat)
-		0
 		sqlite3_vdbe_add_op1(v, 132, i_csr)
 	}
 	if reg_record == 0 {
@@ -562,8 +553,6 @@ fn push_onto_sorter(p_parse &Parse, p_sort &SortCtx, p_select &Select, reg_data 
 fn code_offset(v &Vdbe, i_offset int, i_continue int) {
 	if i_offset > 0 {
 		sqlite3_vdbe_add_op3(v, 61, i_offset, i_continue, 1)
-		0
-		0
 	}
 }
 
@@ -585,10 +574,8 @@ fn code_distinct(p_parse &Parse, e_tnct_type int, i_tab int, addr_repeat int, pe
 				p_coll := sqlite3_expr_coll_seq(p_parse, c2v_at(&pel_ist.a[0], isize(i)).pExpr)
 				if i < n_result_col - 1 {
 					sqlite3_vdbe_add_op3(v, 53, reg_elem + i, i_jump, reg_prev + i)
-					0
 				} else {
 					sqlite3_vdbe_add_op3(v, 54, reg_elem + i, addr_repeat, reg_prev + i)
-					0
 				}
 				sqlite3_vdbe_change_p4(v, -1, &i8(voidptr(p_coll)), (-2))
 				sqlite3_vdbe_change_p5(v, U16(128))
@@ -600,7 +587,6 @@ fn code_distinct(p_parse &Parse, e_tnct_type int, i_tab int, addr_repeat int, pe
 		else {
 			r1 := sqlite3_get_temp_reg(p_parse)
 			sqlite3_vdbe_add_op4_int(v, 29, i_tab, addr_repeat, reg_elem, n_result_col)
-			0
 			sqlite3_vdbe_add_op3(v, 99, reg_elem, n_result_col, r1)
 			sqlite3_vdbe_add_op4_int(v, 140, i_tab, r1, reg_elem, n_result_col)
 			sqlite3_vdbe_change_p5(v, U16(16))
@@ -668,7 +654,6 @@ fn select_inner_loop(p_parse &Parse, p &Select, src_tab int, p_sort &SortCtx, p_
 	if src_tab >= 0 {
 		for i = 0; i < n_result_col; i++ {
 			sqlite3_vdbe_add_op3(v, 96, src_tab, i, reg_result + i)
-			0
 		}
 	} else if e_dest != 1 {
 		ecel_flags := U8(0)
@@ -695,11 +680,6 @@ fn select_inner_loop(p_parse &Parse, p &Select, src_tab int, p_sort &SortCtx, p_
 					reg_orig = 0
 				}
 			}
-			0
-			0
-			0
-			0
-			0
 		}
 		s_row_load_info.regResult = reg_result
 		s_row_load_info.ecelFlags = ecel_flags
@@ -722,15 +702,10 @@ fn select_inner_loop(p_parse &Parse, p &Select, src_tab int, p_sort &SortCtx, p_
 	match e_dest {
 		6, 3, 12, 10 {
 			r1 := sqlite3_get_temp_range(p_parse, n_prefix_reg + 1)
-			0
-			0
-			0
-			0
 			sqlite3_vdbe_add_op3(v, 99, reg_result, n_result_col, r1 + n_prefix_reg)
 			if e_dest == 3 {
 				addr := sqlite3_vdbe_current_addr(v) + 4
 				sqlite3_vdbe_add_op4_int(v, 29, i_parm + 1, addr, r1, 0)
-				0
 				sqlite3_vdbe_add_op4_int(v, 140, i_parm + 1, r1, reg_result, n_result_col)
 			}
 			if p_sort {
@@ -751,7 +726,6 @@ fn select_inner_loop(p_parse &Parse, p &Select, src_tab int, p_sort &SortCtx, p_
 				i2 := p_dest.iSDParm2
 				r1_2 := sqlite3_get_temp_reg(p_parse)
 				sqlite3_vdbe_add_op2(v, 51, reg_result, i_break)
-				0
 				sqlite3_vdbe_add_op3(v, 99, reg_result + int((i2 < 0)), n_result_col - int((i2 < 0)), r1_2)
 				if i2 < 0 {
 					sqlite3_vdbe_add_op3(v, 130, i_parm, r1_2, reg_result)
@@ -789,8 +763,6 @@ fn select_inner_loop(p_parse &Parse, p &Select, src_tab int, p_sort &SortCtx, p_
 			}
 		}
 		11, 7 {
-			0
-			0
 			if p_sort {
 				push_onto_sorter(p_parse, p_sort, p, reg_result, reg_orig, n_result_col, n_prefix_reg)
 			} else if e_dest == 11 {
@@ -814,7 +786,6 @@ fn select_inner_loop(p_parse &Parse, p &Select, src_tab int, p_sort &SortCtx, p_
 			r3 = r2 + n_key + 1
 			if e_dest == 4 {
 				addr_test = sqlite3_vdbe_add_op4_int(v, 29, i_parm + 1, 0, reg_result, n_result_col)
-				0
 			}
 			sqlite3_vdbe_add_op3(v, 99, reg_result, n_result_col, r3)
 			if e_dest == 4 {
@@ -839,7 +810,6 @@ fn select_inner_loop(p_parse &Parse, p &Select, src_tab int, p_sort &SortCtx, p_
 
 	if usize(p_sort) == usize(0) && p.iLimit {
 		sqlite3_vdbe_add_op2(v, 63, p.iLimit, i_break)
-		0
 	}
 }
 
@@ -959,8 +929,6 @@ fn generate_sort_tail(p_parse &Parse, p &Select, p_sort &SortCtx, n_column int, 
 	} else {
 		sqlite3_vdbe_explain(p_parse, U8(0), c'USE TEMP B-TREE FOR LAST %d TERMS OF ORDER BY', n_key)
 	}
-	0
-	0
 	if p_sort.labelBkOut {
 		sqlite3_vdbe_add_op2(v, 10, p_sort.regReturn, p_sort.labelBkOut)
 		sqlite3_vdbe_goto(v, addr_break)
@@ -989,19 +957,16 @@ fn generate_sort_tail(p_parse &Parse, p &Select, p_sort &SortCtx, n_column int, 
 		i_sort_tab = __c2v_postfix_value_24
 		if p_sort.labelBkOut {
 			addr_once = sqlite3_vdbe_add_op0(v, 15)
-			0
 		}
 		sqlite3_vdbe_add_op3(v, 123, i_sort_tab, reg_sort_out, n_key + 1 + n_column + n_ref_key)
 		if addr_once {
 			sqlite3_vdbe_jump_here(v, addr_once)
 		}
 		addr = 1 + sqlite3_vdbe_add_op2(v, 34, i_tab, addr_break)
-		0
 		sqlite3_vdbe_add_op3(v, 135, i_tab, reg_sort_out, i_sort_tab)
 		b_seq = 0
 	} else {
 		addr = 1 + sqlite3_vdbe_add_op2(v, 35, i_tab, addr_break)
-		0
 		code_offset(v, p.iOffset, addr_continue)
 		i_sort_tab = i_tab
 		b_seq = 1
@@ -1025,9 +990,7 @@ fn generate_sort_tail(p_parse &Parse, p &Select, p_sort &SortCtx, n_column int, 
 			i_read = __c2v_postfix_value_25
 		}
 		sqlite3_vdbe_add_op3(v, 96, i_sort_tab, i_read, reg_row + i)
-		0
 	}
-	0
 	match e_dest {
 		12, 10 {
 			sqlite3_vdbe_add_op3(v, 96, i_sort_tab, n_key + b_seq, reg_row)
@@ -1052,8 +1015,6 @@ fn generate_sort_tail(p_parse &Parse, p &Select, p_sort &SortCtx, n_column int, 
 			}
 		}
 		else {
-			0
-			0
 			if e_dest == 7 {
 				sqlite3_vdbe_add_op2(v, 86, p_dest.iSdst, n_column)
 			} else {
@@ -1073,12 +1034,9 @@ fn generate_sort_tail(p_parse &Parse, p &Select, p_sort &SortCtx, n_column int, 
 	sqlite3_vdbe_resolve_label(v, addr_continue)
 	if int(p_sort.sortFlags) & 1 {
 		sqlite3_vdbe_add_op2(v, 38, i_tab, addr)
-		0
 	} else {
 		sqlite3_vdbe_add_op2(v, 40, i_tab, addr)
-		0
 	}
-	0
 	if p_sort.regReturn {
 		sqlite3_vdbe_add_op1(v, 69, p_sort.regReturn)
 	}
@@ -1097,7 +1055,6 @@ fn column_type_impl(pnc &NameContext, p_expr &Expr) &i8 {
 			for !isnil(pnc) && isnil(p_tab) {
 				p_tab_list := pnc.pSrcList
 				for j = 0; j < p_tab_list.nSrc && c2v_at(&p_tab_list.a[0], isize(j)).iCursor != p_expr.iTable; j++ {
-					0
 				}
 				if j < p_tab_list.nSrc {
 					p_tab = c2v_at(&p_tab_list.a[0], isize(j)).pSTab
@@ -1181,7 +1138,6 @@ fn sqlite3_generate_column_names(p_parse &Parse, p_select &Select) {
 	for p_select.pPrior {
 		p_select = p_select.pPrior
 	}
-	0
 	p_tab_list = p_select.pSrc
 	pel_ist = p_select.pEList
 	p_parse.colNamesSet = Bft(1)
@@ -1244,7 +1200,6 @@ fn sqlite3_columns_from_expr_list(p_parse &Parse, pel_ist &ExprList, pn_col &I16
 	if pel_ist {
 		n_col = pel_ist.nExpr
 		a_col = sqlite3_db_malloc_zero(db, U64(sizeof(Column) * u64(n_col)))
-		0
 		if (n_col > 32767) {
 			n_col = 32767
 		}
@@ -1309,7 +1264,6 @@ fn sqlite3_columns_from_expr_list(p_parse &Parse, pel_ist &ExprList, pn_col &I16
 		if px.fg.bNoExpand {
 			p_col.colFlags |= 1024
 		}
-		0
 		if !isnil(z_name) && usize(sqlite3_hash_insert(&ht, z_name, voidptr(px))) == usize(px) {
 			sqlite3_oom_fault(db)
 		}
@@ -1477,7 +1431,6 @@ fn compute_limit_registers(p_parse &Parse, p &Select, i_break int) {
 		v = sqlite3_get_vdbe(p_parse)
 		if sqlite3_expr_is_integer(p_limit.pLeft, &n, p_parse) {
 			sqlite3_vdbe_add_op2(v, 73, n, i_limit)
-			0
 			if n == 0 {
 				sqlite3_vdbe_goto(v, i_break)
 			} else if n >= 0 && int(p.nSelectRow) > int(sqlite3_log_est(U64(n))) {
@@ -1487,10 +1440,7 @@ fn compute_limit_registers(p_parse &Parse, p &Select, i_break int) {
 		} else {
 			sqlite3_expr_code(p_parse, p_limit.pLeft, i_limit)
 			sqlite3_vdbe_add_op1(v, 13, i_limit)
-			0
-			0
 			sqlite3_vdbe_add_op2(v, 17, i_limit, i_break)
-			0
 		}
 		if p_limit.pRight {
 			i_offset = c2v_prefix_add(unsafe { &p_parse.nMem }, 1)
@@ -1498,10 +1448,7 @@ fn compute_limit_registers(p_parse &Parse, p &Select, i_break int) {
 			p_parse.nMem++
 			sqlite3_expr_code(p_parse, p_limit.pRight, i_offset)
 			sqlite3_vdbe_add_op1(v, 13, i_offset)
-			0
-			0
 			sqlite3_vdbe_add_op3(v, 162, i_limit, i_offset + 1, i_offset)
-			0
 		}
 	}
 }
@@ -1617,7 +1564,6 @@ fn generate_with_recursive_query(p_parse &Parse, p &Select, p_dest &SelectDest) 
 	} else {
 		sqlite3_vdbe_add_op2(v, 120, i_queue, n_col)
 	}
-	0
 	if i_distinct {
 		p_key_info := &KeyInfo(0)
 		ap_coll := &&CollSeq(0)
@@ -1658,7 +1604,6 @@ fn generate_with_recursive_query(p_parse &Parse, p &Select, p_dest &SelectDest) 
 		 }
 	}
 	addr_top = sqlite3_vdbe_add_op2(v, 36, i_queue, addr_break)
-	0
 	sqlite3_vdbe_add_op1(v, 138, i_current)
 	if p_order_by {
 		sqlite3_vdbe_add_op3(v, 96, i_queue, p_order_by.nExpr + 1, reg_current)
@@ -1671,7 +1616,6 @@ fn generate_with_recursive_query(p_parse &Parse, p &Select, p_dest &SelectDest) 
 	select_inner_loop(p_parse, p, i_current, unsafe { nil }, unsafe { nil }, p_dest, addr_cont, addr_break)
 	if reg_limit {
 		sqlite3_vdbe_add_op2(v, 63, reg_limit, addr_break)
-		0
 	}
 	sqlite3_vdbe_resolve_label(v, addr_cont)
 	p_first_rec.pPrior = 0
@@ -1774,7 +1718,6 @@ fn multi_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		p_prior.iLimit = p.iLimit
 		p_prior.iOffset = p.iOffset
 		p_prior.pLimit = sqlite3_expr_dup(db, p.pLimit, 0)
-		0
 		rc = sqlite3_select(p_parse, p_prior, &dest)
 		sqlite3_expr_delete(db, p_prior.pLimit)
 		p_prior.pLimit = 0
@@ -1787,16 +1730,12 @@ fn multi_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		p.iOffset = p_prior.iOffset
 		if p.iLimit {
 			addr = sqlite3_vdbe_add_op1(v, 17, p.iLimit)
-			0
-			0
 			if p.iOffset {
 				sqlite3_vdbe_add_op3(v, 162, p.iLimit, p.iOffset + 1, p.iOffset)
 			}
 		}
 		sqlite3_vdbe_explain(p_parse, U8(1), c'UNION ALL')
-		0
 		rc = sqlite3_select(p_parse, p, &dest)
-		0
 		p_delete = p.pPrior
 		p.pPrior = p_prior
 		p.nSelectRow = sqlite3_log_est_add(p.nSelectRow, p_prior.nSelectRow)
@@ -1841,10 +1780,8 @@ fn generate_output_subroutine(p_parse &Parse, p &Select, p_in &SelectDest, p_des
 		addr2 := 0
 
 		addr1 = sqlite3_vdbe_add_op1(v, 17, reg_prev)
-		0
 		addr2 = sqlite3_vdbe_add_op4(v, 92, p_in.iSdst, reg_prev + 1, p_in.nSdst, &i8(voidptr(sqlite3_key_info_ref(p_key_info))), (-9))
 		sqlite3_vdbe_add_op3(v, 14, addr2 + 2, i_continue, addr2 + 2)
-		0
 		sqlite3_vdbe_jump_here(v, addr1)
 		sqlite3_vdbe_add_op3(v, 82, p_in.iSdst, reg_prev + 1, p_in.nSdst - 1)
 		sqlite3_vdbe_add_op2(v, 73, 1, reg_prev)
@@ -1858,10 +1795,6 @@ fn generate_output_subroutine(p_parse &Parse, p &Select, p_in &SelectDest, p_des
 			r1 := sqlite3_get_temp_reg(p_parse)
 			r2 := sqlite3_get_temp_reg(p_parse)
 			i_parm := p_dest.iSDParm
-			0
-			0
-			0
-			0
 			sqlite3_vdbe_add_op3(v, 99, p_in.iSdst, p_in.nSdst, r1)
 			if int(p_dest.eDest) == 3 {
 				sqlite3_vdbe_add_op4_int(v, 140, i_parm + 1, r1, p_in.iSdst, p_in.nSdst)
@@ -1877,7 +1810,6 @@ fn generate_output_subroutine(p_parse &Parse, p &Select, p_in &SelectDest, p_des
 		}
 		9 {
 			r1_2 := 0
-			0
 			r1_2 = sqlite3_get_temp_reg(p_parse)
 			sqlite3_vdbe_add_op4(v, 99, p_in.iSdst, p_in.nSdst, r1_2, p_dest.zAffSdst, p_in.nSdst)
 			sqlite3_vdbe_add_op4_int(v, 140, p_dest.iSDParm, r1_2, p_in.iSdst, p_in.nSdst)
@@ -1888,7 +1820,6 @@ fn generate_output_subroutine(p_parse &Parse, p &Select, p_in &SelectDest, p_des
 			sqlite3_release_temp_reg(p_parse, r1_2)
 		}
 		8 {
-			0
 			sqlite3_expr_code_move(p_parse, p_in.iSdst, p_dest.iSDParm, p_in.nSdst)
 		}
 		11 {
@@ -1935,7 +1866,6 @@ fn generate_output_subroutine(p_parse &Parse, p &Select, p_in &SelectDest, p_des
 
 	if p.iLimit {
 		sqlite3_vdbe_add_op2(v, 63, p.iLimit, i_break)
-		0
 	}
 	sqlite3_vdbe_resolve_label(v, i_continue)
 	sqlite3_vdbe_add_op1(v, 69, reg_return)
@@ -2088,7 +2018,6 @@ fn multi_select_by_merge(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 	sqlite3_vdbe_explain(p_parse, U8(1), c'MERGE (%s)', voidptr(sqlite3_select_op_name(int(p.op))))
 	addr_select_a = sqlite3_vdbe_current_addr(v) + 1
 	addr1 = sqlite3_vdbe_add_op3(v, 11, reg_addr_a, 0, addr_select_a)
-	0
 	p_prior.iLimit = reg_limit_a
 	sqlite3_vdbe_explain(p_parse, U8(1), c'LEFT')
 	sqlite3_select(p_parse, p_prior, &dest_a)
@@ -2096,7 +2025,6 @@ fn multi_select_by_merge(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 	sqlite3_vdbe_jump_here(v, addr1)
 	addr_select_b = sqlite3_vdbe_current_addr(v) + 1
 	addr1 = sqlite3_vdbe_add_op3(v, 11, reg_addr_b, 0, addr_select_b)
-	0
 	saved_limit = p.iLimit
 	saved_offset = p.iOffset
 	p.iLimit = reg_limit_b
@@ -2106,10 +2034,8 @@ fn multi_select_by_merge(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 	p.iLimit = saved_limit
 	p.iOffset = saved_offset
 	sqlite3_vdbe_end_coroutine(v, reg_addr_b)
-	0
 	addr_out_a = generate_output_subroutine(p_parse, p, &dest_a, p_dest, reg_out_a, reg_prev, p_key_dup, label_end)
 	if op == 136 || op == 135 {
-		0
 		addr_out_b = generate_output_subroutine(p_parse, p, &dest_b, p_dest, reg_out_b, reg_prev, p_key_dup, label_end)
 	}
 	sqlite3_key_info_unref(p_key_dup)
@@ -2117,12 +2043,8 @@ fn multi_select_by_merge(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		addr_eof_a = label_end
 		addr_eof_a_no_b = addr_eof_a
 	} else {
-		0
 		addr_eof_a = sqlite3_vdbe_add_op2(v, 10, reg_out_b, addr_out_b)
-		0
 		addr_eof_a_no_b = sqlite3_vdbe_add_op2(v, 12, reg_addr_b, label_end)
-		0
-		0
 		sqlite3_vdbe_goto(v, addr_eof_a)
 		p.nSelectRow = sqlite3_log_est_add(p.nSelectRow, p_prior.nSelectRow)
 	}
@@ -2132,19 +2054,12 @@ fn multi_select_by_merge(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			p.nSelectRow = p_prior.nSelectRow
 		}
 	} else {
-		0
 		addr_eof_b = sqlite3_vdbe_add_op2(v, 10, reg_out_a, addr_out_a)
-		0
 		sqlite3_vdbe_add_op2(v, 12, reg_addr_a, label_end)
-		0
-		0
 		sqlite3_vdbe_goto(v, addr_eof_b)
 	}
 	addr_alt_b = sqlite3_vdbe_add_op2(v, 10, reg_out_a, addr_out_a)
-	0
 	sqlite3_vdbe_add_op2(v, 12, reg_addr_a, addr_eof_a)
-	0
-	0
 	sqlite3_vdbe_goto(v, label_cmpr)
 	if op == 136 {
 		addr_aeq_b = addr_alt_b
@@ -2157,21 +2072,14 @@ fn multi_select_by_merge(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 	addr_agt_b = sqlite3_vdbe_current_addr(v)
 	if op == 136 || op == 135 {
 		sqlite3_vdbe_add_op2(v, 10, reg_out_b, addr_out_b)
-		0
 		sqlite3_vdbe_add_op2(v, 12, reg_addr_b, addr_eof_b)
-		0
-		0
 		sqlite3_vdbe_goto(v, label_cmpr)
 	} else {
 		addr_agt_b++
 	}
 	sqlite3_vdbe_jump_here(v, addr1)
 	sqlite3_vdbe_add_op2(v, 12, reg_addr_a, addr_eof_a_no_b)
-	0
-	0
 	sqlite3_vdbe_add_op2(v, 12, reg_addr_b, addr_eof_b)
-	0
-	0
 	if usize(a_permute) != usize(0) {
 		sqlite3_vdbe_add_op4(v, 91, 0, 0, 0, &i8(voidptr(a_permute)), (-15))
 	}
@@ -2181,10 +2089,6 @@ fn multi_select_by_merge(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		sqlite3_vdbe_change_p5(v, U16(1))
 	}
 	sqlite3_vdbe_add_op3(v, 14, addr_alt_b, addr_aeq_b, addr_agt_b)
-	0
-	0
-	0
-	0
 	sqlite3_vdbe_resolve_label(v, label_end)
 	if p_split.pPrior {
 		sqlite3_parser_add_cleanup(p_parse, sqlite3_select_delete_generic, voidptr(p_split.pPrior))
@@ -2213,7 +2117,6 @@ fn subst_expr(p_subst &SubstContext, p_expr &Expr) &Expr {
 		return unsafe { nil }
 	}
 	if ((p_expr.flags & u32((1 | 2))) != u32(0)) && p_expr.w.iJoin == p_subst.iTable {
-		0
 		p_expr.w.iJoin = p_subst.iNewTable
 	}
 	if int(p_expr.op) == 168 && p_expr.iTable == p_subst.iTable && !((p_expr.flags & u32(32)) != u32(0)) {
@@ -2236,7 +2139,6 @@ fn subst_expr(p_subst &SubstContext, p_expr &Expr) &Expr {
 				if_null_row.flags = u32(262144)
 				p_copy = &if_null_row
 			}
-			0
 			p_new = sqlite3_expr_dup(db, p_copy, 0)
 			if db.mallocFailed {
 				sqlite3_expr_delete(db, p_new)
@@ -2529,15 +2431,12 @@ fn flatten_subquery(p_parse &Parse, p &Select, i_from int, is_agg int) int {
 			return 0
 		}
 		for p_sub1 = p_sub; p_sub1; p_sub1 = p_sub1.pPrior {
-			0
-			0
 			if (p_sub1.selFlags & u32((1 | 8))) != u32(0) || (!isnil(p_sub1.pPrior) && int(p_sub1.op) != 136) || p_sub1.pSrc.nSrc < 1 || !isnil(p_sub1.pWin) {
 				return 0
 			}
 			if i_from > 0 && (int(c2v_at(&p_sub1.pSrc.a[0], isize(0)).fg.jointype) & 64) != 0 {
 				return 0
 			}
-			0
 		}
 		if p.pOrderBy {
 			for ii = 0; ii < p.pOrderBy.nExpr; ii++ {
@@ -2565,10 +2464,8 @@ fn flatten_subquery(p_parse &Parse, p &Select, i_from int, is_agg int) int {
 			}
 		}
 	}
-	0
 	p_parse.zAuthContext = p_subitem.zName
 	sqlite3_auth_check(p_parse, 21, unsafe { nil }, unsafe { nil }, unsafe { nil })
-	0
 	p_parse.zAuthContext = z_saved_auth_context
 	if p_subitem.fg.isSubquery {
 		p_sub1 = sqlite3_subquery_detach(db, p_subitem)
@@ -2607,7 +2504,6 @@ fn flatten_subquery(p_parse &Parse, p &Select, i_from int, is_agg int) int {
 			}
 			p_new.pNext = p
 			p.pPrior = p_new
-			0
 		}
 	}
 	sqlite3_db_free(db, voidptr(a_csr_map))
@@ -2620,7 +2516,6 @@ fn flatten_subquery(p_parse &Parse, p &Select, i_from int, is_agg int) int {
 		if p_tab_to_del.nTabRef == u32(1) {
 			p_toplevel := (if p_parse.pToplevel { p_parse.pToplevel } else { p_parse })
 			sqlite3_parser_add_cleanup(p_toplevel, sqlite3_delete_table_generic, voidptr(p_tab_to_del))
-			0
 		} else {
 			p_tab_to_del.nTabRef--
 		}
@@ -2751,8 +2646,6 @@ fn find_const_in_where(p_const &WhereConst, p_expr &Expr) {
 		return
 	}
 	if ((p_expr.flags & u32(p_const.mExcludeOn)) != u32(0)) {
-		0
-		0
 		return
 	}
 	if int(p_expr.op) == 44 {
@@ -2783,9 +2676,6 @@ fn propagate_constant_expr_rewrite_one(p_const &WhereConst, p_expr &Expr, b_igno
 		return 0
 	}
 	if ((p_expr.flags & u32((u32(32) | p_const.mExcludeOn))) != u32(0)) {
-		0
-		0
-		0
 		return 0
 	}
 	for i = 0; i < p_const.nConst; i++ {
@@ -2976,8 +2866,6 @@ fn disable_unused_subquery_result_columns(p_item &SrcItem) int {
 	p_sub = p_item.u4.pSubq.pSelect
 	for px = p_sub; px; px = px.pPrior {
 		if (px.selFlags & u32((1 | 8))) != u32(0) {
-			0
-			0
 			return 0
 		}
 		if !isnil(px.pPrior) && int(px.op) != 136 {
@@ -3079,8 +2967,6 @@ fn is_simple_count(p &Select, p_agg_info &AggInfo) &Table {
 	if (p_agg_info.aFunc[0].pFunc.funcFlags & u32(256)) == u32(0) {
 		return unsafe { nil }
 	}
-	0
-	0
 	if ((p_expr.flags & u32((4 | 16777216))) != u32(0)) {
 		return unsafe { nil }
 	}
@@ -3093,7 +2979,6 @@ fn sqlite3_indexed_by_lookup(p_parse &Parse, p_from &SrcItem) int {
 	z_indexed_by := p_from.u1.zIndexedBy
 	p_idx := &Index(0)
 	for p_idx = p_tab.pIndex; !isnil(p_idx) && sqlite3_str_ic_mp(p_idx.zName, z_indexed_by); p_idx = p_idx.pNext {
-		0
 	}
 	if isnil(p_idx) {
 		sqlite3_error_msg(p_parse, c'no such index: %s', voidptr(z_indexed_by), 0)
@@ -3347,7 +3232,6 @@ fn resolve_from_term_to_cte(p_parse &Parse, p_walker &Walker, p_from &SrcItem) i
 		}
 		p_parse.pWith = p_with
 		for p_left = p_sel; p_left.pPrior; p_left = p_left.pPrior {
-			0
 		}
 		pel_ist = p_left.pEList
 		if p_cte.pCols {
@@ -3695,10 +3579,8 @@ fn select_expander(p_walker &Walker, p &Select) int {
 						if (int(sel_flags) & 2048) != 0 && !(int(p_parse.eParseMode) >= 2) {
 							if !isnil(p_nested_from) && (!0 || j < p_nested_from.nExpr) {
 								px.zEName = sqlite3_db_str_dup(db, c2v_at(&p_nested_from.a[0], isize(j)).zEName)
-								0
 							} else {
 								px.zEName = sqlite3_mp_rintf(db, c'%s.%s.%s', voidptr(z_schema_name), voidptr(z_tab_name), voidptr(z_name))
-								0
 							}
 							px.fg.eEName = u32((if j == int(p_tab.nCol) { 3 } else { 2 }))
 							mut __c2v_condition_81 := false
@@ -3985,7 +3867,6 @@ fn finalize_agg_functions(p_parse &Parse, p_agg_info &AggInfo) {
 				}
 			}
 			i_top = sqlite3_vdbe_add_op1(v, 36, pf.iOBTab)
-			0
 			for j = n_arg - 1; j >= 0; j-- {
 				sqlite3_vdbe_add_op3(v, 96, pf.iOBTab, n_key + j, reg_agg + j)
 			}
@@ -4002,7 +3883,6 @@ fn finalize_agg_functions(p_parse &Parse, p_agg_info &AggInfo) {
 			sqlite3_vdbe_append_p4(v, voidptr(pf.pFunc), (-8))
 			sqlite3_vdbe_change_p5(v, U16(n_arg))
 			sqlite3_vdbe_add_op2(v, 40, pf.iOBTab, i_top + 1)
-			0
 			sqlite3_vdbe_jump_here(v, i_top)
 			sqlite3_release_temp_range(p_parse, reg_agg, n_arg)
 		}
@@ -4140,7 +4020,6 @@ fn update_accumulator(p_parse &Parse, reg_acc int, p_agg_info &AggInfo, e_distin
 	}
 	if reg_hit {
 		addr_hit_test = sqlite3_vdbe_add_op1(v, 16, reg_hit)
-		0
 	}
 	i = 0
 	for pc = p_agg_info.aCol; i < p_agg_info.nAccumulator; i++ {
@@ -4181,7 +4060,6 @@ fn having_to_where_expr_cb(p_walker &Walker, p_expr &Expr) int {
 				t := (unsafe { *p_new })
 				unsafe { *p_new = *p_expr }
 				unsafe { *p_expr = t }
-				0
 				p_new = sqlite3_expr_and(p_walker.pParse, p_where, p_new)
 				ps.pWhere = p_new
 				p_walker.eCode = U16(1)
@@ -4314,8 +4192,6 @@ fn count_of_view_optimization(p_parse &Parse, p &Select) int {
 			return 0
 		}
 		if p_sub.selFlags & u32((8 | 1)) {
-			0
-			0
 			return 0
 		}
 		p_sub = p_sub.pPrior
@@ -4619,7 +4495,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 	if (int(p_dest.eDest) <= 4) {
 		if p.pOrderBy {
 			sqlite3_parser_add_cleanup(p_parse, sqlite3_expr_list_delete_generic, voidptr(p.pOrderBy))
-			0
 			p.pOrderBy = 0
 		}
 		p.selFlags &= ~u32(1)
@@ -4664,10 +4539,8 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		if (int(p_item.fg.jointype) & (8 | 64)) != 0 && sqlite3_expr_implies_non_null_row(p.pWhere, p_item.iCursor, int(p_item.fg.jointype) & 64) && ((db.dbOptFlags & u32(8192)) == u32(0)) {
 			if int(p_item.fg.jointype) & 8 {
 				if int(p_item.fg.jointype) & 16 {
-					0
 					p_item.fg.jointype &= ~8
 				} else {
-					0
 					p_item.fg.jointype &= ~(8 | 32)
 					unset_join_expr(p.pWhere, p_item.iCursor, 0)
 				}
@@ -4677,10 +4550,8 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 					p_i2 := unsafe { &p_tab_list.a[0] + j }
 					if int(p_i2.fg.jointype) & 16 {
 						if int(p_i2.fg.jointype) & 8 {
-							0
 							p_i2.fg.jointype &= ~16
 						} else {
-							0
 							p_i2.fg.jointype &= ~(16 | 32)
 							unset_join_expr(p.pWhere, p_i2.iCursor, 1)
 						}
@@ -4729,7 +4600,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		}
 		__c2v_condition_87 = __c2v_condition_88
 		if __c2v_condition_87 {
-			0
 			sqlite3_parser_add_cleanup(p_parse, sqlite3_expr_list_delete_generic, voidptr(p_sub.pOrderBy))
 			p_sub.pOrderBy = 0
 		}
@@ -4765,7 +4635,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 	}
 	if usize(p.pWhere) != usize(0) && int(p.pWhere.op) == 44 && ((db.dbOptFlags & u32(32768)) == u32(0)) && propagate_constants(p_parse, p) {
 	} else {
-		0
 	}
 	if ((db.dbOptFlags & u32((1 | 512))) == u32(0)) && count_of_view_optimization(p_parse, p) {
 		if db.mallocFailed {
@@ -4814,7 +4683,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		__c2v_condition_89 = __c2v_condition_90
 		if __c2v_condition_89 {
 		} else {
-			0
 		}
 		if ((db.dbOptFlags & u32(67108864)) == u32(0)) && disable_unused_subquery_result_columns(p_item) {
 		}
@@ -4824,7 +4692,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			addr_top := sqlite3_vdbe_current_addr(v) + 1
 			p_subq.regReturn = c2v_prefix_add(unsafe { &p_parse.nMem }, 1)
 			sqlite3_vdbe_add_op3(v, 11, p_subq.regReturn, 0, addr_top)
-			0
 			p_subq.addrFillSub = addr_top
 			sqlite3_select_dest_init(&dest, 11, p_subq.regReturn)
 			sqlite3_vdbe_explain(p_parse, U8(1), c'CO-ROUTINE %!S', voidptr(p_item))
@@ -4833,7 +4700,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			p_item.fg.viaCoroutine = u32(1)
 			p_subq.regResult = dest.iSdst
 			sqlite3_vdbe_end_coroutine(v, p_subq.regReturn)
-			0
 			sqlite3_vdbe_jump_here(v, addr_top - 1)
 			sqlite3_clear_temp_reg_cache(p_parse)
 		} else if int(p_item.fg.isCte) && p_item.u2.pCteUse.addrM9e > 0 {
@@ -4841,7 +4707,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			sqlite3_vdbe_add_op2(v, 10, p_cte_use.regRtn, p_cte_use.addrM9e)
 			if p_item.iCursor != p_cte_use.iCur {
 				sqlite3_vdbe_add_op2(v, 117, p_item.iCursor, p_cte_use.iCur)
-				0
 			}
 			p_sub.nSelectRow = p_cte_use.nRowEst
 		} else {
@@ -4863,10 +4728,7 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 				p_item.fg.isMaterialized = u32(1)
 				if int(p_item.fg.isCorrelated) == 0 {
 					once_addr = sqlite3_vdbe_add_op0(v, 15)
-					0
-					0
 				} else {
-					0
 				}
 				sqlite3_select_dest_init(&dest, 10, p_item.iCursor)
 				sqlite3_vdbe_explain(p_parse, U8(1), c'MATERIALIZE %!S', voidptr(p_item))
@@ -4876,8 +4738,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 					sqlite3_vdbe_jump_here(v, once_addr)
 				}
 				sqlite3_vdbe_add_op2(v, 69, p_subq.regReturn, top_addr + 1)
-				0
-				0
 				sqlite3_vdbe_jump_here(v, top_addr)
 				sqlite3_clear_temp_reg_cache(p_parse)
 				if int(p_item.fg.isCte) && int(p_item.fg.isCorrelated) == 0 {
@@ -4984,7 +4844,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		if p_win {
 			sqlite3_window_code_init(p_parse, p)
 		}
-		0
 		pwi_nfo = sqlite3_where_begin(p_parse, p_tab_list, p_where, s_sort.pOrderBy, p.pEList, p, wctrl_flags, int(p.nSelectRow))
 		if usize(pwi_nfo) == usize(0) {
 			unsafe { goto select_end
@@ -5006,7 +4865,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 				s_sort.pOrderBy = 0
 			}
 		}
-		0
 		if s_sort.addrSortIndex >= 0 && usize(s_sort.pOrderBy) == usize(0) {
 			sqlite3_vdbe_change_to_noop(v, s_sort.addrSortIndex)
 		}
@@ -5018,16 +4876,13 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			sqlite3_window_code_step(p_parse, p, pwi_nfo, reg_gosub, addr_gosub)
 			sqlite3_vdbe_add_op2(v, 9, 0, i_break)
 			sqlite3_vdbe_resolve_label(v, addr_gosub)
-			0
 			s_sort.labelOBLopt = 0
 			select_inner_loop(p_parse, p, -1, &s_sort, &s_distinct, p_dest, i_cont, i_break)
 			sqlite3_vdbe_resolve_label(v, i_cont)
 			sqlite3_vdbe_add_op1(v, 69, reg_gosub)
-			0
 			sqlite3_vdbe_resolve_label(v, i_break)
 		} else {
 			select_inner_loop(p_parse, p, -1, &s_sort, &s_distinct, p_dest, sqlite3_where_continue_label(pwi_nfo), sqlite3_where_break_label(pwi_nfo))
-			0
 			sqlite3_where_end(pwi_nfo)
 		}
 	} else {
@@ -5067,7 +4922,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 		p_agg_info = sqlite3_db_malloc_zero(db, U64(sizeof(AggInfo)))
 		if p_agg_info {
 			sqlite3_parser_add_cleanup(p_parse, agginfo_free, voidptr(p_agg_info))
-			0
 		}
 		if db.mallocFailed {
 			unsafe { goto select_end
@@ -5152,11 +5006,9 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			ibm_em = p_parse.nMem + 1
 			p_parse.nMem += p_group_by.nExpr
 			sqlite3_vdbe_add_op2(v, 73, 0, i_abort_flag)
-			0
 			sqlite3_vdbe_add_op3(v, 77, 0, iam_em, iam_em + p_group_by.nExpr - 1)
 			sqlite3_expr_null_register_range(p_parse, iam_em, p_group_by.nExpr)
 			sqlite3_vdbe_add_op2(v, 10, reg_reset, addr_reset)
-			0
 			pwi_nfo = sqlite3_where_begin(p_parse, p_tab_list, p_where, p_group_by, p_distinct, p, U16((if int(s_distinct.isTnct) == 2 {
 				128
 			} else {
@@ -5172,7 +5024,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			}
 			assign_aggregate_registers(p_parse, p_agg_info)
 			e_dist = sqlite3_where_is_distinct(pwi_nfo)
-			0
 			if sqlite3_where_is_ordered(pwi_nfo) == p_group_by.nExpr {
 				group_by_sort = 0
 			} else {
@@ -5208,27 +5059,19 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 				}
 				p_agg_info.directMode = U8(0)
 				reg_record = sqlite3_get_temp_reg(p_parse)
-				0
 				sqlite3_vdbe_add_op3(v, 99, reg_base, n_col, reg_record)
 				sqlite3_vdbe_add_op2(v, 141, p_agg_info.sortingIdx, reg_record)
-				0
 				sqlite3_release_temp_reg(p_parse, reg_record)
 				sqlite3_release_temp_range(p_parse, reg_base, n_col)
-				0
 				sqlite3_where_end(pwi_nfo)
 				mut __c2v_postfix_value_33 := p_parse.nTab
 				p_parse.nTab++
 				sort_pt_ab = __c2v_postfix_value_33
 				p_agg_info.sortingIdxPTab = sort_pt_ab
 				sort_out = sqlite3_get_temp_reg(p_parse)
-				0
 				sqlite3_vdbe_add_op3(v, 123, sort_pt_ab, sort_out, n_col)
 				sqlite3_vdbe_add_op2(v, 34, p_agg_info.sortingIdx, addr_end)
-				0
-				0
 				p_agg_info.useSortingIdx = U8(1)
-				0
-				0
 			}
 			if p_parse.pIdxEpr {
 				aggregate_convert_indexed_expr_ref_to_column(p_agg_info)
@@ -5264,50 +5107,36 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 			sqlite3_vdbe_add_op4(v, 92, iam_em, ibm_em, p_group_by.nExpr, &i8(voidptr(sqlite3_key_info_ref(p_key_info))), (-9))
 			addr1 = sqlite3_vdbe_current_addr(v)
 			sqlite3_vdbe_add_op3(v, 14, addr1 + 1, 0, addr1 + 1)
-			0
 			sqlite3_vdbe_add_op2(v, 10, reg_output_row, addr_output_row)
-			0
 			sqlite3_expr_code_move(p_parse, ibm_em, iam_em, p_group_by.nExpr)
 			sqlite3_vdbe_add_op2(v, 61, i_abort_flag, addr_end)
-			0
-			0
 			sqlite3_vdbe_add_op2(v, 10, reg_reset, addr_reset)
-			0
 			sqlite3_vdbe_jump_here(v, addr1)
 			update_accumulator(p_parse, i_use_flag, p_agg_info, e_dist)
 			sqlite3_vdbe_add_op2(v, 73, 1, i_use_flag)
-			0
 			if group_by_sort {
 				sqlite3_vdbe_add_op2(v, 38, p_agg_info.sortingIdx, addr_top_of_loop)
-				0
 			} else {
-				0
 				sqlite3_where_end(pwi_nfo)
 				sqlite3_vdbe_change_to_noop(v, addr_sorting_idx)
 			}
 			sqlite3_expr_list_delete(db, p_distinct)
 			sqlite3_vdbe_add_op2(v, 10, reg_output_row, addr_output_row)
-			0
 			sqlite3_vdbe_goto(v, addr_end)
 			addr_set_abort = sqlite3_vdbe_current_addr(v)
 			sqlite3_vdbe_add_op2(v, 73, 1, i_abort_flag)
-			0
 			sqlite3_vdbe_add_op1(v, 69, reg_output_row)
 			sqlite3_vdbe_resolve_label(v, addr_output_row)
 			addr_output_row = sqlite3_vdbe_current_addr(v)
 			sqlite3_vdbe_add_op2(v, 61, i_use_flag, addr_output_row + 2)
-			0
-			0
 			sqlite3_vdbe_add_op1(v, 69, reg_output_row)
 			finalize_agg_functions(p_parse, p_agg_info)
 			sqlite3_expr_if_false(p_parse, p_having, addr_output_row + 1, 16)
 			select_inner_loop(p_parse, p, -1, &s_sort, &s_distinct, p_dest, addr_output_row + 1, addr_set_abort)
 			sqlite3_vdbe_add_op1(v, 69, reg_output_row)
-			0
 			sqlite3_vdbe_resolve_label(v, addr_reset)
 			reset_accumulator(p_parse, p_agg_info)
 			sqlite3_vdbe_add_op2(v, 73, 0, i_use_flag)
-			0
 			sqlite3_vdbe_add_op1(v, 69, reg_reset)
 			if int(dist_flag) != 0 && e_dist != 0 {
 				pf := unsafe { p_agg_info.aFunc + 0 }
@@ -5371,13 +5200,11 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 				}
 				assign_aggregate_registers(p_parse, p_agg_info)
 				reset_accumulator(p_parse, p_agg_info)
-				0
 				pwi_nfo = sqlite3_where_begin(p_parse, p_tab_list, p_where, p_min_max_order_by, p_distinct, p, U16(int(min_max_flag) | int(dist_flag)), 0)
 				if usize(pwi_nfo) == usize(0) {
 					unsafe { goto select_end
 					 }
 				}
-				0
 				e_dist = sqlite3_where_is_distinct(pwi_nfo)
 				update_accumulator(p_parse, reg_acc, p_agg_info, e_dist)
 				if e_dist != 0 {
@@ -5392,7 +5219,6 @@ fn sqlite3_select(p_parse &Parse, p &Select, p_dest &SelectDest) int {
 				if min_max_flag {
 					sqlite3_where_min_max_opt_early_out(v, pwi_nfo)
 				}
-				0
 				sqlite3_where_end(pwi_nfo)
 				finalize_agg_functions(p_parse, p_agg_info)
 			}

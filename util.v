@@ -13,7 +13,6 @@ fn sqlite3_is_na_n(x f64) int {
 	y := U64(0)
 	C.memcpy(voidptr(&y), voidptr(&x), sizeof(y))
 	rc = ((y & ((U64(2047)) << 52)) == ((U64(2047)) << 52) && (y & (((U64(1)) << 52) - U64(1))) != U64(0))
-	0
 	return rc
 }
 
@@ -742,9 +741,6 @@ fn compare2pow63(z_num &i8, incr int) int {
 	}
 	if c == 0 {
 		c = int(z_num[18 * incr]) - int(`8`)
-		0
-		0
-		0
 	}
 	return c
 }
@@ -791,9 +787,6 @@ fn sqlite3_atoi64(z_num &i8, p_num &I64, length int, enc U8) int {
 	for i = 0; usize(unsafe { z_num + i }) < usize(z_end) && c2v_assign[u32](unsafe { &c }, u32(u32(z_num[i]) - u32(`0`))) <= u32(9); i += incr {
 		u = u * U64(10) + U64(c)
 	}
-	0
-	0
-	0
 	if u > U64((I64(u32(4294967295)) | ((I64(2147483647)) << 32))) {
 		unsafe { *p_num = if neg {
 			((I64(-1)) - (I64(u32(4294967295)) | ((I64(2147483647)) << 32)))
@@ -910,11 +903,9 @@ fn sqlite3_get_int32(z_num &i8, p_value &int) int {
 	for i = 0; i < 11 && c2v_assign[int](unsafe { &c }, int(z_num[i] - int(`0`))) >= 0 && c <= 9; i++ {
 		v = v * Sqlite_int64(10) + Sqlite_int64(c)
 	}
-	0
 	if i > 10 {
 		return 0
 	}
-	0
 	if v - Sqlite_int64(neg) > Sqlite_int64(2147483647) {
 		return 0
 	}
@@ -1268,7 +1259,6 @@ fn sqlite3_varint_len(v U64) int {
 
 @[c:'sqlite3Get4byte']
 fn sqlite3_get4byte(p &U8) u32 {
-	0
 	return (u32(p[0]) << 24) | u32((int(p[1]) << 16)) | u32((int(p[2]) << 8)) | u32(p[3])
 }
 
@@ -1316,7 +1306,6 @@ fn sqlite3_safety_check_ok(db &Sqlite3) int {
 	e_open_state = db.eOpenState
 	if int(e_open_state) != 118 {
 		if sqlite3_safety_check_sick_or_ok(db) {
-			0
 			log_bad_connection(c'unopened')
 		}
 		return 0
@@ -1330,7 +1319,6 @@ fn sqlite3_safety_check_sick_or_ok(db &Sqlite3) int {
 	e_open_state := U8(0)
 	e_open_state = db.eOpenState
 	if int(e_open_state) != 186 && int(e_open_state) != 118 && int(e_open_state) != 109 {
-		0
 		log_bad_connection(c'invalid')
 		return 0
 	} else {
@@ -1341,19 +1329,11 @@ fn sqlite3_safety_check_sick_or_ok(db &Sqlite3) int {
 @[c:'sqlite3AddInt64']
 fn sqlite3_add_int64(pa &I64, ib I64) int {
 	ia := (unsafe { *pa })
-	0
-	0
-	0
-	0
 	if ib >= I64(0) {
-		0
-		0
 		if ia > I64(0) && (I64(u32(4294967295)) | ((I64(2147483647)) << 32)) - ia < ib {
 			return 1
 		}
 	} else {
-		0
-		0
 		if ia < I64(0) && -(ia + (I64(u32(4294967295)) | ((I64(2147483647)) << 32))) > ib + I64(1) {
 			return 1
 		}
@@ -1364,10 +1344,7 @@ fn sqlite3_add_int64(pa &I64, ib I64) int {
 
 @[c:'sqlite3SubInt64']
 fn sqlite3_sub_int64(pa &I64, ib I64) int {
-	0
 	if ib == ((I64(-1)) - (I64(u32(4294967295)) | ((I64(2147483647)) << 32))) {
-		0
-		0
 		if (unsafe { *pa }) >= I64(0) {
 			return 1
 		}

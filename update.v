@@ -8,7 +8,6 @@ fn sqlite3_column_default(v &Vdbe, p_tab &Table, i int, i_reg int) {
 	if p_col.iDflt {
 		p_value := unsafe { &Sqlite3_value(nil) }
 		enc := sqlite3_vdbe_db(v).enc
-		0
 		sqlite3_value_from_expr(sqlite3_vdbe_db(v), sqlite3_column_expr(p_tab, p_col), enc, U8(p_col.affinity), &&Sqlite3_value(&&Sqlite3_value(c2v_address_of(&p_value))))
 		if p_value {
 			sqlite3_vdbe_append_p4(v, voidptr(p_value), (-11))
@@ -187,7 +186,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 	} else {
 		sqlite3_primary_key_index(p_tab)
 	} }
-	0
 	n_idx = 0
 	for p_idx = p_tab.pIndex; p_idx;  {
 		if usize(p_pk) == usize(p_idx) {
@@ -242,8 +240,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 			} else if !isnil(p_pk) && (int(p_tab.aCol[j].colFlags) & 1) != 0 {
 				chng_pk = U8(1)
 			} else if int(p_tab.aCol[j].colFlags) & 96 {
-				0
-				0
 				sqlite3_error_msg(p_parse, c'cannot UPDATE generated column "%s"', voidptr(p_tab.aCol[j].zCnName))
 				unsafe { goto update_cleanup
 				 }
@@ -278,8 +274,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 	chng_key = U8(int(chng_rowid) + int(chng_pk))
 	if p_tab.tabFlags & u32(96) {
 		b_progress := 0
-		0
-		0
 		for {
 			b_progress = 0
 			for i = 0; i < int(p_tab.nCol); i++ {
@@ -489,7 +483,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 			}
 			if e_one_pass == 2 && (n_idx - int((ai_cur_one_pass[1] >= 0))) > 0 {
 				addr_once = sqlite3_vdbe_add_op0(v, 15)
-				0
 			}
 			sqlite3_open_table_and_indices(p_parse, p_tab, 116, U8(0), i_base_cur, a_to_open, &i_not_used1, &i_not_used2)
 			if addr_once {
@@ -499,18 +492,14 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 		if e_one_pass != 0 {
 			if ai_cur_one_pass[0] != i_data_cur && ai_cur_one_pass[1] != i_data_cur {
 				sqlite3_vdbe_add_op4_int(v, 28, i_data_cur, label_break, reg_key, n_key)
-				0
 			}
 			if e_one_pass != 1 {
 				label_continue = sqlite3_vdbe_make_label(p_parse)
 			}
 			sqlite3_vdbe_add_op2(v, 51, if p_pk { reg_key } else { reg_old_rowid }, label_break)
-			0
-			0
 		} else if !isnil(p_pk) || n_change_from {
 			label_continue = sqlite3_vdbe_make_label(p_parse)
 			sqlite3_vdbe_add_op2(v, 36, i_eph, label_break)
-			0
 			addr_top = sqlite3_vdbe_current_addr(v)
 			if n_change_from {
 				if !is_view {
@@ -519,26 +508,20 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 							sqlite3_vdbe_add_op3(v, 96, i_eph, i, i_pk + i)
 						}
 						sqlite3_vdbe_add_op4_int(v, 28, i_data_cur, label_continue, i_pk, int(n_pk))
-						0
 					} else {
 						sqlite3_vdbe_add_op2(v, 137, i_eph, reg_old_rowid)
 						sqlite3_vdbe_add_op3(v, 31, i_data_cur, label_continue, reg_old_rowid)
-						0
 					}
 				}
 			} else {
 				sqlite3_vdbe_add_op2(v, 136, i_eph, reg_key)
 				sqlite3_vdbe_add_op4_int(v, 28, i_data_cur, label_continue, reg_key, 0)
-				0
 			}
 		} else {
 			sqlite3_vdbe_add_op2(v, 36, i_eph, label_break)
-			0
 			label_continue = sqlite3_vdbe_make_label(p_parse)
 			addr_top = sqlite3_vdbe_add_op2(v, 137, i_eph, reg_old_rowid)
-			0
 			sqlite3_vdbe_add_op3(v, 31, i_data_cur, label_continue, reg_old_rowid)
-			0
 		}
 	}
 	if chng_rowid {
@@ -548,7 +531,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 			sqlite3_vdbe_add_op3(v, 96, i_eph, i_rowid_expr, reg_new_rowid)
 		}
 		sqlite3_vdbe_add_op1(v, 13, reg_new_rowid)
-		0
 	}
 	if int(chng_pk) || has_fk || !isnil(p_trigger) {
 		oldmask := (if has_fk { sqlite3_fk_oldmask(p_parse, p_tab) } else { u32(0) })
@@ -557,7 +539,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 			col_flags := u32(p_tab.aCol[i].colFlags)
 			k = int(sqlite3_table_column_to_storage(p_tab, I16(i))) + reg_old
 			if oldmask == u32(4294967295) || (i < 32 && (oldmask & ((u32(1)) << i)) != u32(0)) || (col_flags & u32(1)) != u32(0) {
-				0
 				sqlite3_expr_code_get_column_of_table(v, p_tab, i_data_cur, i, k)
 			} else {
 				sqlite3_vdbe_add_op2(v, 77, 0, k)
@@ -586,8 +567,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 					sqlite3_expr_code(p_parse, c2v_at(&p_changes.a[0], isize(j)).pExpr, k)
 				}
 			} else if 0 == (tmask & 1) || i > 31 || (u32(newmask) & ((u32(1)) << i)) {
-				0
-				0
 				sqlite3_expr_code_get_column_of_table(v, p_tab, i_data_cur, i, k)
 				b_finish_seek = 0
 			} else {
@@ -597,8 +576,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 		k++
 	}
 	if p_tab.tabFlags & u32(96) {
-		0
-		0
 		sqlite3_compute_generated_columns(p_parse, reg_new, p_tab)
 	}
 	if tmask & 1 {
@@ -607,10 +584,8 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 		if !is_view {
 			if p_pk {
 				sqlite3_vdbe_add_op4_int(v, 28, i_data_cur, label_continue, reg_key, n_key)
-				0
 			} else {
 				sqlite3_vdbe_add_op3(v, 31, i_data_cur, label_continue, reg_old_rowid)
-				0
 			}
 			i = 0
 			for k = reg_new; i < int(p_tab.nCol); i++ {
@@ -624,8 +599,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 				k++
 			}
 			if p_tab.tabFlags & u32(96) {
-				0
-				0
 				sqlite3_compute_generated_columns(p_parse, reg_new, p_tab)
 			}
 		}
@@ -638,7 +611,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 			} else {
 				sqlite3_vdbe_add_op3(v, 31, i_data_cur, label_continue, reg_old_rowid)
 			}
-			0
 		}
 		if has_fk {
 			sqlite3_fk_check(p_parse, p_tab, reg_old_rowid, 0, axr_ef, int(chng_key))
@@ -675,7 +647,6 @@ fn sqlite3_update(p_parse &Parse, p_tab_list &SrcList, p_changes &ExprList, p_wh
 	} else {
 		sqlite3_vdbe_resolve_label(v, label_continue)
 		sqlite3_vdbe_add_op2(v, 40, i_eph, addr_top)
-		0
 	}
 	sqlite3_vdbe_resolve_label(v, label_break)
 	if int(p_parse.nested) == 0 && usize(p_parse.pTriggerTab) == usize(0) && usize(p_upsert) == usize(0) {
@@ -796,7 +767,6 @@ fn update_virtual_table(p_parse &Parse, p_src &SrcList, p_tab &Table, p_changes 
 			sqlite3_where_end(pwi_nfo)
 		}
 		addr = sqlite3_vdbe_add_op1(v, 36, ephem_tab)
-		0
 		for i = 0; i < n_arg; i++ {
 			sqlite3_vdbe_add_op3(v, 96, ephem_tab, i, reg_arg + i)
 		}
@@ -807,7 +777,6 @@ fn update_virtual_table(p_parse &Parse, p_src &SrcList, p_tab &Table, p_changes 
 	sqlite3_may_abort(p_parse)
 	if e_one_pass == 0 {
 		sqlite3_vdbe_add_op2(v, 40, ephem_tab, addr + 1)
-		0
 		sqlite3_vdbe_jump_here(v, addr)
 		sqlite3_vdbe_add_op2(v, 124, ephem_tab, 0)
 	} else {

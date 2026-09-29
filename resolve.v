@@ -110,16 +110,12 @@ fn sqlite3_expr_col_used(p_expr &Expr) Bitmask {
 	n = int(p_expr.iColumn)
 	p_ex_tab = p_expr.y.pTab
 	if (p_ex_tab.tabFlags & u32(96)) != u32(0) && (int(p_ex_tab.aCol[n].colFlags) & 96) != 0 {
-		0
-		0
 		return if int(p_ex_tab.nCol) >= (int((sizeof(Bitmask) * u64(8)))) {
 			(Bitmask(-1))
 		} else {
 			((Bitmask(1)) << int(p_ex_tab.nCol)) - Bitmask(1)
 		}
 	} else {
-		0
-		0
 		if n >= (int((sizeof(Bitmask) * u64(8)))) {
 			n = (int((sizeof(Bitmask) * u64(8)))) - 1
 		}
@@ -185,10 +181,7 @@ fn lookup_name(p_parse &Parse, z_db &i8, z_tab &i8, p_right &Expr, pnc &NameCont
 	pfj_match := unsafe { &ExprList(nil) }
 	z_col := p_right.u.zToken
 	p_expr.iTable = -1
-	0
 	if z_db {
-		0
-		0
 		if (pnc.ncFlags & (2 | 4)) != 0 {
 			z_db = 0
 		} else {
@@ -369,7 +362,6 @@ fn lookup_name(p_parse &Parse, z_db &i8, z_tab &i8, p_right &Expr, pnc &NameCont
 					cnt++
 					p_match = 0
 					if p_expr.iTable == 2 {
-						0
 						if (int(p_parse.eParseMode) >= 2) {
 							p_expr.iColumn = YnVar(i_col)
 							p_expr.y.pTab = p_tab
@@ -391,16 +383,12 @@ fn lookup_name(p_parse &Parse, z_db &i8, z_tab &i8, p_right &Expr, pnc &NameCont
 							if i_col < 0 {
 								p_expr.affExpr = i8(68)
 							} else if p_expr.iTable == 0 {
-								0
-								0
 								p_parse.oldmask |= (if i_col >= 32 {
 									u32(4294967295)
 								} else {
 									((u32(1)) << i_col)
 								})
 							} else {
-								0
-								0
 								p_parse.newmask |= (if i_col >= 32 {
 									u32(4294967295)
 								} else {
@@ -556,16 +544,12 @@ fn sqlite3_create_column_expr(db &Sqlite3, p_src &SrcList, i_src int, i_col int)
 		} else {
 			p.iColumn = YnVar(i_col)
 			if (p_tab.tabFlags & u32(96)) != u32(0) && (int(p_tab.aCol[i_col].colFlags) & 96) != 0 {
-				0
-				0
 				p_item.colUsed = if int(p_tab.nCol) >= 64 {
 					(Bitmask(-1))
 				} else {
 					((Bitmask(1)) << int(p_tab.nCol)) - Bitmask(1)
 				}
 			} else {
-				0
-				0
 				p_item.colUsed |= (Bitmask(1)) << (if i_col >= (int((sizeof(Bitmask) * u64(8)))) {
 					(int((sizeof(Bitmask) * u64(8)))) - 1
 				} else {
@@ -673,7 +657,6 @@ fn resolve_expr_step(p_walker &Walker, p_expr &Expr) int {
 				p = p.pNext
 				i++
 			}
-			0
 			p_expr.u.iValue = (int(p_expr.op) == 52)
 			p_expr.flags |= u32(2048)
 			p_expr.op = U8(156)
@@ -697,12 +680,9 @@ fn resolve_expr_step(p_walker &Walker, p_expr &Expr) int {
 				p_right = p_expr
 			} else {
 				p_left := p_expr.pLeft
-				0
-				0
 				if (pnc.ncFlags & (32 | 8)) != 0 {
 					not_valid_impl(p_parse, pnc, c'the "." operator', unsafe { nil }, p_expr)
 				}
-				0
 				p_right = p_expr.pRight
 				if int(p_right.op) == 60 {
 					z_db = 0
@@ -782,7 +762,6 @@ fn resolve_expr_step(p_walker &Walker, p_expr &Expr) int {
 					if (pnc.ncFlags & (32 | 2 | 8)) != 0 {
 						not_valid_impl(p_parse, pnc, c'non-deterministic functions', unsafe { nil }, p_expr)
 					}
-					0
 				} else {
 					p_expr.op2 = U8(pnc.ncFlags & 46)
 				}
@@ -866,8 +845,6 @@ fn resolve_expr_step(p_walker &Walker, p_expr &Expr) int {
 					}
 					if !isnil(pnc_2) && !isnil(p_def) {
 						p_expr.op2 += pnc_2.nNestedSelect
-						0
-						0
 						pnc_2.ncFlags |= u32(16) | ((p_def.funcFlags ^ u32(134217728)) & u32((4096 | 134217728)))
 					}
 				}
@@ -876,15 +853,8 @@ fn resolve_expr_step(p_walker &Walker, p_expr &Expr) int {
 			return 1
 		}
 		20, 139, 50 {
-			0
-			0
-			0
 			if ((p_expr.flags & u32(4096)) != u32(0)) {
 				n_ref := pnc.nRef
-				0
-				0
-				0
-				0
 				if int(p_expr.op) == 20 {
 					p_parse.bHasExists = Bft(1)
 				}
@@ -901,14 +871,9 @@ fn resolve_expr_step(p_walker &Walker, p_expr &Expr) int {
 			}
 		}
 		157 {
-			0
-			0
-			0
-			0
 			if (pnc.ncFlags & (4 | 2 | 32 | 8)) != 0 {
 				not_valid_impl(p_parse, pnc, c'parameters', p_expr, p_expr)
 			}
-			0
 		}
 		45, 46 {
 			p_right_2 := sqlite3_expr_skip_collate_and_likely(p_expr.pRight)
@@ -946,15 +911,6 @@ fn resolve_expr_step(p_walker &Walker, p_expr &Expr) int {
 				n_right = sqlite3_expr_vector_size(p_expr.pRight)
 			}
 			if n_left != n_right {
-				0
-				0
-				0
-				0
-				0
-				0
-				0
-				0
-				0
 				sqlite3_error_msg(p_parse, c'row value misused')
 				sqlite3_record_error_offset_of_expr(p_parse.db, p_expr)
 			}
@@ -1396,8 +1352,6 @@ fn sqlite3_resolve_expr_names(pnc &NameContext, p_expr &Expr) int {
 	}
 	sqlite3_walk_expr_nn(&w, p_expr)
 	w.pParse.nHeight -= p_expr.nHeight
-	0
-	0
 	p_expr.flags |= u32((pnc.ncFlags & (16 | 32768)))
 	pnc.ncFlags |= saved_has_agg
 	return int(pnc.nNcErr > 0 || w.pParse.nErr > 0)
@@ -1429,8 +1383,6 @@ fn sqlite3_resolve_expr_list_names(pnc &NameContext, p_list &ExprList) int {
 		}
 		sqlite3_walk_expr_nn(&w, p_expr)
 		w.pParse.nHeight -= p_expr.nHeight
-		0
-		0
 		if pnc.ncFlags & (16 | 4096 | 32768 | 134217728) {
 			p_expr.flags |= u32((pnc.ncFlags & (16 | 32768)))
 			saved_has_agg |= pnc.ncFlags & (16 | 4096 | 32768 | 134217728)

@@ -55,7 +55,6 @@ fn open_stat_table(p_parse &Parse, i_db int, i_stat_cur int, z_where &i8, z_wher
 	for i = 0; i < n_to_open; i++ {
 		sqlite3_vdbe_add_op4_int(v, 116, i_stat_cur + i, int(a_root[i]), i_db, 3)
 		sqlite3_vdbe_change_p5(v, U16(a_create_tbl[i]))
-		0
 	}
 }
 
@@ -223,18 +222,15 @@ fn analyze_one_table(p_parse &Parse, p_tab &Table, p_only_idx &Index, i_stat_cur
 			n_col_test = if int(p_idx.uniqNotNull) { int(p_idx.nKeyCol) - 1 } else { n_col - 1 }
 		}
 		sqlite3_vdbe_load_string(v, reg_idxname, z_idx_name)
-		0
 		sqlite3_touch_register(p_parse, reg_prev + n_col_test)
 		sqlite3_vdbe_add_op3(v, 114, i_idx_cur, int(p_idx.tnum), i_db)
 		sqlite3_vdbe_set_p4_key_info(p_parse, p_idx)
-		0
 		sqlite3_vdbe_add_op2(v, 73, db.nAnalysisLimit, reg_temp2)
 		sqlite3_vdbe_add_op2(v, 73, n_col, reg_stat + 1)
 		sqlite3_vdbe_add_op2(v, 73, int(p_idx.nKeyCol), reg_rowid)
 		sqlite3_vdbe_add_op3(v, 100, i_idx_cur, reg_temp, ((db.dbOptFlags & u32(2048)) != u32(0)))
 		sqlite3_vdbe_add_function_call(p_parse, 0, reg_stat + 1, reg_stat, 4, &statInitFuncdef, 0)
 		addr_goto_end = sqlite3_vdbe_add_op1(v, 36, i_idx_cur)
-		0
 		sqlite3_vdbe_add_op2(v, 73, 0, reg_chng)
 		addr_next_row = sqlite3_vdbe_current_addr(v)
 		if n_col_test > 0 {
@@ -248,16 +244,13 @@ fn analyze_one_table(p_parse &Parse, p_tab &Table, p_only_idx &Index, i_stat_cur
 			addr_next_row = sqlite3_vdbe_current_addr(v)
 			if n_col_test == 1 && int(p_idx.nKeyCol) == 1 && (int(p_idx.onError) != 0) {
 				sqlite3_vdbe_add_op2(v, 52, reg_prev, end_distinct_test)
-				0
 			}
 			for i = 0; i < n_col_test; i++ {
 				p_coll := &i8(voidptr(sqlite3_locate_coll_seq(p_parse, p_idx.azColl[i])))
 				sqlite3_vdbe_add_op2(v, 73, i, reg_chng)
 				sqlite3_vdbe_add_op3(v, 96, i_idx_cur, i, reg_temp)
-				0
 				a_goto_chng[i] = sqlite3_vdbe_add_op4(v, 53, reg_temp, 0, reg_prev + i, p_coll, (-2))
 				sqlite3_vdbe_change_p5(v, U16(128))
-				0
 			}
 			sqlite3_vdbe_add_op2(v, 73, n_col_test, reg_chng)
 			sqlite3_vdbe_goto(v, end_distinct_test)
@@ -265,7 +258,6 @@ fn analyze_one_table(p_parse &Parse, p_tab &Table, p_only_idx &Index, i_stat_cur
 			for i = 0; i < n_col_test; i++ {
 				sqlite3_vdbe_jump_here(v, a_goto_chng[i])
 				sqlite3_vdbe_add_op3(v, 96, i_idx_cur, i, reg_prev + i)
-				0
 			}
 			sqlite3_vdbe_resolve_label(v, end_distinct_test)
 			sqlite3_db_free(db, voidptr(a_goto_chng))
@@ -277,19 +269,14 @@ fn analyze_one_table(p_parse &Parse, p_tab &Table, p_only_idx &Index, i_stat_cur
 			j3 := 0
 
 			j1 = sqlite3_vdbe_add_op1(v, 51, reg_temp)
-			0
 			j2 = sqlite3_vdbe_add_op1(v, 16, reg_temp)
-			0
 			j3 = sqlite3_vdbe_add_op4_int(v, 24, i_idx_cur, 0, reg_prev, 1)
-			0
 			sqlite3_vdbe_jump_here(v, j1)
 			sqlite3_vdbe_add_op2(v, 40, i_idx_cur, addr_next_row)
-			0
 			sqlite3_vdbe_jump_here(v, j2)
 			sqlite3_vdbe_jump_here(v, j3)
 		} else {
 			sqlite3_vdbe_add_op2(v, 40, i_idx_cur, addr_next_row)
-			0
 		}
 		if p_idx.pPartIdxWhere {
 			sqlite3_vdbe_jump_here(v, addr_goto_end)
@@ -305,10 +292,8 @@ fn analyze_one_table(p_parse &Parse, p_tab &Table, p_only_idx &Index, i_stat_cur
 		}
 	}
 	if usize(p_only_idx) == usize(0) && int(need_table_cnt) {
-		0
 		sqlite3_vdbe_add_op2(v, 100, i_tab_cur, reg_stat1)
 		j_zero_rows = sqlite3_vdbe_add_op1(v, 17, reg_stat1)
-		0
 		sqlite3_vdbe_add_op2(v, 77, 0, reg_idxname)
 		sqlite3_vdbe_add_op4(v, 99, reg_tabname, 3, reg_temp, c'BBB', 0)
 		sqlite3_vdbe_add_op2(v, 129, i_stat_cur, reg_new_rowid)

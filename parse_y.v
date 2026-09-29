@@ -99,7 +99,6 @@ fn token_expr(p_parse &Parse, op int, t Token) &Expr {
 		p.op = U8(op)
 		p.affExpr = i8(0)
 		p.flags = u32(8388608)
-		0
 		p.pRight = 0
 		p.pLeft = p.pRight
 		p.pAggInfo = 0

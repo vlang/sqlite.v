@@ -88,7 +88,6 @@ fn wal_index_page_realloc(p_wal &Wal, i_page int, pp_page &&u32) int {
 		}
 	} else {
 		rc = sqlite3_os_shm_map(p_wal.pDbFd, i_page, int((sizeof(Ht_slot) * u64((4096 * 2)) + u64(4096) * sizeof(u32))), int(p_wal.writeLock), &voidptr(voidptr(unsafe { p_wal.apWiData + i_page })))
-		0
 		if rc == 0 {
 			if i_page > 0 && sqlite3_fault_sim(600) {
 				rc = 7
@@ -106,7 +105,6 @@ fn wal_index_page_realloc(p_wal &Wal, i_page int, pp_page &&u32) int {
 
 @[c:'walIndexPage']
 fn wal_index_page(p_wal &Wal, i_page int, pp_page &&u32) int {
-	0
 	if p_wal.nWiData <= i_page || usize(c2v_assign[&u32](pp_page, p_wal.apWiData[i_page])) == usize(0) {
 		return wal_index_page_realloc(p_wal, i_page, pp_page)
 	}
@@ -115,13 +113,11 @@ fn wal_index_page(p_wal &Wal, i_page int, pp_page &&u32) int {
 
 @[c:'walCkptInfo']
 fn wal_ckpt_info(p_wal &Wal) &WalCkptInfo {
-	0
 	return &WalCkptInfo(voidptr(unsafe { p_wal.apWiData[0] + (sizeof(WalIndexHdr) / u64(2)) }))
 }
 
 @[c:'walIndexHdr']
 fn wal_index_hdr(p_wal &Wal) &WalIndexHdr {
-	0
 	return &WalIndexHdr(voidptr(p_wal.apWiData[0]))
 }
 
@@ -253,7 +249,6 @@ fn wal_lock_shared(p_wal &Wal, lock_idx int) int {
 		return 0
 	}
 	rc = sqlite3_os_shm_lock(p_wal.pDbFd, lock_idx, 1, 2 | 4)
-	0
 	return rc
 }
 
@@ -263,7 +258,6 @@ fn wal_unlock_shared(p_wal &Wal, lock_idx int) {
 		return
 	}
 	sqlite3_os_shm_lock(p_wal.pDbFd, lock_idx, 1, 1 | 4)
-	0
 }
 
 @[c:'walLockExclusive']
@@ -273,7 +267,6 @@ fn wal_lock_exclusive(p_wal &Wal, lock_idx int, n int) int {
 		return 0
 	}
 	rc = sqlite3_os_shm_lock(p_wal.pDbFd, lock_idx, n, 2 | 8)
-	0
 	return rc
 }
 
@@ -283,7 +276,6 @@ fn wal_unlock_exclusive(p_wal &Wal, lock_idx int, n int) {
 		return
 	}
 	sqlite3_os_shm_lock(p_wal.pDbFd, lock_idx, n, 1 | 8)
-	0
 }
 
 @[c:'walHash']
@@ -329,7 +321,6 @@ fn wal_frame_page(i_frame u32) int {
 @[c:'walFramePgno']
 fn wal_frame_pgno(p_wal &Wal, i_frame u32) u32 {
 	i_hash := wal_frame_page(i_frame)
-	0
 	if i_hash == 0 {
 		return p_wal.apWiData[0][(sizeof(WalIndexHdr) * u64(2) + sizeof(WalCkptInfo)) / sizeof(u32) + u64(i_frame) - u64(1)]
 	}
@@ -342,9 +333,6 @@ fn wal_cleanup_hash(p_wal &Wal) {
 	i_limit := 0
 	n_byte := 0
 	i := 0
-	0
-	0
-	0
 	if p_wal.hdr.mxFrame == u32(0) {
 		return
 	}
@@ -402,7 +390,6 @@ fn wal_index_recover(p_wal &Wal) int {
 	if rc {
 		return rc
 	}
-	0
 	C.memset(voidptr(&p_wal.hdr), 0, sizeof(WalIndexHdr))
 	rc = sqlite3_os_file_size(p_wal.pWalFd, &n_size)
 	if rc != 0 {
@@ -449,7 +436,6 @@ fn wal_index_recover(p_wal &Wal) int {
 		}
 		sz_frame = sz_page + 24
 		a_frame = &U8(sqlite3_malloc64(Sqlite3_uint64(u64(sz_frame) + (sizeof(Ht_slot) * u64((4096 * 2)) + u64(4096) * sizeof(u32)))))
-		0
 		if isnil(a_frame) {
 			rc = 7
 			unsafe { goto recovery_error
@@ -478,7 +464,6 @@ fn wal_index_recover(p_wal &Wal) int {
 			if usize(a_share) == usize(0) {
 				break
 			}
-			0
 			p_wal.apWiData[i_pg] = a_private
 			for i_frame = i_first; i_frame <= i_last; i_frame++ {
 				i_offset := (I64(32) + I64((i_frame - u32(1))) * I64((sz_page + 24)))
@@ -500,14 +485,11 @@ fn wal_index_recover(p_wal &Wal) int {
 					p_wal.hdr.mxFrame = i_frame
 					p_wal.hdr.nPage = n_truncate
 					p_wal.hdr.szPage = U16(((sz_page & 65280) | (sz_page >> 16)))
-					0
-					0
 					a_frame_cksum[0] = p_wal.hdr.aFrameCksum[0]
 					a_frame_cksum[1] = p_wal.hdr.aFrameCksum[1]
 				}
 			}
 			p_wal.apWiData[i_pg] = a_share
-			0
 			n_hdr = u32((if i_pg == u32(0) {
 				(sizeof(WalIndexHdr) * u64(2) + sizeof(WalCkptInfo))
 			} else {
@@ -515,12 +497,10 @@ fn wal_index_recover(p_wal &Wal) int {
 			}))
 			n_hdr32 = u32(u64(n_hdr) / sizeof(u32))
 			C.memcpy(voidptr(unsafe { a_share + n_hdr32 }), voidptr(unsafe { a_private + n_hdr32 }), (sizeof(Ht_slot) * u64((4096 * 2)) + u64(4096) * sizeof(u32)) - u64(n_hdr))
-			0
 			if i_frame <= i_last {
 				break
 			}
 		}
-		0
 		sqlite3_free(voidptr(a_frame))
 	}
 	finished:
@@ -542,7 +522,6 @@ fn wal_index_recover(p_wal &Wal) int {
 				} else {
 					p_info.aReadMark[i] = u32(4294967295)
 				}
-				0
 				wal_unlock_exclusive(p_wal, (3 + i), 1)
 			} else if rc != 5 {
 				unsafe { goto recovery_error
@@ -554,7 +533,6 @@ fn wal_index_recover(p_wal &Wal) int {
 		}
 	}
 	recovery_error:
-	0
 	wal_unlock_exclusive(p_wal, i_lock, (3 + 0) - i_lock)
 	return rc
 }
@@ -610,7 +588,6 @@ fn sqlite3_wal_open(p_vfs &Sqlite3_vfs, p_db_fd &Sqlite3_file, z_wal_name &i8, b
 			p_ret.padToSectorBoundary = U8(0)
 		}
 		unsafe { *pp_wal = p_ret }
-		0
 	}
 	return rc
 }
@@ -731,7 +708,6 @@ fn wal_iterator_init(p_wal &Wal, n_backfill u32, pp &&WalIterator) int {
 	C.memset(voidptr(p), 0, u64(n_byte))
 	p.nSegment = n_segment
 	a_tmp = &Ht_slot(voidptr(unsafe { (&U8(voidptr(p))) + n_byte }))
-	0
 	for i = wal_frame_page(n_backfill + u32(1)); rc == 0 && i < n_segment; i++ {
 		s_loc := WalHashLoc{}
 		rc = wal_hash_get(p_wal, i, &s_loc)
@@ -761,7 +737,6 @@ fn wal_iterator_init(p_wal &Wal, n_backfill u32, pp &&WalIterator) int {
 		}
 	}
 	if rc != 0 {
-		0
 		wal_iterator_free(p)
 		p = 0
 	}
@@ -816,21 +791,17 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 	i := 0
 	p_info := &WalCkptInfo(0)
 	sz_page = wal_pagesize(p_wal)
-	0
-	0
 	p_info = wal_ckpt_info(p_wal)
 	if p_info.nBackfill < p_wal.hdr.mxFrame {
 		mx_safe_frame = p_wal.hdr.mxFrame
 		mx_page = p_wal.hdr.nPage
 		for i = 1; i < (8 - 3); i++ {
 			y := C.c2v_atomic_load_n__u32_int_u32((unsafe { &p_info.aReadMark[0] } + i), 0)
-			0
 			if mx_safe_frame > y {
 				rc = wal_busy_lock(p_wal, x_busy, voidptr(p_busy_arg), (3 + i), 1)
 				if rc == 0 {
 					i_mark := (if i == 1 { mx_safe_frame } else { u32(4294967295) })
 					C.c2v_atomic_store_n__u32_u32_int_((unsafe { &p_info.aReadMark[0] } + i), i_mark, 0)
-					0
 					wal_unlock_exclusive(p_wal, (3 + i), 1)
 				} else if rc == 5 {
 					mx_safe_frame = y
@@ -850,7 +821,6 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 			b_chg := C.memcmp(p_live.aSalt, p_wal.hdr.aSalt, sizeof([2]u32))
 			if 0 == b_chg {
 				p_info.nBackfillAttempted = mx_safe_frame
-				0
 				rc = sqlite3_os_sync(p_wal.pWalFd, ((sync_flags >> 2) & 3))
 				if rc == 0 {
 					n_req := (I64(mx_page) * I64(sz_page))
@@ -867,7 +837,6 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 				}
 				for rc == 0 && 0 == wal_iterator_next(p_iter, &i_dbpage, &i_frame) {
 					i_offset := I64(0)
-					0
 					if C.c2v_atomic_load_n__int_int_int((&db.u1.isInterrupted), 0) {
 						rc = if int(db.mallocFailed) { 7 } else { 9 }
 						break
@@ -881,7 +850,6 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 						break
 					}
 					i_offset = I64((i_dbpage - u32(1))) * I64(sz_page)
-					0
 					rc = sqlite3_os_write(p_wal.pDbFd, voidptr(z_buf), sz_page, i_offset)
 					if rc != 0 {
 						break
@@ -891,7 +859,6 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 				if rc == 0 {
 					if mx_safe_frame == wal_index_hdr(p_wal).mxFrame {
 						sz_db := I64(p_wal.hdr.nPage) * I64(sz_page)
-						0
 						rc = sqlite3_os_truncate(p_wal.pDbFd, sz_db)
 						if rc == 0 {
 							rc = sqlite3_os_sync(p_wal.pDbFd, ((sync_flags >> 2) & 3))
@@ -899,7 +866,6 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 					}
 					if rc == 0 {
 						C.c2v_atomic_store_n__u32_u32_int_((&p_info.nBackfill), mx_safe_frame, 0)
-						0
 					}
 				}
 			}
@@ -910,7 +876,6 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 		}
 	}
 	if rc == 0 && e_mode != 0 {
-		0
 		if p_info.nBackfill < p_wal.hdr.mxFrame {
 			rc = 5
 		} else if e_mode >= 2 {
@@ -927,7 +892,6 @@ fn wal_checkpoint(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (voidptr) int, 
 		}
 	}
 	walcheckpoint_out:
-	0
 	wal_iterator_free(p_iter)
 	return rc
 }
@@ -974,7 +938,6 @@ fn sqlite3_wal_close(p_wal &Wal, db &Sqlite3, sync_flags int, n_buf int, z_buf &
 			sqlite3_os_delete(p_wal.pVfs, p_wal.zWalName, 0)
 			sqlite3_end_benign_malloc()
 		}
-		0
 		sqlite3_free(voidptr(p_wal.apWiData))
 		sqlite3_free(voidptr(p_wal))
 	}
@@ -1006,8 +969,6 @@ fn wal_index_try_hdr(p_wal &Wal, p_changed &int) int {
 		unsafe { *p_changed = 1 }
 		C.memcpy(voidptr(&p_wal.hdr), voidptr(&h1), sizeof(WalIndexHdr))
 		p_wal.szPage = u32((int(p_wal.hdr.szPage) & 65024) + ((int(p_wal.hdr.szPage) & 1) << 16))
-		0
-		0
 	}
 	return 0
 }
@@ -1027,7 +988,6 @@ fn wal_index_read_hdr(p_wal &Wal, p_changed &int) int {
 			return rc
 		}
 	} else {
-		0
 	}
 	bad_hdr = (if page0 { wal_index_try_hdr(p_wal, p_changed) } else { 1 })
 	if bad_hdr {
@@ -1047,7 +1007,6 @@ fn wal_index_read_hdr(p_wal &Wal, p_changed &int) int {
 				if 0 == rc {
 					bad_hdr = wal_index_try_hdr(p_wal, p_changed)
 					if bad_hdr {
-						0
 						rc = wal_index_recover(p_wal)
 						unsafe { *p_changed = 1 }
 					}
@@ -1199,7 +1158,6 @@ fn wal_try_begin_read(p_wal &Wal, p_changed &int, use_wal int, p_cnt &int) int {
 				}
 			}
 		}
-		0
 		if rc != 0 {
 			return rc
 		} else if p_wal.bShmUnreliable {
@@ -1207,7 +1165,6 @@ fn wal_try_begin_read(p_wal &Wal, p_changed &int, use_wal int, p_cnt &int) int {
 		}
 	}
 	p_info = wal_ckpt_info(p_wal)
-	0
 	mx_read_mark := u32(0)
 	mx_i := 0
 	i := 0
@@ -1231,7 +1188,6 @@ fn wal_try_begin_read(p_wal &Wal, p_changed &int, use_wal int, p_cnt &int) int {
 	mx_frame = p_wal.hdr.mxFrame
 	for i = 1; i < (8 - 3); i++ {
 		this_mark := C.c2v_atomic_load_n__u32_int_u32((unsafe { &p_info.aReadMark[0] } + i), 0)
-		0
 		if mx_read_mark <= this_mark && this_mark <= mx_frame {
 			mx_read_mark = this_mark
 			mx_i = i
@@ -1255,12 +1211,10 @@ fn wal_try_begin_read(p_wal &Wal, p_changed &int, use_wal int, p_cnt &int) int {
 		return if rc == 5 { (-1) } else { (8 | (5 << 8)) }
 	}
 	rc = wal_lock_shared(p_wal, (3 + mx_i))
-	0
 	if rc {
 		return if (rc & 255) == 5 { (-1) } else { rc }
 	}
 	p_wal.minFrame = C.c2v_atomic_load_n__u32_int_u32((&p_info.nBackfill), 0) + u32(1)
-	0
 	wal_shm_barrier(p_wal)
 	if C.c2v_atomic_load_n__u32_int_u32((unsafe { &p_info.aReadMark[0] } + mx_i), 0) != mx_read_mark || C.memcmp(voidptr(wal_index_hdr(p_wal)), voidptr(&p_wal.hdr), sizeof(WalIndexHdr)) {
 		wal_unlock_shared(p_wal, (3 + mx_i))
@@ -1281,19 +1235,13 @@ fn wal_begin_read_transaction(p_wal &Wal, p_changed &int) int {
 			break
 		}
 	}
-	0
-	0
-	0
-	0
 	return rc
 }
 
 @[c:'sqlite3WalBeginReadTransaction']
 fn sqlite3_wal_begin_read_transaction(p_wal &Wal, p_changed &int) int {
 	rc := 0
-	0
 	rc = wal_begin_read_transaction(p_wal, p_changed)
-	0
 	return rc
 }
 
@@ -1329,7 +1277,6 @@ fn wal_find_frame(p_wal &Wal, pgno Pgno, pi_read &u32) int {
 		}
 		n_collide = (4096 * 2)
 		i_key = wal_hash(pgno)
-		0
 		for {
 			ih = u32(C.c2v_atomic_load_n__Ht_slot_int_Ht_slot((unsafe { s_loc.aHash + i_key }), 0))
 			if !(ih != u32(0)) {
@@ -1356,9 +1303,7 @@ fn wal_find_frame(p_wal &Wal, pgno Pgno, pi_read &u32) int {
 @[c:'sqlite3WalFindFrame']
 fn sqlite3_wal_find_frame(p_wal &Wal, pgno Pgno, pi_read &u32) int {
 	rc := 0
-	0
 	rc = wal_find_frame(p_wal, pgno, pi_read)
-	0
 	return rc
 }
 
@@ -1368,8 +1313,6 @@ fn sqlite3_wal_read_frame(p_wal &Wal, i_read u32, n_out int, p_out &U8) int {
 	i_offset := I64(0)
 	sz = int(p_wal.hdr.szPage)
 	sz = (sz & 65024) + ((sz & 1) << 16)
-	0
-	0
 	i_offset = (I64(32) + I64((i_read - u32(1))) * I64((sz + 24))) + I64(24)
 	return sqlite3_os_read(p_wal.pWalFd, voidptr(p_out), (if n_out > sz { sz } else { n_out }), i_offset)
 }
@@ -1393,11 +1336,9 @@ fn sqlite3_wal_begin_write_transaction(p_wal &Wal) int {
 		return rc
 	}
 	p_wal.writeLock = U8(1)
-	0
 	if C.memcmp(voidptr(&p_wal.hdr), voidptr(wal_index_hdr(p_wal)), sizeof(WalIndexHdr)) != 0 {
 		rc = (5 | (2 << 8))
 	}
-	0
 	if rc != 0 {
 		wal_unlock_exclusive(p_wal, 0, 1)
 		p_wal.writeLock = U8(0)
@@ -1422,7 +1363,6 @@ fn sqlite3_wal_undo(p_wal &Wal, x_undo fn (voidptr, Pgno) int, p_undo_ctx voidpt
 	if p_wal.writeLock {
 		i_max := p_wal.hdr.mxFrame
 		i_frame := Pgno(0)
-		0
 		C.memcpy(voidptr(&p_wal.hdr), voidptr(wal_index_hdr(p_wal)), sizeof(WalIndexHdr))
 		for i_frame = p_wal.hdr.mxFrame + u32(1); (rc == 0) && i_frame <= i_max; i_frame++ {
 			rc = x_undo(voidptr(p_undo_ctx), wal_frame_pgno(p_wal, i_frame))
@@ -1430,7 +1370,6 @@ fn sqlite3_wal_undo(p_wal &Wal, x_undo fn (voidptr, Pgno) int, p_undo_ctx voidpt
 		if i_max != p_wal.hdr.mxFrame {
 			wal_cleanup_hash(p_wal)
 		}
-		0
 		p_wal.iReCksum = u32(0)
 	}
 	return rc
@@ -1455,9 +1394,7 @@ fn sqlite3_wal_savepoint_undo(p_wal &Wal, a_wal_data &u32) int {
 		p_wal.hdr.mxFrame = a_wal_data[0]
 		p_wal.hdr.aFrameCksum[0] = a_wal_data[1]
 		p_wal.hdr.aFrameCksum[1] = a_wal_data[2]
-		0
 		wal_cleanup_hash(p_wal)
-		0
 		if p_wal.iReCksum > p_wal.hdr.mxFrame {
 			p_wal.iReCksum = u32(0)
 		}
@@ -1492,9 +1429,6 @@ fn wal_restart_log(p_wal &Wal) int {
 				break
 			}
 		}
-		0
-		0
-		0
 	}
 	return rc
 }
@@ -1623,7 +1557,6 @@ fn wal_frames(p_wal &Wal, sz_page int, p_list &PgHdr, n_truncate Pgno, is_commit
 		p_wal.hdr.aFrameCksum[1] = a_cksum[1]
 		p_wal.truncateOnCommit = U8(1)
 		rc = sqlite3_os_write(p_wal.pWalFd, voidptr(unsafe { &a_wal_hdr[0] }), int(sizeof([32]U8)), I64(0))
-		0
 		if rc != 0 {
 			return rc
 		}
@@ -1686,7 +1619,6 @@ fn wal_frames(p_wal &Wal, sz_page int, p_list &PgHdr, n_truncate Pgno, is_commit
 			sector_size := sqlite3_sector_size(p_wal.pWalFd)
 			w.iSyncPoint = ((i_offset + I64(sector_size) - I64(1)) / I64(sector_size)) * I64(sector_size)
 			b_sync = (w.iSyncPoint == i_offset)
-			0
 			for i_offset < w.iSyncPoint {
 				rc = wal_write_one_frame(&w, p_last, int(n_truncate), i_offset)
 				if rc {
@@ -1723,8 +1655,6 @@ fn wal_frames(p_wal &Wal, sz_page int, p_list &PgHdr, n_truncate Pgno, is_commit
 	}
 	if rc == 0 {
 		p_wal.hdr.szPage = U16(((sz_page & 65280) | (sz_page >> 16)))
-		0
-		0
 		p_wal.hdr.mxFrame = i_frame
 		if is_commit {
 			p_wal.hdr.iChange++
@@ -1735,16 +1665,13 @@ fn wal_frames(p_wal &Wal, sz_page int, p_list &PgHdr, n_truncate Pgno, is_commit
 			p_wal.iCallback = i_frame
 		}
 	}
-	0
 	return rc
 }
 
 @[c:'sqlite3WalFrames']
 fn sqlite3_wal_frames(p_wal &Wal, sz_page int, p_list &PgHdr, n_truncate Pgno, is_commit int, sync_flags int) int {
 	rc := 0
-	0
 	rc = wal_frames(p_wal, sz_page, p_list, n_truncate, is_commit, sync_flags)
-	0
 	return rc
 }
 
@@ -1757,14 +1684,10 @@ fn sqlite3_wal_checkpoint_vdup9(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (
 	if p_wal.readOnly {
 		return 8
 	}
-	0
-	0
 	if x_busy2 {
 	}
 	if e_mode != -1 {
 		rc = wal_lock_exclusive(p_wal, 1, 1)
-		0
-		0
 		if rc == 0 {
 			p_wal.ckptLock = U8(1)
 			if e_mode != 0 {
@@ -1781,9 +1704,7 @@ fn sqlite3_wal_checkpoint_vdup9(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (
 	} else {
 		rc = 0
 	}
-	0
 	if rc == 0 {
-		0
 		rc = wal_index_read_hdr(p_wal, &is_changed)
 		if e_mode2 > 0 {
 		}
@@ -1802,24 +1723,19 @@ fn sqlite3_wal_checkpoint_vdup9(p_wal &Wal, db &Sqlite3, e_mode int, x_busy fn (
 			if pn_log {
 				unsafe { *pn_log = int(p_wal.hdr.mxFrame) }
 			}
-			0
 			if pn_ckpt {
 				unsafe { *pn_ckpt = int(wal_ckpt_info(p_wal).nBackfill) }
 			}
 		}
 	}
-	0
 	if is_changed {
 		C.memset(voidptr(&p_wal.hdr), 0, sizeof(WalIndexHdr))
 	}
-	0
-	0
 	sqlite3_wal_end_write_transaction(p_wal)
 	if p_wal.ckptLock {
 		wal_unlock_exclusive(p_wal, 1, 1)
 		p_wal.ckptLock = U8(0)
 	}
-	0
 	return if rc == 0 && e_mode != e_mode2 { 5 } else { rc }
 }
 

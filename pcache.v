@@ -20,7 +20,6 @@ struct PCache {
 @[c:'pcacheManageDirtyList']
 fn pcache_manage_dirty_list(p_page &PgHdr, add_remove U8) {
 	p := p_page.pCache
-	0
 	if int(add_remove) & 1 {
 		if usize(p.pSynced) == usize(p_page) {
 			p.pSynced = p_page.pDirtyPrev
@@ -55,15 +54,12 @@ fn pcache_manage_dirty_list(p_page &PgHdr, add_remove U8) {
 			p.pSynced = p_page
 		}
 	}
-	0
 }
 
 @[c:'pcacheUnpin']
 fn pcache_unpin(p &PgHdr) {
 	if p.pCache.bPurgeable {
-		0
 		sqlite3Config.pcache2.xUnpin(p.pCache.pCache, p.pPage, 0)
-		0
 	}
 }
 
@@ -112,7 +108,6 @@ fn sqlite3_pcache_open(sz_page int, sz_extra int, b_purgeable int, x_stress fn (
 	p.pStress = p_stress
 	p.szCache = 100
 	p.szSpill = 1
-	0
 	return sqlite3_pcache_set_page_size(p, sz_page)
 }
 
@@ -130,7 +125,6 @@ fn sqlite3_pcache_set_page_size(p_cache &PCache, sz_page int) int {
 		}
 		p_cache.pCache = p_new
 		p_cache.szPage = sz_page
-		0
 	}
 	return 0
 }
@@ -141,8 +135,6 @@ fn sqlite3_pcache_fetch(p_cache &PCache, pgno Pgno, create_flag int) &Sqlite3_pc
 	p_res := &Sqlite3_pcache_page(0)
 	e_create = create_flag & int(p_cache.eCreate)
 	p_res = sqlite3Config.pcache2.xFetch(p_cache.pCache, pgno, e_create)
-	0
-	0
 	return p_res
 }
 
@@ -154,19 +146,15 @@ fn sqlite3_pcache_fetch_stress(p_cache &PCache, pgno Pgno, pp_page &&Sqlite3_pca
 	}
 	if sqlite3_pcache_pagecount(p_cache) > p_cache.szSpill {
 		for p_pg = p_cache.pSynced; !isnil(p_pg) && (p_pg.nRef || (int(p_pg.flags) & 8)); p_pg = p_pg.pDirtyPrev {
-			0
 		}
 		p_cache.pSynced = p_pg
 		if isnil(p_pg) {
 			for p_pg = p_cache.pDirtyTail; !isnil(p_pg) && p_pg.nRef; p_pg = p_pg.pDirtyPrev {
-				0
 			}
 		}
 		if p_pg {
 			rc := 0
-			0
 			rc = p_cache.xStress(voidptr(p_cache.pStress), p_pg)
-			0
 			if rc != 0 && rc != 5 {
 				return rc
 			}
@@ -237,7 +225,6 @@ fn sqlite3_pcache_make_dirty(p &PgHdr) {
 		p.flags &= ~16
 		if int(p.flags) & 1 {
 			p.flags ^= (2 | 1)
-			0
 			pcache_manage_dirty_list(p, U8(2))
 		}
 	}
@@ -248,7 +235,6 @@ fn sqlite3_pcache_make_clean(p &PgHdr) {
 	pcache_manage_dirty_list(p, U8(1))
 	p.flags &= ~(2 | 8 | 4)
 	p.flags |= 1
-	0
 	if p.nRef == I64(0) {
 		pcache_unpin(p)
 	}
@@ -257,7 +243,6 @@ fn sqlite3_pcache_make_clean(p &PgHdr) {
 @[c:'sqlite3PcacheCleanAll']
 fn sqlite3_pcache_clean_all(p_cache &PCache) {
 	p := &PgHdr(0)
-	0
 	for {
 		p = p_cache.pDirty
 		if !(usize(p) != usize(0)) {
@@ -270,7 +255,6 @@ fn sqlite3_pcache_clean_all(p_cache &PCache) {
 @[c:'sqlite3PcacheClearWritable']
 fn sqlite3_pcache_clear_writable(p_cache &PCache) {
 	p := &PgHdr(0)
-	0
 	for p = p_cache.pDirty; p; p = p.pDirtyNext {
 		p.flags &= ~(8 | 4)
 	}
@@ -290,7 +274,6 @@ fn sqlite3_pcache_clear_sync_flags(p_cache &PCache) {
 fn sqlite3_pcache_move(p &PgHdr, new_pgno Pgno) {
 	p_cache := p.pCache
 	p_other := &Sqlite3_pcache_page(0)
-	0
 	p_other = sqlite3Config.pcache2.xFetch(p_cache.pCache, new_pgno, 0)
 	if p_other {
 		pxp_age := &PgHdr(p_other.pExtra)
@@ -310,7 +293,6 @@ fn sqlite3_pcache_truncate(p_cache &PCache, pgno Pgno) {
 	if p_cache.pCache {
 		p := &PgHdr(0)
 		p_next := &PgHdr(0)
-		0
 		for p = p_cache.pDirty; p; p = p_next {
 			p_next = p.pDirtyNext
 			if p.pgno > pgno {
@@ -331,7 +313,6 @@ fn sqlite3_pcache_truncate(p_cache &PCache, pgno Pgno) {
 
 @[c:'sqlite3PcacheClose']
 fn sqlite3_pcache_close(p_cache &PCache) {
-	0
 	sqlite3Config.pcache2.xDestroy(p_cache.pCache)
 }
 

@@ -32,7 +32,6 @@ fn minmax_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 			return
 		}
 		if (sqlite3_mem_compare(argv[i_best], argv[i], p_coll) ^ mask) >= 0 {
-			0
 			i_best = i
 		}
 	}
@@ -292,7 +291,6 @@ fn substr_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 						c2v_pointer_postfix(voidptr(&z2), z2, isize(1))
 					}
 				}
-				0
 			}
 		}
 	}
@@ -339,7 +337,6 @@ fn substr_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 					c2v_pointer_postfix(voidptr(&z), z, isize(1))
 				}
 			}
-			0
 			p1--
 		}
 		for z2 = z; int((unsafe { *z2 })) && p2; p2-- {
@@ -348,7 +345,6 @@ fn substr_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 					c2v_pointer_postfix(voidptr(&z2), z2, isize(1))
 				}
 			}
-			0
 		}
 		sqlite3_result_text64(context, &i8(voidptr(z)), Sqlite3_uint64(i64((isize(z2) - isize(z)) / isize(sizeof(u8)))), (C2vFn_666e2028766f696470747229(voidptr(-1))), u8(1))
 	} else {
@@ -403,8 +399,6 @@ fn round_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 fn context_malloc(context &Sqlite3_context, n_byte I64) voidptr {
 	z := &i8(0)
 	db := sqlite3_context_db_handle(context)
-	0
-	0
 	if n_byte > I64(db.aLimit[0]) {
 		sqlite3_result_error_toobig(context)
 		z = 0
@@ -569,7 +563,6 @@ fn pattern_compare(z_pattern_param &U8, z_string_param &U8, p_info &CompareInfo,
 								c2v_pointer_postfix(voidptr(&z_string), z_string, isize(1))
 							}
 						}
-						0
 					}
 					return 2
 				}
@@ -718,8 +711,6 @@ fn like_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 	p_info := &CompareInfo(sqlite3_user_data(context))
 	backup_info := CompareInfo{}
 	n_pat = sqlite3_value_bytes(argv[0])
-	0
-	0
 	if n_pat > db.aLimit[8] {
 		sqlite3_result_error(context, c'LIKE or GLOB pattern too complex', -1)
 		return
@@ -1191,8 +1182,6 @@ fn replace_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 		} else {
 			if n_rep > n_pattern {
 				n_out += I64(n_rep - n_pattern)
-				0
-				0
 				if n_out - I64(1) > I64(db.aLimit[0]) {
 					sqlite3_result_error_toobig(context)
 					sqlite3_free(voidptr(z_out))
@@ -1274,7 +1263,6 @@ fn trim_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 						c2v_pointer_postfix(voidptr(&z), z, isize(1))
 					}
 				}
-				0
 			}
 			if n_char > 0 {
 				az_char = context_malloc(context, I64(u64((I64(n_char))) * (sizeof(voidptr) + sizeof(u32))))
@@ -1290,7 +1278,6 @@ fn trim_func(context &Sqlite3_context, argc int, argv &&Sqlite3_value) {
 							c2v_pointer_postfix(voidptr(&z), z, isize(1))
 						}
 					}
-					0
 					a_len[n_char] = u32((i64((isize(z) - isize(az_char[n_char])) / isize(sizeof(u8)))))
 				}
 			}

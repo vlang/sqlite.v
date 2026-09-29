@@ -10,13 +10,11 @@ struct Sqlite3StatType {
 
 @[c:'sqlite3StatusValue']
 fn sqlite3_status_value(op int) Sqlite3_int64 {
-	0
 	return sqlite3Stat.nowValue[op]
 }
 
 @[c:'sqlite3StatusUp']
 fn sqlite3_status_up(op int, n int) {
-	0
 	sqlite3Stat.nowValue[op] += Sqlite3StatValueType(n)
 	if sqlite3Stat.nowValue[op] > sqlite3Stat.mxValue[op] {
 		sqlite3Stat.mxValue[op] = sqlite3Stat.nowValue[op]
@@ -25,14 +23,12 @@ fn sqlite3_status_up(op int, n int) {
 
 @[c:'sqlite3StatusDown']
 fn sqlite3_status_down(op int, n int) {
-	0
 	sqlite3Stat.nowValue[op] -= Sqlite3StatValueType(n)
 }
 
 @[c:'sqlite3StatusHighwater']
 fn sqlite3_status_highwater(op int, x int) {
 	new_value := Sqlite3StatValueType(0)
-	0
 	new_value = Sqlite3StatValueType(x)
 	if new_value > sqlite3Stat.mxValue[op] {
 		sqlite3Stat.mxValue[op] = new_value
@@ -42,7 +38,6 @@ fn sqlite3_status_highwater(op int, x int) {
 fn sqlite3_status64(op int, p_current &Sqlite3_int64, p_highwater &Sqlite3_int64, reset_flag int) int {
 	c2v_gc_register_thread()
 	p_mutex := &Sqlite3_mutex(0)
-	0
 	if op < 0 || op >= 10 {
 		return sqlite3_misuse_error(143)
 	}
@@ -125,9 +120,6 @@ fn sqlite3_db_status64(db &Sqlite3, op int, p_current &Sqlite3_int64, p_highwtr 
 			}
 		}
 		4, 5, 6 {
-			0
-			0
-			0
 			unsafe { *p_current = Sqlite3_int64(0) }
 			unsafe { *p_highwtr = Sqlite3_int64(db.lookaside.anStat[op - 4]) }
 			if reset_flag {

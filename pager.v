@@ -419,7 +419,6 @@ fn read_journal_hdr(p_pager &Pager, is_hot int, journal_size I64, pnr_ec &u32, p
 			return 101
 		}
 		rc = sqlite3_pager_set_pagesize(p_pager, &i_page_size, -1)
-		0
 		p_pager.sectorSize = i_sector_size
 	}
 	p_pager.journalOff += I64(p_pager.sectorSize)
@@ -514,7 +513,6 @@ fn add_to_savepoint_bitvecs(p_pager &Pager, pgno Pgno) int {
 		p := unsafe { p_pager.aSavepoint + ii }
 		if pgno <= p.nOrig {
 			rc |= sqlite3_bitvec_set(p.pInSavepoint, pgno)
-			0
 		}
 	}
 	return rc
@@ -728,7 +726,6 @@ fn pager_playback_one_page(p_pager &Pager, p_offset &I64, p_done &Bitvec, is_mai
 	} else {
 		p_pg = sqlite3_pager_lookup(p_pager, pgno)
 	}
-	0
 	if is_main_jrnl {
 		is_synced = int(p_pager.noSync) || ((unsafe { *p_offset }) <= p_pager.journalHdr)
 	} else {
@@ -736,7 +733,6 @@ fn pager_playback_one_page(p_pager &Pager, p_offset &I64, p_done &Bitvec, is_mai
 	}
 	if (usize(p_pager.fd.pMethods) != usize(0)) && (int(p_pager.eState) >= 4 || int(p_pager.eState) == 0) && is_synced {
 		ofst := I64((pgno - Pgno(1))) * I64(p_pager.pageSize)
-		0
 		rc = sqlite3_os_write(p_pager.fd, voidptr(&U8(voidptr(a_data))), int(p_pager.pageSize), ofst)
 		if pgno > p_pager.dbFileSize {
 			p_pager.dbFileSize = pgno
@@ -758,7 +754,6 @@ fn pager_playback_one_page(p_pager &Pager, p_offset &I64, p_done &Bitvec, is_mai
 		p_data = p_pg.pData
 		C.memcpy(voidptr(p_data), voidptr(&U8(voidptr(a_data))), u64(p_pager.pageSize))
 		p_pager.xReiniter(unsafe { &DbPage(p_pg) })
-		0
 		if pgno == Pgno(1) {
 			C.memcpy(voidptr(&p_pager.dbFileVers), voidptr(unsafe { (&U8(p_data)) + 24 }), sizeof([16]i8))
 		}
@@ -892,7 +887,6 @@ fn pager_delsuper(p_pager &Pager, z_super &i8) int {
 
 fn pager_truncate(p_pager &Pager, n_page Pgno) int {
 	rc := 0
-	0
 	if (usize(p_pager.fd.pMethods) != usize(0)) && (int(p_pager.eState) >= 4 || int(p_pager.eState) == 0) {
 		current_size := I64(0)
 		new_size := I64(0)
@@ -906,8 +900,6 @@ fn pager_truncate(p_pager &Pager, n_page Pgno) int {
 			} else if (current_size + I64(sz_page)) <= new_size {
 				p_tmp := p_pager.pTmpSpace
 				C.memset(voidptr(p_tmp), 0, u64(sz_page))
-				0
-				0
 				sqlite3_os_file_control_hint(p_pager.fd, 5, voidptr(&new_size))
 				rc = sqlite3_os_write(p_pager.fd, voidptr(p_tmp), sz_page, new_size - I64(sz_page))
 			}
@@ -1025,11 +1017,9 @@ fn pager_playback(p_pager &Pager, is_hot int) int {
 	}
 	if rc == 0 {
 		rc = pager_end_transaction(p_pager, usize(z_super) != usize(0), 0)
-		0
 	}
 	if rc == 0 && !isnil(z_super) && res {
 		rc = pager_delsuper(p_pager, z_super)
-		0
 	}
 	if is_hot && n_playback {
 		sqlite3_log((27 | (2 << 8)), c'recovered %d pages from %s', n_playback, voidptr(p_pager.zJournal))
@@ -1067,10 +1057,6 @@ fn read_db_page(p_pg &PgHdr) int {
 			C.memcpy(voidptr(&p_pager.dbFileVers), voidptr(db_file_vers), sizeof([16]i8))
 		}
 	}
-	0
-	0
-	0
-	0
 	return rc
 }
 
@@ -1207,7 +1193,6 @@ fn pager_open_wal_if_present(p_pager &Pager) int {
 				if n_page == Pgno(0) {
 					rc = sqlite3_os_delete(p_pager.pVfs, p_pager.zWal, 0)
 				} else {
-					0
 					rc = sqlite3_pager_open_wal(p_pager, unsafe { nil })
 				}
 			} else if int(p_pager.journalMode) == 5 {
@@ -1531,7 +1516,6 @@ fn database_is_unmoved(p_pager &Pager) int {
 @[c:'sqlite3PagerClose']
 fn sqlite3_pager_close(p_pager &Pager, db &Sqlite3) int {
 	p_tmp := &U8(voidptr(p_pager.pTmpSpace))
-	0
 	sqlite3_begin_benign_malloc()
 	pager_free_map_hdrs(p_pager)
 	p_pager.exclusiveMode = U8(0)
@@ -1551,8 +1535,6 @@ fn sqlite3_pager_close(p_pager &Pager, db &Sqlite3) int {
 		pager_unlock_and_rollback(p_pager)
 	}
 	sqlite3_end_benign_malloc()
-	0
-	0
 	sqlite3_os_close(p_pager.jfd)
 	sqlite3_os_close(p_pager.fd)
 	sqlite3_page_free(voidptr(p_tmp))
@@ -1596,20 +1578,17 @@ fn sync_journal(p_pager &Pager, new_hdr int) int {
 					return rc
 				}
 				if int(p_pager.fullSync) && 0 == (i_dc & 1024) {
-					0
 					rc = sqlite3_os_sync(p_pager.jfd, int(p_pager.syncFlags))
 					if rc != 0 {
 						return rc
 					}
 				}
-				0
 				rc = sqlite3_os_write(p_pager.jfd, voidptr(unsafe { &z_header[0] }), int(sizeof([12]U8)), p_pager.journalHdr)
 				if rc != 0 {
 					return rc
 				}
 			}
 			if 0 == (i_dc & 1024) {
-				0
 				rc = sqlite3_os_sync(p_pager.jfd, int(p_pager.syncFlags) | (if int(p_pager.syncFlags) == 3 {
 					16
 				} else {
@@ -1664,13 +1643,8 @@ fn pager_write_pagelist(p_pager &Pager, p_list &PgHdr) int {
 			}
 			p_pager.aStat[2]++
 			sqlite3_backup_update(p_pager.pBackup, pgno, &U8(p_list.pData))
-			0
-			0
-			0
 		} else {
-			0
 		}
-		0
 		p_list = p_list.pDirty
 	}
 	return rc
@@ -1701,7 +1675,6 @@ fn subjournal_page(p_pg &PgHdr) int {
 			offset := I64(p_pager.nSubRec) * (I64(4) + p_pager.pageSize)
 			p_data2 := &i8(0)
 			p_data2 = &i8(p_data)
-			0
 			rc = write32bits(p_pager.sjfd, offset, p_pg.pgno)
 			if rc == 0 {
 				rc = sqlite3_os_write(p_pager.sjfd, voidptr(p_data2), int(p_pager.pageSize), offset + I64(4))
@@ -1732,9 +1705,6 @@ fn pager_stress(p voidptr, p_pg &PgHdr) int {
 	if p_pager.errCode {
 		return 0
 	}
-	0
-	0
-	0
 	if int(p_pager.doNotSpill) && ((int(p_pager.doNotSpill) & (2 | 1)) != 0 || (int(p_pg.flags) & 8) != 0) {
 		return 0
 	}
@@ -1754,7 +1724,6 @@ fn pager_stress(p voidptr, p_pg &PgHdr) int {
 		}
 	}
 	if rc == 0 {
-		0
 		sqlite3_pcache_make_clean(p_pg)
 	}
 	return pager_error(p_pager, rc)
@@ -1928,7 +1897,6 @@ fn sqlite3_pager_open(p_vfs &Sqlite3_vfs, pp_pager &&Pager, z_filename &i8, n_ex
 	}
 	if rc == 0 {
 		rc = sqlite3_pager_set_pagesize(p_pager, &sz_page_dflt, -1)
-		0
 	}
 	if rc == 0 {
 		n_extra = ((n_extra + 7) & ~7)
@@ -1944,7 +1912,6 @@ fn sqlite3_pager_open(p_vfs &Sqlite3_vfs, pp_pager &&Pager, z_filename &i8, n_ex
 		sqlite3_free(voidptr(p_pager))
 		return rc
 	}
-	0
 	p_pager.useJournal = U8(use_journal)
 	p_pager.mxPgno = u32(4294967294)
 	p_pager.tempFile = U8(temp_file)
@@ -2090,7 +2057,6 @@ fn sqlite3_pager_shared_lock(p_pager &Pager) int {
 		}
 		if !p_pager.tempFile && int(p_pager.hasHeldSharedLock) {
 			db_file_vers := [16]i8{}
-			0
 			rc = sqlite3_os_read(p_pager.fd, voidptr(&db_file_vers), int(sizeof([16]i8)), I64(24))
 			if rc != 0 {
 				if rc != (10 | (2 << 8)) {
@@ -2182,14 +2148,11 @@ fn get_page_normal(p_pager &Pager, pgno Pgno, pp_page &&DbPage, flags int) int {
 				sqlite3_begin_benign_malloc()
 				if pgno <= p_pager.dbOrigSize {
 					sqlite3_bitvec_set(p_pager.pInJournal, pgno)
-					0
 				}
 				add_to_savepoint_bitvecs(p_pager, pgno)
-				0
 				sqlite3_end_benign_malloc()
 			}
 			C.memset(voidptr(p_pg.pData), 0, u64(p_pager.pageSize))
-			0
 		} else {
 			p_pager.aStat[1]++
 			rc = read_db_page(p_pg)
@@ -2198,7 +2161,6 @@ fn get_page_normal(p_pager &Pager, pgno Pgno, pp_page &&DbPage, flags int) int {
 				 }
 			}
 		}
-		0
 	}
 	return 0
 	pager_acquire_err:
@@ -2379,7 +2341,6 @@ fn sqlite3_pager_begin(p_pager &Pager, ex_flag int, subj_in_memory int) int {
 			p_pager.journalOff = I64(0)
 		}
 	}
-	0
 	return rc
 }
 
@@ -2405,13 +2366,9 @@ fn pager_add_page_to_rollback_journal(p_pg &PgHdr) int {
 	if rc != 0 {
 		return rc
 	}
-	0
-	0
-	0
 	p_pager.journalOff += I64(8) + p_pager.pageSize
 	p_pager.nRec++
 	rc = sqlite3_bitvec_set(p_pager.pInJournal, p_pg.pgno)
-	0
 	rc |= add_to_savepoint_bitvecs(p_pager, p_pg.pgno)
 	return rc
 }
@@ -2419,7 +2376,6 @@ fn pager_add_page_to_rollback_journal(p_pg &PgHdr) int {
 fn pager_write(p_pg &PgHdr) int {
 	p_pager := p_pg.pPager
 	rc := 0
-	0
 	if int(p_pager.eState) == 2 {
 		rc = pager_open_journal(p_pager)
 		if rc != 0 {
@@ -2437,7 +2393,6 @@ fn pager_write(p_pg &PgHdr) int {
 			if int(p_pager.eState) != 4 {
 				p_pg.flags |= 8
 			}
-			0
 		}
 	}
 	p_pg.flags |= 4
@@ -2528,11 +2483,8 @@ fn sqlite3_pager_write(p_pg &PgHdr) int {
 fn sqlite3_pager_dont_write(p_pg &PgHdr) {
 	p_pager := p_pg.pPager
 	if !p_pager.tempFile && (int(p_pg.flags) & 2) && p_pager.nSavepoint == 0 {
-		0
 		p_pg.flags |= 16
 		p_pg.flags &= ~4
-		0
-		0
 	}
 }
 
@@ -2602,7 +2554,6 @@ fn sqlite3_pager_commit_phase_one(p_pager &Pager, z_super &i8, no_sync int) int 
 	if sqlite3_fault_sim(400) {
 		return 10
 	}
-	0
 	if int(p_pager.eState) < 3 {
 		return 0
 	}
@@ -2681,7 +2632,6 @@ fn sqlite3_pager_commit_phase_two(p_pager &Pager) int {
 		p_pager.eState = U8(1)
 		return 0
 	}
-	0
 	rc = pager_end_transaction(p_pager, int(p_pager.setSuper), 1)
 	return pager_error(p_pager, rc)
 }
@@ -2689,7 +2639,6 @@ fn sqlite3_pager_commit_phase_two(p_pager &Pager) int {
 @[c:'sqlite3PagerRollback']
 fn sqlite3_pager_rollback(p_pager &Pager) int {
 	rc := 0
-	0
 	if int(p_pager.eState) == 6 {
 		return p_pager.errCode
 	}
@@ -2778,7 +2727,6 @@ fn pager_open_savepoint(p_pager &Pager, n_savepoint int) int {
 		}
 		p_pager.nSavepoint = ii + 1
 	}
-	0
 	return rc
 }
 
@@ -2875,7 +2823,6 @@ fn sqlite3_pager_movepage(p_pager &Pager, p_pg &DbPage, pgno Pgno, is_commit int
 	if (int(p_pg.flags) & 2) != 0 && 0 != c2v_assign[int](unsafe { &rc }, int(subjournal_page_if_required(unsafe { &PgHdr(p_pg) }))) {
 		return rc
 	}
-	0
 	if (int(p_pg.flags) & 8) && !is_commit {
 		need_sync_pgno = p_pg.pgno
 	}

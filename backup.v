@@ -301,7 +301,6 @@ fn sqlite3_backup_step(p &Sqlite3_backup, n_page int) int {
 			}
 		}
 		if b_close_trans {
-			0
 			sqlite3_btree_commit_phase_one(p.pSrc, unsafe { nil })
 			sqlite3_btree_commit_phase_two(p.pSrc, 0)
 		}

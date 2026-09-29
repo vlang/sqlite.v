@@ -267,7 +267,6 @@ fn sqlite3_finish_trigger(p_parse &Parse, p_step_list &TriggerStep, p_all &Token
 		}
 		sqlite3_begin_write_operation(p_parse, 0, i_db)
 		z = sqlite3_db_str_nd_up(db, &i8(p_all.z), U64(p_all.n))
-		0
 		sqlite3_nested_parse(p_parse, c"INSERT INTO %Q.sqlite_master VALUES('trigger',%Q,%Q,0,'CREATE TRIGGER %q')", voidptr(db.aDb[i_db].zDbSName), voidptr(z_name), voidptr(p_trig.table), voidptr(z))
 		sqlite3_db_free(db, voidptr(z))
 		sqlite3_change_cookie(p_parse, i_db)
@@ -362,9 +361,7 @@ fn sqlite3_trigger_insert_step(p_parse &Parse, p_tab_list &SrcList, p_column &Id
 			sqlite3_has_explicit_nulls(p_parse, p_upsert.pUpsertTarget)
 		}
 	} else {
-		0
 		sqlite3_id_list_delete(db, p_column)
-		0
 		sqlite3_upsert_delete(db, p_upsert)
 	}
 	sqlite3_select_delete(db, p_select)
@@ -687,7 +684,6 @@ fn sqlite3_returning_subquery_var_select(not_used &Walker, p_expr &Expr) int {
 	c2v_gc_register_thread()
 
 	if ((p_expr.flags & u32(4096)) != u32(0)) && (p_expr.x.pSelect.selFlags & u32(536870912)) != u32(0) {
-		0
 		p_expr.flags |= u32(64)
 	}
 	return 0
@@ -701,7 +697,6 @@ fn sqlite3_returning_subquery_correlated(p_walker &Walker, p_select &Select) int
 	p_src = p_select.pSrc
 	for i = 0; i < p_src.nSrc; i++ {
 		if usize(c2v_at(&p_src.a[0], isize(i)).pSTab) == usize(p_walker.u.pTab) {
-			0
 			p_select.selFlags |= u32(536870912)
 			p_walker.eCode = U16(1)
 			break
@@ -895,7 +890,6 @@ fn code_row_trigger(p_parse &Parse, p_trigger &Trigger, p_tab &Table, orconf int
 	s_sub_parse.newmask = u32(0)
 	v = sqlite3_get_vdbe(&s_sub_parse)
 	if v {
-		0
 		if p_trigger.zName {
 			sqlite3_vdbe_change_p4(v, -1, sqlite3_mp_rintf(db, c'-- TRIGGER %s', voidptr(p_trigger.zName)), (-7))
 		}
@@ -912,7 +906,6 @@ fn code_row_trigger(p_parse &Parse, p_trigger &Trigger, p_tab &Table, orconf int
 			sqlite3_vdbe_resolve_label(v, i_end_trigger)
 		}
 		sqlite3_vdbe_add_op0(v, 72)
-		0
 		transfer_parse_error(p_parse, &s_sub_parse)
 		if p_parse.nErr == 0 {
 			p_program.aOp = sqlite3_vdbe_take_op_array(v, &p_program.nOp, &p_top.nMaxArg)
@@ -935,7 +928,6 @@ fn get_row_trigger(p_parse &Parse, p_trigger &Trigger, p_tab &Table, orconf int)
 	p_root := (if p_parse.pToplevel { p_parse.pToplevel } else { p_parse })
 	p_prg := &TriggerPrg(0)
 	for p_prg = p_root.pTriggerPrg; !isnil(p_prg) && (usize(p_prg.pTrigger) != usize(p_trigger) || p_prg.orconf != orconf); p_prg = p_prg.pNext {
-		0
 	}
 	if isnil(p_prg) {
 		p_prg = code_row_trigger(p_parse, p_trigger, p_tab, orconf)
@@ -952,7 +944,6 @@ fn sqlite3_code_row_trigger_direct(p_parse &Parse, p &Trigger, p_tab &Table, reg
 	if p_prg {
 		b_recursive := int((!isnil(p.zName) && U64(0) == (p_parse.db.flags & U64(8192))))
 		sqlite3_vdbe_add_op4(v, 50, reg, ignore_jump, c2v_prefix_add(unsafe { &p_parse.nMem }, 1), &i8(voidptr(p_prg.pProgram)), (-4))
-		0
 		sqlite3_vdbe_change_p5(v, U16(b_recursive))
 	}
 }

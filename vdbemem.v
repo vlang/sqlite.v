@@ -38,8 +38,6 @@ fn sqlite3_vdbe_change_encoding(p_mem &Mem, desired_enc int) int {
 
 @[c:'sqlite3VdbeMemGrow']
 fn sqlite3_vdbe_mem_grow(p_mem &Mem, n int, b_preserve int) int {
-	0
-	0
 	if p_mem.szMalloc > 0 && b_preserve && usize(p_mem.z) == usize(p_mem.zMalloc) {
 		if p_mem.db {
 			p_mem.zMalloc = &i8(sqlite3_db_realloc_or_free(p_mem.db, voidptr(p_mem.z), U64(n)))
@@ -145,7 +143,6 @@ fn sqlite3_vdbe_mem_make_writeable(p_mem &Mem) int {
 @[c:'sqlite3VdbeMemExpandBlob']
 fn sqlite3_vdbe_mem_expand_blob(p_mem &Mem) int {
 	n_byte := 0
-	0
 	n_byte = p_mem.n + p_mem.u.nZero
 	if n_byte <= 0 {
 		if (int(p_mem.flags) & 16) == 0 {
@@ -164,8 +161,6 @@ fn sqlite3_vdbe_mem_expand_blob(p_mem &Mem) int {
 
 @[c:'sqlite3VdbeMemNulTerminate']
 fn sqlite3_vdbe_mem_nul_terminate(p_mem &Mem) int {
-	0
-	0
 	if (int(p_mem.flags) & (512 | 2)) != 2 {
 		return 0
 	} else {
@@ -227,7 +222,6 @@ fn sqlite3_vdbe_mem_agg_value(p_accum &Mem, p_out &Mem, p_func &FuncDef) int {
 fn vdbe_mem_clear_extern_and_set_null(p &Mem) {
 	if int(p.flags) & 32768 {
 		sqlite3_vdbe_mem_finalize(p, p.u.pDef)
-		0
 	}
 	if int(p.flags) & 4096 {
 		p.xDel(voidptr(p.z))
@@ -273,7 +267,6 @@ fn sqlite3_vdbe_int_value(p_mem &Mem) I64 {
 	flags := 0
 	flags = int(p_mem.flags)
 	if flags & (4 | 32) {
-		0
 		return p_mem.u.i
 	} else if flags & 8 {
 		return sqlite3_real_to_i64(p_mem.u.r)
@@ -338,7 +331,6 @@ fn sqlite3_mem_real_value_rc_slow_path(p_mem &Mem, p_value &f64) int {
 
 @[c:'sqlite3MemRealValueRC']
 fn sqlite3_mem_real_value_rc(p_mem &Mem, p_value &f64) int {
-	0
 	if usize(p_mem.z) == usize(0) {
 		unsafe { *p_value = 0.0 }
 		return 0
@@ -364,7 +356,6 @@ fn sqlite3_vdbe_real_value(p_mem &Mem) f64 {
 	if int(p_mem.flags) & 8 {
 		return p_mem.u.r
 	} else if int(p_mem.flags) & (4 | 32) {
-		0
 		return f64(p_mem.u.i)
 	} else if int(p_mem.flags) & (2 | 16) {
 		return sqlite3_mem_real_value_no_rc(p_mem)
@@ -375,7 +366,6 @@ fn sqlite3_vdbe_real_value(p_mem &Mem) f64 {
 
 @[c:'sqlite3VdbeBooleanValue']
 fn sqlite3_vdbe_boolean_value(p_mem &Mem, if_null int) int {
-	0
 	if int(p_mem.flags) & (4 | 32) {
 		return int(p_mem.u.i != I64(0))
 	}
@@ -431,10 +421,6 @@ fn sqlite3_real_to_i64(r f64) I64 {
 
 @[c:'sqlite3VdbeMemNumerify']
 fn sqlite3_vdbe_mem_numerify(p_mem &Mem) int {
-	0
-	0
-	0
-	0
 	if (int(p_mem.flags) & (4 | 8 | 32 | 1)) == 0 {
 		rc := 0
 		ix := Sqlite3_int64(0)
@@ -698,9 +684,6 @@ fn sqlite3_vdbe_mem_set_str(p_mem &Mem, z &i8, n I64, enc U8, x_del fn (voidptr)
 		if int(flags) & 512 {
 			n_alloc += I64((if int(enc) == 1 { 1 } else { 2 }))
 		}
-		0
-		0
-		0
 		if sqlite3_vdbe_mem_clear_and_resize(p_mem, int((if n_alloc > I64(32) {
 			n_alloc
 		} else {
@@ -760,8 +743,6 @@ fn sqlite3_vdbe_mem_set_text(p_mem &Mem, z &i8, n I64, x_del fn (voidptr)) int {
 	}
 	if x_del == (C2vFn_666e2028766f696470747229(voidptr(-1))) {
 		n_alloc := n_byte + I64(1)
-		0
-		0
 		if sqlite3_vdbe_mem_clear_and_resize(p_mem, int((if n_alloc > I64(32) {
 			n_alloc
 		} else {
@@ -796,8 +777,6 @@ fn sqlite3_vdbe_mem_set_text(p_mem &Mem, z &i8, n I64, x_del fn (voidptr)) int {
 fn sqlite3_vdbe_mem_from_btree(p_cur &BtCursor, offset u32, amt u32, p_mem &Mem) int {
 	rc := 0
 	p_mem.flags = U16(1)
-	0
-	0
 	if amt >= u32(2147483391) {
 		return 7
 	}
@@ -929,7 +908,6 @@ fn value_from_expr(db &Sqlite3, p_expr &Expr, enc U8, affinity U8, pp_val &&Sqli
 		aff := U8(0)
 		aff = U8(sqlite3_affinity_type(p_expr.u.zToken, unsafe { nil }))
 		rc = value_from_expr(db, p_expr.pLeft, enc, aff, pp_val, p_ctx)
-		0
 		if unsafe { *pp_val != nil } {
 			sqlite3_vdbe_mem_cast(unsafe { &Mem(pp_val) }, aff, enc)
 			sqlite3_value_apply_affinity((unsafe { *pp_val }), affinity, enc)
@@ -979,8 +957,6 @@ fn value_from_expr(db &Sqlite3, p_expr &Expr, enc U8, affinity U8, pp_val &&Sqli
 			sqlite3_value_apply_affinity(p_val, affinity, U8(1))
 		}
 		if int(p_val.flags) & (4 | 32 | 8) {
-			0
-			0
 			p_val.flags &= ~2
 		}
 		if int(enc) != 1 {

@@ -187,7 +187,6 @@ fn sqlite3_auto_extension(x_init fn ()) int {
 	} else {
 		i := u32(0)
 		mutex := sqlite3_mutex_alloc_vdup4(2)
-		0
 		sqlite3_mutex_enter(mutex)
 		for i = u32(0); i < sqlite3Autoext.nExt; i++ {
 			if sqlite3Autoext.aExt[i] == x_init {
@@ -216,7 +215,6 @@ fn sqlite3_cancel_auto_extension(x_init fn ()) int {
 	mutex := sqlite3_mutex_alloc_vdup4(2)
 	i := 0
 	n := 0
-	0
 	sqlite3_mutex_enter(mutex)
 	for i = int(sqlite3Autoext.nExt) - 1; i >= 0; i-- {
 		if sqlite3Autoext.aExt[i] == x_init {
@@ -234,7 +232,6 @@ fn sqlite3_reset_auto_extension() {
 	c2v_gc_register_thread()
 	if sqlite3_initialize() == 0 {
 		mutex := sqlite3_mutex_alloc_vdup4(2)
-		0
 		sqlite3_mutex_enter(mutex)
 		sqlite3_free(voidptr(sqlite3Autoext.aExt))
 		sqlite3Autoext.aExt = 0
@@ -249,7 +246,6 @@ fn sqlite3_auto_load_extensions(db &Sqlite3) {
 	go_ := 1
 	rc := 0
 	x_init := unsafe { Sqlite3_loadext_entry(nil) }
-	0
 	if sqlite3Autoext.nExt == u32(0) {
 		return
 	}

@@ -2418,7 +2418,6 @@ fn json_lookup_step(p_parse &JsonParse, i_root u32, z_path &i8, i_label u32) u32
 			} else {
 				return u32(4294967291)
 			}
-			0
 			raw_key = usize(C.memchr(voidptr(z_key), `\\`, u64(n_key))) == usize(0)
 		} else {
 			z_key = z_path
@@ -2489,9 +2488,6 @@ fn json_lookup_step(p_parse &JsonParse, i_root u32, z_path &i8, i_label u32) u32
 			n_ins := u32(0)
 			v := JsonParse{}
 			ix := JsonParse{}
-			0
-			0
-			0
 			if int(p_parse.eEdit) == 5 && sqlite3_strglob(c'*]', unsafe { z_path + i }) != 0 {
 				return u32(4294967293)
 			}
@@ -2590,9 +2586,6 @@ fn json_lookup_step(p_parse &JsonParse, i_root u32, z_path &i8, i_label u32) u32
 		}
 		if int(p_parse.eEdit) >= 3 {
 			v := JsonParse{}
-			0
-			0
-			0
 			rc = json_create_edit_substructure(p_parse, &v, unsafe { z_path + (i + u32(1)) })
 			if !(rc >= u32(4294967291)) && json_blob_make_editable(p_parse, v.nBlob) {
 				json_blob_edit(p_parse, j, u32(0), v.aBlob, v.nBlob)
@@ -4435,7 +4428,6 @@ fn json_each_best_index(tab &Sqlite3_vtab, p_idx_info &Sqlite3_index_info) int {
 			 }
 		}
 		i_col = p_constraint.iColumn - 8
-		0
 		i_mask = 1 << i_col
 		if int(p_constraint.usable) == 0 {
 			unusable_mask |= i_mask

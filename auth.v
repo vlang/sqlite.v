@@ -83,10 +83,6 @@ fn sqlite3_auth_check(p_parse &Parse, code int, z_arg1 &i8, z_arg2 &i8, z_arg3 &
 	if isnil(db.xAuth) || int(db.init.busy) || (int(p_parse.eParseMode) != 0) {
 		return 0
 	}
-	0
-	0
-	0
-	0
 	rc = db.xAuth(voidptr(db.pAuthArg), code, z_arg1, z_arg2, z_arg3, p_parse.zAuthContext)
 	if rc == 1 {
 		sqlite3_error_msg(p_parse, c'not authorized')

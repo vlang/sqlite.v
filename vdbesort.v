@@ -219,7 +219,6 @@ fn vdbe_sorter_map_file(p_task &SortSubtask, p_file &SorterFile, pp &&U8) int {
 		p_fd := p_file.pFd
 		if p_fd.pMethods.iVersion >= 3 {
 			rc = sqlite3_os_fetch(p_fd, I64(0), int(p_file.iEof), &voidptr(voidptr(pp)))
-			0
 		}
 	}
 	return rc
@@ -255,7 +254,6 @@ fn vdbe_pma_reader_seek(p_task &SortSubtask, p_readr &PmaReader, p_file &SorterF
 				n_read = int((p_readr.iEof - p_readr.iReadOff))
 			}
 			rc = sqlite3_os_read(p_readr.pFd, voidptr(unsafe { p_readr.aBuffer + i_buf }), n_read, p_readr.iReadOff)
-			0
 		}
 	}
 	return rc
@@ -277,7 +275,6 @@ fn vdbe_pma_reader_next(p_readr &PmaReader) int {
 		}
 		if b_eof {
 			vdbe_pma_reader_clear(p_readr)
-			0
 			return rc
 		}
 	}
@@ -287,7 +284,6 @@ fn vdbe_pma_reader_next(p_readr &PmaReader) int {
 	if rc == 0 {
 		p_readr.nKey = int(n_rec)
 		rc = vdbe_pma_read_blob(p_readr, int(n_rec), &&U8(&p_readr.aKey))
-		0
 	}
 	return rc
 }
@@ -529,9 +525,7 @@ fn vdbe_sorter_join_thread(p_task &SortSubtask) int {
 	rc := 0
 	if p_task.pThread {
 		p_ret := (voidptr(i64(1)))
-		0
 		sqlite3_thread_join(p_task.pThread, &p_ret)
-		0
 		rc = (int(i64(p_ret)))
 		p_task.bDone = 0
 		p_task.pThread = 0
@@ -844,7 +838,6 @@ fn vdbe_sorter_list_to_pma(p_task &SortSubtask, p_list &SorterList) int {
 	db := p_task.pSorter.db
 	rc := 0
 	writer := PmaWriter{}
-	0
 	C.memset(voidptr(&writer), 0, sizeof(PmaWriter))
 	if usize(p_task.file.pFd) == usize(0) {
 		rc = vdbe_sorter_open_temp_file(db, I64(0), &&Sqlite3_file(&p_task.file.pFd))
@@ -872,7 +865,6 @@ fn vdbe_sorter_list_to_pma(p_task &SortSubtask, p_list &SorterList) int {
 		p_list.pList = p
 		rc = vdbe_pma_writer_finish(&writer, &p_task.file.iEof, &p_task.nSpill)
 	}
-	0
 	return rc
 }
 
@@ -1063,7 +1055,6 @@ fn vdbe_incr_populate(p_incr &IncrMerger) int {
 	p_task := p_incr.pTask
 	p_merger := p_incr.pMerger
 	writer := PmaWriter{}
-	0
 	vdbe_pma_writer_init(p_out.pFd, &writer, p_task.pSorter.pgsz, i_start)
 	for rc == 0 {
 		dummy := 0
@@ -1084,7 +1075,6 @@ fn vdbe_incr_populate(p_incr &IncrMerger) int {
 	if rc == 0 {
 		rc = rc2
 	}
-	0
 	return rc
 }
 
@@ -1477,12 +1467,10 @@ fn sqlite3_vdbe_sorter_rewind(p_csr &VdbeCursor, pb_eof &int) int {
 	}
 	rc = vdbe_sorter_flush_pma(p_sorter)
 	rc = vdbe_sorter_join_all(p_sorter, rc)
-	0
 	if rc == 0 {
 		rc = vdbe_sorter_setup_merge(p_sorter)
 		unsafe { *pb_eof = 0 }
 	}
-	0
 	return rc
 }
 

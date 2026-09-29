@@ -36,8 +36,6 @@ fn walk_window_list(p_walker &Walker, p_list &Window, b_one_only int) int {
 @[c:'sqlite3WalkExprNN']
 fn sqlite3_walk_expr_nn(p_walker &Walker, p_expr &Expr) int {
 	rc := 0
-	0
-	0
 	for {
 		rc = p_walker.xExprCallback(p_walker, p_expr)
 		if rc {

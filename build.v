@@ -95,14 +95,12 @@ fn sqlite3_finish_coding(p_parse &Parse) {
 			if p_returning.nRetCol {
 				sqlite3_vdbe_add_op0(v, 85)
 				addr_rewind = sqlite3_vdbe_add_op1(v, 36, p_returning.iRetCur)
-				0
 				reg = p_returning.iRetReg
 				for i = 0; i < p_returning.nRetCol; i++ {
 					sqlite3_vdbe_add_op3(v, 96, p_returning.iRetCur, i, reg + i)
 				}
 				sqlite3_vdbe_add_op2(v, 86, reg, i)
 				sqlite3_vdbe_add_op2(v, 40, p_returning.iRetCur, addr_rewind + 1)
-				0
 				sqlite3_vdbe_jump_here(v, addr_rewind)
 			}
 		}
@@ -121,7 +119,6 @@ fn sqlite3_finish_coding(p_parse &Parse) {
 			if int(db.init.busy) == 0 {
 				sqlite3_vdbe_change_p5(v, U16(1))
 			}
-			0
 			c2v_do_next_97:
 			i_db++
 			if !(i_db < db.nDb) {
@@ -285,7 +282,6 @@ fn sqlite3_locate_table(p_parse &Parse, flags u32, z_name &i8, z_dbase &i8) &Tab
 				p_mod = sqlite3_json_vtab_register(db, z_name)
 			}
 			if !isnil(p_mod) && sqlite3_vtab_eponymous_table_init(p_parse, p_mod) {
-				0
 				return p_mod.pEpoTab
 			}
 		}
@@ -599,7 +595,6 @@ fn sqlite3_delete_table_generic(db &Sqlite3, p_table voidptr) {
 fn sqlite3_unlink_and_delete_table(db &Sqlite3, i_db int, z_tab_name &i8) {
 	p := &Table(0)
 	p_db := &Db(0)
-	0
 	p_db = unsafe { db.aDb + i_db }
 	p = sqlite3_hash_insert(&p_db.pSchema.tblHash, z_tab_name, unsafe { nil })
 	sqlite3_delete_table(db, p)
@@ -681,10 +676,6 @@ fn sqlite3_two_part_name(p_parse &Parse, p_name1 &Token, p_name2 &Token, p_unqua
 
 @[c:'sqlite3WritableSchema']
 fn sqlite3_writable_schema(db &Sqlite3) int {
-	0
-	0
-	0
-	0
 	return int((db.flags & U64((1 | 268435456))) == U64(1))
 }
 
@@ -904,7 +895,6 @@ fn sqlite3_start_table(p_parse &Parse, p_name1 &Token, p_name2 &Token, is_temp i
 		sqlite3_vdbe_add_op3(v, 101, i_db, reg3, 2)
 		sqlite3_vdbe_uses_btree(v, i_db)
 		addr1 = sqlite3_vdbe_add_op1(v, 16, reg3)
-		0
 		file_format = if (db.flags & U64(2)) != U64(0) { 1 } else { 4 }
 		sqlite3_vdbe_add_op3(v, 102, i_db, 2, file_format)
 		sqlite3_vdbe_add_op3(v, 102, i_db, 5, int(db.enc))
@@ -963,7 +953,6 @@ fn sqlite3_add_returning(p_parse &Parse, p_list &ExprList) {
 	p_ret.pParse = p_parse
 	p_ret.pReturnEL = p_list
 	sqlite3_parser_add_cleanup(p_parse, sqlite3_delete_returning, voidptr(p_ret))
-	0
 	if db.mallocFailed {
 		return
 	}
@@ -1058,7 +1047,6 @@ fn sqlite3_add_column(p_parse &Parse, s_name Token, s_type Token) {
 	C.memset(voidptr(p_col), 0, sizeof(Column))
 	p_col.zCnName = z
 	p_col.hName = sqlite3_str_ih_ash(z)
-	0
 	if s_type.n == u32(0) {
 		p_col.affinity = affinity
 		p_col.eCType = u32(e_type)
@@ -1169,8 +1157,6 @@ fn sqlite3_add_default_value(p_parse &Parse, p_expr &Expr, z_start &i8, z_end &i
 		if !sqlite3_expr_is_constant_or_function(p_expr, U8(is_init)) {
 			sqlite3_error_msg(p_parse, c'default value of column [%s] is not constant', voidptr(p_col.zCnName))
 		} else if int(p_col.colFlags) & 96 {
-			0
-			0
 			sqlite3_error_msg(p_parse, c'cannot use DEFAULT on a generated column')
 		} else {
 			x := Expr{}
@@ -1205,8 +1191,6 @@ fn sqlite3_string_to_id(p &Expr) {
 fn make_column_part_of_primary_key(p_parse &Parse, p_col &Column) {
 	p_col.colFlags |= 1
 	if int(p_col.colFlags) & 96 {
-		0
-		0
 		sqlite3_error_msg(p_parse, c'generated columns cannot be part of the PRIMARY KEY')
 	}
 }
@@ -1479,12 +1463,6 @@ fn create_table_stmt(db &Sqlite3, p &Table) &i8 {
 		k += len
 		z_sep = z_sep2
 		ident_put(z_stmt, &k, p_col.zCnName)
-		0
-		0
-		0
-		0
-		0
-		0
 		z_type = create_table_stmt_az_type[int(p_col.affinity) - 65]
 		len = sqlite3_strlen30(z_type)
 		C.memcpy(voidptr(unsafe { z_stmt + k }), voidptr(z_type), u64(len))
@@ -1505,7 +1483,6 @@ fn resize_index_object(p_parse &Parse, p_idx &Index, n int) int {
 		return 0
 	}
 	db = p_parse.db
-	0
 	n_byte = U64((sizeof(voidptr) + sizeof(LogEst) + sizeof(I16) + u64(1))) * U64(n)
 	z_extra = &i8(sqlite3_db_malloc_zero(db, n_byte))
 	if usize(z_extra) == usize(0) {
@@ -1570,7 +1547,6 @@ fn is_dup_column(p_idx &Index, n_key int, p_pk &Index, i_col int) int {
 	i := 0
 	j := 0
 
-	0
 	j = int(p_pk.aiColumn[i_col])
 	for i = 0; i < n_key; i++ {
 		if int(p_idx.aiColumn[i]) == j && sqlite3_str_ic_mp(p_idx.azColl[i], p_pk.azColl[i_col]) == 0 {
@@ -1588,8 +1564,6 @@ fn recompute_columns_not_indexed(p_idx &Index) {
 	for j = int(p_idx.nColumn) - 1; j >= 0; j-- {
 		x := int(p_idx.aiColumn[j])
 		if x >= 0 && (int(p_tab.aCol[x].colFlags) & 32) == 0 {
-			0
-			0
 			if x < (int((sizeof(Bitmask) * u64(8)))) - 1 {
 				m |= ((Bitmask(1)) << x)
 			}
@@ -1648,7 +1622,6 @@ fn convert_to_without_rowid_table(p_parse &Parse, p_tab &Table) {
 			if is_dup_column(p_pk, j, p_pk, i) {
 				p_pk.nColumn--
 			} else {
-				0
 				p_pk.azColl[j] = p_pk.azColl[i]
 				p_pk.aSortOrder[j] = p_pk.aSortOrder[i]
 				p_pk.aiColumn[j++] = p_pk.aiColumn[i]
@@ -1674,7 +1647,6 @@ fn convert_to_without_rowid_table(p_parse &Parse, p_tab &Table) {
 		n = 0
 		for i = 0; i < n_pk; i++ {
 			if !is_dup_column(p_idx, int(p_idx.nKeyCol), p_pk, i) {
-				0
 				n++
 			}
 		}
@@ -1688,7 +1660,6 @@ fn convert_to_without_rowid_table(p_parse &Parse, p_tab &Table) {
 		i = 0
 		for j = int(p_idx.nKeyCol); i < n_pk; i++ {
 			if !is_dup_column(p_idx, int(p_idx.nKeyCol), p_pk, i) {
-				0
 				p_idx.aiColumn[j] = p_pk.aiColumn[i]
 				p_idx.azColl[j] = p_pk.azColl[i]
 				if p_pk.aSortOrder[i] {
@@ -1866,21 +1837,16 @@ fn sqlite3_end_table(p_parse &Parse, p_cons &Token, p_end &Token, tab_opts u32, 
 			sqlite3_expr_list_delete(db, p.pCheck)
 			p.pCheck = 0
 		} else {
-			0
 		}
 	}
 	if p.tabFlags & u32(96) {
 		ii := 0
 		nng := 0
 
-		0
-		0
 		for ii = 0; ii < int(p.nCol); ii++ {
 			col_flags := u32(p.aCol[ii].colFlags)
 			if (col_flags & u32(96)) != u32(0) {
 				px := sqlite3_column_expr(p, unsafe { p.aCol + ii })
-				0
-				0
 				if sqlite3_resolve_self_reference(p_parse, p, 8, px, unsafe { nil }) {
 					sqlite3_column_set_expr(p_parse, p, unsafe { p.aCol + ii }, sqlite3_expr_alloc(db, 122, unsafe { nil }, 0))
 				}
@@ -1961,7 +1927,6 @@ fn sqlite3_end_table(p_parse &Parse, p_cons &Token, p_end &Token, tab_opts u32, 
 			sqlite3_vdbe_end_coroutine(v, reg_yield)
 			sqlite3_vdbe_jump_here(v, addr_top - 1)
 			addr_ins_loop = sqlite3_vdbe_add_op1(v, 12, dest.iSDParm)
-			0
 			sqlite3_vdbe_add_op3(v, 99, dest.iSdst, dest.nSdst, reg_rec)
 			sqlite3_table_affinity(v, p, 0)
 			sqlite3_vdbe_add_op2(v, 129, i_csr, reg_rowid)
@@ -2562,14 +2527,12 @@ fn sqlite3_refill_index(p_parse &Parse, p_index &Index, mem_root_page int) {
 	sqlite3_vdbe_add_op4(v, 121, i_sorter, 0, int(p_index.nKeyCol), &i8(voidptr(sqlite3_key_info_ref(p_key))), (-9))
 	sqlite3_open_table(p_parse, i_tab, i_db, p_tab, 114)
 	addr1 = sqlite3_vdbe_add_op2(v, 36, i_tab, 0)
-	0
 	reg_record = sqlite3_get_temp_reg(p_parse)
 	sqlite3_multi_write(p_parse)
 	sqlite3_generate_index_key(p_parse, p_index, i_tab, reg_record, 0, &i_part_idx_label, unsafe { nil }, 0)
 	sqlite3_vdbe_add_op2(v, 141, i_sorter, reg_record)
 	sqlite3_resolve_part_idx_label(p_parse, i_part_idx_label)
 	sqlite3_vdbe_add_op2(v, 40, i_tab, addr1 + 1)
-	0
 	sqlite3_vdbe_jump_here(v, addr1)
 	if mem_root_page < 0 {
 		sqlite3_vdbe_add_op2(v, 147, int(tnum), i_db)
@@ -2577,13 +2540,10 @@ fn sqlite3_refill_index(p_parse &Parse, p_index &Index, mem_root_page int) {
 	sqlite3_vdbe_add_op4(v, 116, i_idx, int(tnum), i_db, &i8(voidptr(p_key)), (-9))
 	sqlite3_vdbe_change_p5(v, U16(1 | (if (mem_root_page >= 0) { 16 } else { 0 })))
 	addr1 = sqlite3_vdbe_add_op2(v, 34, i_sorter, 0)
-	0
 	if (int(p_index.onError) != 0) {
 		j2 := sqlite3_vdbe_goto(v, 1)
 		addr2 = sqlite3_vdbe_current_addr(v)
-		0
 		sqlite3_vdbe_add_op4_int(v, 134, i_sorter, j2, reg_record, int(p_index.nKeyCol))
-		0
 		sqlite3_unique_constraint(p_parse, 2, p_index)
 		sqlite3_vdbe_jump_here(v, j2)
 	} else {
@@ -2598,7 +2558,6 @@ fn sqlite3_refill_index(p_parse &Parse, p_index &Index, mem_root_page int) {
 	sqlite3_vdbe_change_p5(v, U16(16))
 	sqlite3_release_temp_reg(p_parse, reg_record)
 	sqlite3_vdbe_add_op2(v, 38, i_sorter, addr2)
-	0
 	sqlite3_vdbe_jump_here(v, addr1)
 	sqlite3_vdbe_add_op1(v, 124, i_tab)
 	sqlite3_vdbe_add_op1(v, 124, i_idx)
@@ -2924,7 +2883,6 @@ fn sqlite3_create_index(p_parse &Parse, p_name1 &Token, p_name2 &Token, p_tbl_na
 			if is_dup_column(p_index, int(p_index.nKeyCol), p_pk, j) {
 				p_index.nColumn--
 			} else {
-				0
 				p_index.aiColumn[i] = I16(x)
 				p_index.azColl[i] = p_pk.azColl[j]
 				p_index.aSortOrder[i] = p_pk.aSortOrder[j]
@@ -3494,7 +3452,6 @@ fn sqlite3_src_list_indexed_by(p_parse &Parse, p &SrcList, p_indexed_by &Token) 
 
 @[c:'sqlite3SrcListAppendList']
 fn sqlite3_src_list_append_list(p_parse &Parse, p1 &SrcList, p2 &SrcList) &SrcList {
-	0
 	if p2 {
 		n_old := p1.nSrc
 		p_new := sqlite3_src_list_enlarge(p_parse, p1, p2.nSrc, n_old)

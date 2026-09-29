@@ -17,7 +17,6 @@ fn where_and_info_delete(db &Sqlite3, p &WhereAndInfo) {
 fn where_clause_insert(pwc &WhereClause, p &Expr, wt_flags U16) int {
 	p_term := &WhereTerm(0)
 	idx := 0
-	0
 	if pwc.nTerm >= pwc.nSlot {
 		p_old := pwc.a
 		db := pwc.pWInfo.pParse.db
@@ -82,7 +81,6 @@ fn expr_commute(p_parse &Parse, p_expr &Expr) U16 {
 	t := p_expr.pRight
 	p_expr.pRight = p_expr.pLeft
 	p_expr.pLeft = t
-	0
 	if int(p_expr.op) >= 55 {
 		p_expr.op = U8(((int(p_expr.op) - 55) ^ 2) + 55)
 	}
@@ -295,7 +293,6 @@ fn is_auxiliary_vtab_operator(db &Sqlite3, p_expr &Expr, pe_op2 &u8, pp_left &&E
 			t := p_left
 			p_left = p_right
 			p_right = t
-			0
 		}
 		unsafe { *pp_left = p_left }
 		unsafe { *pp_right = p_right }
@@ -326,7 +323,6 @@ fn mark_term_as_child(pwc &WhereClause, i_child int, i_parent int) {
 	pwc.a[i_child].iParent = i_parent
 	pwc.a[i_child].truthProb = pwc.a[i_parent].truthProb
 	unsafe { pwc.a[i_parent].nChild++ }
-	0
 }
 
 @[c:'whereNthSubterm']
@@ -510,8 +506,6 @@ fn expr_analyze_or_term(p_src &SrcList, pwc &WhereClause, idx_term int) {
 					 }
 				}
 				if (chng_to_in & sqlite3_where_get_mask(&pwi_nfo.sMaskSet, p_or_term.leftCursor)) == Bitmask(0) {
-					0
-					0
 					unsafe { goto c2v_for_next_183
 					 }
 				}
@@ -526,7 +520,6 @@ fn expr_analyze_or_term(p_src &SrcList, pwc &WhereClause, idx_term int) {
 			if i < 0 {
 				break
 			}
-			0
 			ok_to_chng_to_in = 1
 			for ; i >= 0 && ok_to_chng_to_in; i-- {
 				if p_or_term.leftCursor != i_cursor {
@@ -572,7 +565,6 @@ fn expr_analyze_or_term(p_src &SrcList, pwc &WhereClause, idx_term int) {
 				transfer_join_markings(p_new, p_expr)
 				p_new.x.pList = p_list
 				idx_new = where_clause_insert(pwc, p_new, U16(2 | 1))
-				0
 				expr_analyze(p_src, pwc, idx_new)
 				mark_term_as_child(pwc, idx_new, idx_term)
 			} else {
@@ -800,7 +792,6 @@ fn expr_analyze(p_src &SrcList, pwc &WhereClause, idx_term int) {
 			p_new.wtFlags |= int(expr_commute(p_parse, p_dup))
 			p_new.leftCursor = ai_cur_col[0]
 			p_new.u.x.leftColumn = ai_cur_col[1]
-			0
 			p_new.prereqRight = prereq_left | extra_right
 			p_new.prereqAll = prereq_all
 			p_new.eOperator = U16((int(operator_mask(int(p_dup.op))) + int(e_extra_op)) & int(op_mask))
@@ -829,7 +820,6 @@ fn expr_analyze(p_src &SrcList, pwc &WhereClause, idx_term int) {
 			p_new_expr = sqlite3_pe_xpr(p_parse, int(expr_analyze_ops[i]), sqlite3_expr_dup(db, p_expr.pLeft, 0), sqlite3_expr_dup(db, c2v_at(&p_list.a[0], isize(i)).pExpr, 0))
 			transfer_join_markings(p_new_expr, p_expr)
 			idx_new = where_clause_insert(pwc, p_new_expr, U16(2 | 1))
-			0
 			expr_analyze(p_src, pwc, idx_new)
 			p_term = unsafe { pwc.a + idx_term }
 			mark_term_as_child(pwc, idx_new, idx_term)
@@ -901,12 +891,10 @@ fn expr_analyze(p_src &SrcList, pwc &WhereClause, idx_term int) {
 		p_new_expr1 = sqlite3_pe_xpr(p_parse, 58, sqlite3_expr_add_collate_string(p_parse, p_new_expr1, z_coll_seq_name), p_str1)
 		transfer_join_markings(p_new_expr1, p_expr)
 		idx_new1 = where_clause_insert(pwc, p_new_expr1, wt_flags)
-		0
 		p_new_expr2 = sqlite3_expr_dup(db, p_left, 0)
 		p_new_expr2 = sqlite3_pe_xpr(p_parse, 57, sqlite3_expr_add_collate_string(p_parse, p_new_expr2, z_coll_seq_name), p_str2)
 		transfer_join_markings(p_new_expr2, p_expr)
 		idx_new2 = where_clause_insert(pwc, p_new_expr2, wt_flags)
-		0
 		expr_analyze(p_src, pwc, idx_new1)
 		expr_analyze(p_src, pwc, idx_new2)
 		p_term = unsafe { pwc.a + idx_term }
@@ -976,7 +964,6 @@ fn expr_analyze(p_src &SrcList, pwc &WhereClause, idx_term int) {
 					p_new_expr.w.iJoin = p_expr.w.iJoin
 				}
 				idx_new = where_clause_insert(pwc, p_new_expr, U16(2 | 1))
-				0
 				p_new_term = unsafe { pwc.a + idx_new }
 				p_new_term.prereqRight = prereq_expr | extra_right
 				p_new_term.leftCursor = p_left.iTable
@@ -991,10 +978,8 @@ fn expr_analyze(p_src &SrcList, pwc &WhereClause, idx_term int) {
 			t := p_left
 			p_left = p_right
 			p_right = t
-			0
 		}
 	}
-	0
 	p_term = unsafe { pwc.a + idx_term }
 	p_term.prereqRight |= extra_right
 }
@@ -1229,11 +1214,8 @@ fn sqlite3_where_tab_func_args(p_parse &Parse, p_item &SrcItem, pwc &WhereClause
 		p_rhs = sqlite3_pe_xpr(p_parse, 173, sqlite3_expr_dup(p_parse.db, c2v_at(&p_args.a[0], isize(j)).pExpr, 0), unsafe { nil })
 		p_term = sqlite3_pe_xpr(p_parse, 54, p_col_ref, p_rhs)
 		if int(p_item.fg.jointype) & (8 | 16) {
-			0
-			0
 			join_type = u32(1)
 		} else {
-			0
 			join_type = u32(2)
 		}
 		sqlite3_set_join_expr(p_term, p_item.iCursor, join_type)

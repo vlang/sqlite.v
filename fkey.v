@@ -89,15 +89,12 @@ fn fk_lookup_parent(p_parse &Parse, i_db int, p_tab &Table, p_idx &Index, pfk_ey
 	v := sqlite3_get_vdbe(p_parse)
 	i_cur := p_parse.nTab - 1
 	i_ok := sqlite3_vdbe_make_label(p_parse)
-	0
 	if n_incr < 0 {
 		sqlite3_vdbe_add_op2(v, 60, int(pfk_ey.isDeferred), i_ok)
-		0
 	}
 	for i = 0; i < pfk_ey.nCol; i++ {
 		i_reg := int(sqlite3_table_column_to_storage(pfk_ey.pFrom, I16(ai_col[i]))) + reg_data + 1
 		sqlite3_vdbe_add_op2(v, 51, i_reg, i_ok)
-		0
 	}
 	if is_ignore == 0 {
 		if usize(p_idx) == usize(0) {
@@ -105,15 +102,12 @@ fn fk_lookup_parent(p_parse &Parse, i_db int, p_tab &Table, p_idx &Index, pfk_ey
 			reg_temp := sqlite3_get_temp_reg(p_parse)
 			sqlite3_vdbe_add_op2(v, 83, int(sqlite3_table_column_to_storage(pfk_ey.pFrom, I16(ai_col[0]))) + 1 + reg_data, reg_temp)
 			i_must_be_int = sqlite3_vdbe_add_op2(v, 13, reg_temp, 0)
-			0
 			if usize(p_tab) == usize(pfk_ey.pFrom) && n_incr == 1 {
 				sqlite3_vdbe_add_op3(v, 54, reg_data, i_ok, reg_temp)
-				0
 				sqlite3_vdbe_change_p5(v, U16(144))
 			}
 			sqlite3_open_table(p_parse, i_cur, i_db, p_tab, 114)
 			sqlite3_vdbe_add_op3(v, 31, i_cur, 0, reg_temp)
-			0
 			sqlite3_vdbe_goto(v, i_ok)
 			sqlite3_vdbe_jump_here(v, sqlite3_vdbe_current_addr(v) - 2)
 			sqlite3_vdbe_jump_here(v, i_must_be_int)
@@ -136,14 +130,12 @@ fn fk_lookup_parent(p_parse &Parse, i_db int, p_tab &Table, p_idx &Index, pfk_ey
 						i_parent = reg_data
 					}
 					sqlite3_vdbe_add_op3(v, 53, i_child, i_jump, i_parent)
-					0
 					sqlite3_vdbe_change_p5(v, U16(16))
 				}
 				sqlite3_vdbe_goto(v, i_ok)
 			}
 			sqlite3_vdbe_add_op4(v, 98, reg_temp, n_col, 0, sqlite3_index_affinity_str(p_parse.db, p_idx), n_col)
 			sqlite3_vdbe_add_op4_int(v, 29, i_cur, i_ok, reg_temp, n_col)
-			0
 			sqlite3_release_temp_range(p_parse, reg_temp, n_col)
 		}
 	}
@@ -206,7 +198,6 @@ fn fk_scan_children(p_parse &Parse, p_src &SrcList, p_tab &Table, p_idx &Index, 
 	v := sqlite3_get_vdbe(p_parse)
 	if n_incr < 0 {
 		i_fk_if_zero = sqlite3_vdbe_add_op2(v, 60, int(pfk_ey.isDeferred), 0)
-		0
 	}
 	for i = 0; i < pfk_ey.nCol; i++ {
 		p_left := &Expr(0)
@@ -317,15 +308,12 @@ fn sqlite3_fk_drop_table(p_parse &Parse, p_name &SrcList, p_tab &Table) {
 			}
 			i_skip = sqlite3_vdbe_make_label(p_parse)
 			sqlite3_vdbe_add_op2(v, 60, 1, i_skip)
-			0
 		}
 		p_parse.disableTriggers = Bft(1)
 		sqlite3_delete_from(p_parse, sqlite3_src_list_dup(db, p_name, 0), unsafe { nil }, unsafe { nil }, unsafe { nil })
 		p_parse.disableTriggers = Bft(0)
 		if (db.flags & U64(524288)) == U64(0) {
-			0
 			sqlite3_vdbe_add_op2(v, 60, 0, sqlite3_vdbe_current_addr(v) + 2)
-			0
 			sqlite3_halt_constraint(p_parse, (19 | (3 << 8)), 2, unsafe { nil }, I8((-1)), U8(4))
 		}
 		if i_skip {
@@ -428,7 +416,6 @@ fn sqlite3_fk_check(p_parse &Parse, p_tab &Table, reg_old int, reg_new int, a_ch
 					i_from_col = c2v_at(&pfk_ey.aCol[0], isize(i)).iFrom
 					i_reg = int(sqlite3_table_column_to_storage(pfk_ey.pFrom, I16(i_from_col))) + reg_old + 1
 					sqlite3_vdbe_add_op2(v, 51, i_reg, i_jump)
-					0
 				}
 				sqlite3_vdbe_add_op2(v, 160, int(pfk_ey.isDeferred), -1)
 			}
@@ -632,8 +619,6 @@ fn fk_action_trigger(p_parse &Parse, p_tab &Table, pfk_ey &FKey, p_changes &Expr
 					p_col := pfk_ey.pFrom.aCol + i_from_col
 					p_dflt := &Expr(0)
 					if int(p_col.colFlags) & 96 {
-						0
-						0
 						p_dflt = 0
 					} else {
 						p_dflt = sqlite3_column_expr(pfk_ey.pFrom, p_col)

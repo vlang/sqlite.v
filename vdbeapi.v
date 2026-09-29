@@ -63,7 +63,6 @@ fn sqlite3_finalize(p_stmt &Sqlite3_stmt) int {
 		if v.startTime > I64(0) {
 			invoke_profile_callback(db, v)
 		}
-		0
 		rc = sqlite3_vdbe_reset(v)
 		sqlite3_vdbe_delete(v)
 		rc = sqlite3_api_exit(db, rc)
@@ -84,7 +83,6 @@ fn sqlite3_reset(p_stmt &Sqlite3_stmt) int {
 		if v.startTime > I64(0) {
 			invoke_profile_callback(db, v)
 		}
-		0
 		rc = sqlite3_vdbe_reset(v)
 		sqlite3_vdbe_rewind(v)
 		rc = sqlite3_api_exit(db, rc)
@@ -517,7 +515,6 @@ fn sqlite3_step_vdup10(p &Vdbe) int {
 		if p.startTime > I64(0) {
 			invoke_profile_callback(db, p)
 		}
-		0
 		p.pResultRow = 0
 		if rc == 101 && int(db.autoCommit) {
 			p.rc = do_wal_callbacks(db)
@@ -698,7 +695,6 @@ fn create_agg_context(p &Sqlite3_context, n_byte int) voidptr {
 
 fn sqlite3_aggregate_context(p &Sqlite3_context, n_byte int) voidptr {
 	c2v_gc_register_thread()
-	0
 	if (int(p.pMem.flags) & 32768) == 0 {
 		return create_agg_context(p, n_byte)
 	} else {

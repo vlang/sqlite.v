@@ -152,7 +152,6 @@ fn malloc_with_alarm(n int, pp &voidptr) {
 			if mem0.hardLimit {
 				n_used = sqlite3_status_value(0)
 				if n_used >= mem0.hardLimit - Sqlite3_int64(n_full) {
-					0
 					unsafe { *pp = 0 }
 					return
 				}
@@ -279,7 +278,6 @@ fn sqlite3_db_free_nn(db &Sqlite3, p voidptr) {
 			return
 		}
 	}
-	0
 	sqlite3_free(voidptr(p))
 }
 
@@ -303,7 +301,6 @@ fn sqlite3_db_nn_free_nn(db &Sqlite3, p voidptr) {
 		measure_allocation_size(db, voidptr(p))
 		return
 	}
-	0
 	sqlite3_free(voidptr(p))
 }
 
@@ -345,7 +342,6 @@ fn sqlite3_realloc_vdup3(p_old voidptr, n_bytes U64) voidptr {
 			sqlite3_malloc_alarm(n_diff)
 			if mem0.hardLimit > Sqlite3_int64(0) && n_used >= mem0.hardLimit - Sqlite3_int64(n_diff) {
 				sqlite3_mutex_leave(mem0.mutex)
-				0
 				return unsafe { nil }
 			}
 		}
@@ -392,7 +388,6 @@ fn sqlite3_malloc_zero(n U64) voidptr {
 @[c:'sqlite3DbMallocZero']
 fn sqlite3_db_malloc_zero(db &Sqlite3, n U64) voidptr {
 	p := &voidptr(0)
-	0
 	p = sqlite3_db_malloc_raw(db, n)
 	if p {
 		C.memset(voidptr(p), 0, usize(n))
@@ -407,7 +402,6 @@ fn db_malloc_raw_finish(db &Sqlite3, n U64) voidptr {
 	if isnil(p) {
 		sqlite3_oom_fault(db)
 	}
-	0
 	return p
 }
 
@@ -418,7 +412,6 @@ fn sqlite3_db_malloc_raw(db &Sqlite3, n U64) voidptr {
 		return sqlite3_db_malloc_raw_nn(db, n)
 	}
 	p = sqlite3_malloc_vdup2(n)
-	0
 	return p
 }
 
@@ -496,12 +489,10 @@ fn db_realloc_finish(db &Sqlite3, p voidptr, n U64) voidptr {
 				sqlite3_db_free(db, voidptr(p))
 			}
 		} else {
-			0
 			p_new = sqlite3_realloc_vdup3(voidptr(p), n)
 			if isnil(p_new) {
 				sqlite3_oom_fault(db)
 			}
-			0
 		}
 	}
 	return p_new

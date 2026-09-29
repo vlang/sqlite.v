@@ -112,7 +112,6 @@ fn sqlite3_vtab_lock(pvt_ab &VTable) {
 fn sqlite3_get_vt_able(db &Sqlite3, p_tab &Table) &VTable {
 	p_vtab := &VTable(0)
 	for p_vtab = p_tab.u.vtab.p; !isnil(p_vtab) && usize(p_vtab.db) != usize(db); p_vtab = p_vtab.pNext {
-		0
 	}
 	return p_vtab
 }

@@ -36,7 +36,6 @@ fn sqlite3_vdbe_expand_sql(p &Vdbe, z_raw_sql &i8) &i8 {
 		for (unsafe { *z_raw_sql }) {
 			z_start := z_raw_sql
 			for int((unsafe { *(c2v_pointer_postfix(voidptr(&z_raw_sql), z_raw_sql, isize(1))) })) != i8(`\n`) && int((unsafe { *z_raw_sql })) {
-				0
 			}
 			sqlite3_str_append(unsafe { &Sqlite3_str(&out) }, c'-- ', 3)
 			sqlite3_str_append(unsafe { &Sqlite3_str(&out) }, z_start, int((i64((isize(z_raw_sql) - isize(z_start)) / isize(sizeof(i8))))))
@@ -58,10 +57,6 @@ fn sqlite3_vdbe_expand_sql(p &Vdbe, z_raw_sql &i8) &i8 {
 					idx = next_index
 				}
 			} else {
-				0
-				0
-				0
-				0
 				idx = sqlite3_vdbe_parameter_index(p, z_raw_sql, int(n_token))
 			}
 			c2v_pointer_prefix(voidptr(&z_raw_sql), z_raw_sql, isize(n_token))

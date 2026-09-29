@@ -124,8 +124,6 @@ fn sqlite3_config_fn(op int, ...) int {
 		if op < 0 || op > 63 || (((U64(1)) << op) & m_anytime_config_option) == U64(0) {
 			return sqlite3_misuse_error(540)
 		}
-		0
-		0
 	}
 	C.va_start(ap, op)
 	match op {
@@ -760,7 +758,6 @@ fn sqlite3_leave_mutex_and_close_zombie(db &Sqlite3) {
 	}
 	sqlite3_vtab_unlock_list(db)
 	sqlite3_collapse_database_array(db)
-	0
 	for i = db.aFunc.first; i; i = i.next {
 		p_next := &FuncDef(0)
 		p := &FuncDef(0)
@@ -1081,8 +1078,6 @@ fn sqlite3_create_func(db &Sqlite3, z_function_name &i8, n_arg int, enc int, p_u
 	}
 	p.u.pDestructor = p_destructor
 	p.funcFlags = (p.funcFlags & u32(3)) | u32(extra_flags)
-	0
-	0
 	p.xSFunc = if xsf_unc { xsf_unc } else { x_step }
 	p.xFinalize = x_final
 	p.xValue = x_value
@@ -1342,8 +1337,6 @@ fn sqlite3_checkpoint(db &Sqlite3, i_db int, e_mode int, pn_log &int, pn_ckpt &i
 	rc := 0
 	i := 0
 	b_busy := 0
-	0
-	0
 	for i = 0; i < db.nDb && rc == 0; i++ {
 		if i == i_db || i_db == (10 + 2) {
 			rc = sqlite3_btree_checkpoint(db.aDb[i].pBt, e_mode, pn_log, pn_ckpt)
@@ -1376,7 +1369,6 @@ fn sqlite3_errmsg(db &Sqlite3) &i8 {
 	if db.mallocFailed {
 		z = sqlite3_err_str(7)
 	} else {
-		0
 		z = unsafe { if db.errCode { &i8(voidptr(sqlite3_value_text(db.pErr))) } else { &i8(nil) } }
 		if usize(z) == usize(0) {
 			z = sqlite3_err_str(db.errCode)
@@ -1519,8 +1511,6 @@ fn create_collation(db &Sqlite3, z_name &i8, enc U8, p_ctx voidptr, x_compare fn
 	p_coll := &CollSeq(0)
 	enc2 := 0
 	enc2 = int(enc)
-	0
-	0
 	if enc2 == 4 || enc2 == 8 {
 		enc2 = 2
 	}
@@ -1831,7 +1821,6 @@ fn open_database(z_filename &i8, pp_db &&Sqlite3, flags u32, z_vfs &i8) int {
 			 }
 		}
 		if is_threadsafe == 0 {
-			0
 		}
 	}
 	sqlite3_mutex_enter(db.mutex)
@@ -1862,9 +1851,6 @@ fn open_database(z_filename &i8, pp_db &&Sqlite3, flags u32, z_vfs &i8) int {
 		 }
 	}
 	db.openFlags = flags
-	0
-	0
-	0
 	if ((1 << (flags & u32(7))) & 70) == 0 {
 		rc = sqlite3_misuse_error(3693)
 	} else {
@@ -2110,19 +2096,16 @@ fn sqlite3_report_error(i_err int, lineno int, z_type &i8) int {
 
 @[c:'sqlite3CorruptError']
 fn sqlite3_corrupt_error(lineno int) int {
-	0
 	return sqlite3_report_error(11, lineno, c'database corruption')
 }
 
 @[c:'sqlite3MisuseError']
 fn sqlite3_misuse_error(lineno int) int {
-	0
 	return sqlite3_report_error(21, lineno, c'misuse')
 }
 
 @[c:'sqlite3CantopenError']
 fn sqlite3_cantopen_error(lineno int) int {
-	0
 	return sqlite3_report_error(14, lineno, c'cannot open file')
 }
 

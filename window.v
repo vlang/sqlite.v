@@ -880,7 +880,6 @@ fn sqlite3_window_rewrite(p_parse &Parse, p &Select) int {
 			p_sublist = sqlite3_expr_list_append(p_parse, unsafe { nil }, sqlite3_expr_int32(db, 0))
 		}
 		p_sub = sqlite3_select_new(p_parse, p_sublist, p_src, p_where, p_group_by, p_having, p_sort, u32(0), unsafe { nil })
-		0
 		p.pSrc = sqlite3_src_list_append(p_parse, unsafe { nil }, unsafe { nil }, unsafe { nil })
 		if usize(p.pSrc) == usize(0) {
 			sqlite3_select_delete(db, p_sub)
@@ -1209,23 +1208,11 @@ fn window_check_value(p_parse &Parse, reg int, e_cond int) {
 		sqlite3_vdbe_add_op4(v, 118, 0, reg_string, 0, c'', (-1))
 		sqlite3_vdbe_add_op3(v, 58, reg_string, sqlite3_vdbe_current_addr(v) + 2, reg)
 		sqlite3_vdbe_change_p5(v, U16(67 | 16))
-		0
-		0
-		0
 	} else {
 		sqlite3_vdbe_add_op2(v, 13, reg, sqlite3_vdbe_current_addr(v) + 2)
-		0
-		0
-		0
-		0
 	}
 	sqlite3_vdbe_add_op3(v, window_check_value_a_op[e_cond], reg_zero, sqlite3_vdbe_current_addr(v) + 2, reg)
 	sqlite3_vdbe_change_p5(v, U16(67))
-	0
-	0
-	0
-	0
-	0
 	sqlite3_may_abort(p_parse)
 	sqlite3_vdbe_add_op2(v, 72, 1, 2)
 	sqlite3_vdbe_append_p4(v, voidptr(window_check_value_az_err[e_cond]), (-1))
@@ -1297,12 +1284,10 @@ fn window_agg_step(p &WindowCodeArg, pmw_in &Window, csr int, b_inverse int, reg
 			reg_tmp = sqlite3_get_temp_reg(p_parse)
 			sqlite3_vdbe_add_op3(v, 96, csr, p_win.iArgCol + n_arg, reg_tmp)
 			addr_if = sqlite3_vdbe_add_op3(v, 17, reg_tmp, 0, 1)
-			0
 			sqlite3_release_temp_reg(p_parse, reg_tmp)
 		}
 		if pmw_in.regStartRowid == 0 && (p_func.funcFlags & u32(4096)) && (int(p_win.eStart) != 91) {
 			addr_is_null := sqlite3_vdbe_add_op1(v, 51, reg_arg)
-			0
 			if b_inverse == 0 {
 				sqlite3_vdbe_add_op2(v, 88, p_win.regApp + 1, 1)
 				sqlite3_vdbe_add_op2(v, 83, reg_arg, p_win.regApp)
@@ -1310,7 +1295,6 @@ fn window_agg_step(p &WindowCodeArg, pmw_in &Window, csr int, b_inverse int, reg
 				sqlite3_vdbe_add_op2(v, 140, p_win.csrApp, p_win.regApp + 2)
 			} else {
 				sqlite3_vdbe_add_op4_int(v, 23, p_win.csrApp, 0, reg_arg, 1)
-				0
 				sqlite3_vdbe_add_op1(v, 132, p_win.csrApp)
 				sqlite3_vdbe_jump_here(v, sqlite3_vdbe_current_addr(v) - 2)
 			}
@@ -1359,7 +1343,6 @@ fn window_agg_final(p &WindowCodeArg, b_fin int) {
 		if pmw_in.regStartRowid == 0 && (p_win.pWFunc.funcFlags & u32(4096)) && (int(p_win.eStart) != 91) {
 			sqlite3_vdbe_add_op2(v, 77, 0, p_win.regResult)
 			sqlite3_vdbe_add_op1(v, 32, p_win.csrApp)
-			0
 			sqlite3_vdbe_add_op3(v, 96, p_win.csrApp, 0, p_win.regResult)
 			sqlite3_vdbe_jump_here(v, sqlite3_vdbe_current_addr(v) - 2)
 		} else if p_win.regApp {
@@ -1393,7 +1376,6 @@ fn window_full_scan(p &WindowCodeArg) {
 	lbl_brk := 0
 	addr_next := 0
 	csr := 0
-	0
 	csr = pmw_in.csrApp
 	n_peer = (if pmw_in.pOrderBy { pmw_in.pOrderBy.nExpr } else { 0 })
 	lbl_next = sqlite3_vdbe_make_label(p_parse)
@@ -1410,14 +1392,11 @@ fn window_full_scan(p &WindowCodeArg) {
 		sqlite3_vdbe_add_op2(v, 77, 0, p_win.regAccum)
 	}
 	sqlite3_vdbe_add_op3(v, 23, csr, lbl_brk, pmw_in.regStartRowid)
-	0
 	addr_next = sqlite3_vdbe_current_addr(v)
 	sqlite3_vdbe_add_op2(v, 137, csr, reg_rowid)
 	sqlite3_vdbe_add_op3(v, 55, pmw_in.regEndRowid, lbl_brk, reg_rowid)
-	0
 	if int(pmw_in.eExclude) == 86 {
 		sqlite3_vdbe_add_op3(v, 54, reg_cr_owid, lbl_next, reg_rowid)
-		0
 	} else if int(pmw_in.eExclude) != 67 {
 		addr := 0
 		addr_eq := 0
@@ -1427,7 +1406,6 @@ fn window_full_scan(p &WindowCodeArg) {
 		}
 		if int(pmw_in.eExclude) == 95 {
 			addr_eq = sqlite3_vdbe_add_op3(v, 54, reg_cr_owid, 0, reg_rowid)
-			0
 		}
 		if p_key_info {
 			window_read_peer_values(p, csr, reg_peer)
@@ -1435,7 +1413,6 @@ fn window_full_scan(p &WindowCodeArg) {
 			sqlite3_vdbe_append_p4(v, voidptr(p_key_info), (-9))
 			addr = sqlite3_vdbe_current_addr(v) + 1
 			sqlite3_vdbe_add_op3(v, 14, addr, lbl_next, addr)
-			0
 		} else {
 			sqlite3_vdbe_add_op2(v, 9, 0, lbl_next)
 		}
@@ -1446,7 +1423,6 @@ fn window_full_scan(p &WindowCodeArg) {
 	window_agg_step(p, pmw_in, csr, 0, p.regArg)
 	sqlite3_vdbe_resolve_label(v, lbl_next)
 	sqlite3_vdbe_add_op2(v, 40, csr, addr_next)
-	0
 	sqlite3_vdbe_jump_here(v, addr_next - 1)
 	sqlite3_vdbe_jump_here(v, addr_next + 1)
 	sqlite3_release_temp_reg(p_parse, reg_rowid)
@@ -1456,7 +1432,6 @@ fn window_full_scan(p &WindowCodeArg) {
 		sqlite3_release_temp_range(p_parse, reg_cp_eer, n_peer)
 	}
 	window_agg_final(p, 1)
-	0
 }
 
 @[c:'windowReturnOneRow']
@@ -1483,9 +1458,7 @@ fn window_return_one_row(p &WindowCodeArg) {
 				}
 				sqlite3_vdbe_add_op3(v, 107, tmp_reg, p_win.regApp, tmp_reg)
 				sqlite3_vdbe_add_op3(v, 55, p_win.regApp + 1, lbl, tmp_reg)
-				0
 				sqlite3_vdbe_add_op3(v, 30, csr, 0, tmp_reg)
-				0
 				sqlite3_vdbe_add_op3(v, 96, csr, p_win.iArgCol, p_win.regResult)
 				sqlite3_vdbe_resolve_label(v, lbl)
 				sqlite3_release_temp_reg(p_parse, tmp_reg)
@@ -1516,7 +1489,6 @@ fn window_return_one_row(p &WindowCodeArg) {
 					sqlite3_release_temp_reg(p_parse, tmp_reg2)
 				}
 				sqlite3_vdbe_add_op3(v, 30, csr, lbl, tmp_reg)
-				0
 				sqlite3_vdbe_add_op3(v, 96, csr, p_win.iArgCol, p_win.regResult)
 				sqlite3_vdbe_resolve_label(v, lbl)
 				sqlite3_release_temp_reg(p_parse, tmp_reg)
@@ -1595,7 +1567,6 @@ fn window_if_new_peer(p_parse &Parse, p_order_by &ExprList, reg_new int, reg_old
 		sqlite3_vdbe_add_op3(v, 92, reg_old, reg_new, n_val)
 		sqlite3_vdbe_append_p4(v, voidptr(p_key_info), (-9))
 		sqlite3_vdbe_add_op3(v, 14, sqlite3_vdbe_current_addr(v) + 1, addr, sqlite3_vdbe_current_addr(v) + 1)
-		0
 		sqlite3_vdbe_add_op3(v, 82, reg_new, reg_old, n_val - 1)
 	} else {
 		sqlite3_vdbe_add_op2(v, 9, 0, addr)
@@ -1631,21 +1602,17 @@ fn window_code_range_test(p &WindowCodeArg, op int, csr1 int, reg_val int, csr2 
 
 		arith = 108
 	}
-	0
 	if int(c2v_at(&p_order_by.a[0], isize(0)).fg.sortFlags) & 2 {
 		addr := sqlite3_vdbe_add_op1(v, 52, reg1)
-		0
 		match op {
 			58 {
 				sqlite3_vdbe_add_op2(v, 9, 0, lbl)
 			}
 			55 {
 				sqlite3_vdbe_add_op2(v, 52, reg2, lbl)
-				0
 			}
 			56 {
 				sqlite3_vdbe_add_op2(v, 51, reg2, lbl)
-				0
 			}
 			else {
 			}
@@ -1654,34 +1621,21 @@ fn window_code_range_test(p &WindowCodeArg, op int, csr1 int, reg_val int, csr2 
 		sqlite3_vdbe_add_op2(v, 9, 0, addr_done)
 		sqlite3_vdbe_jump_here(v, addr)
 		sqlite3_vdbe_add_op2(v, 51, reg2, if (op == 55 || op == 58) { addr_done } else { lbl })
-		0
 	}
 	sqlite3_vdbe_add_op4(v, 118, 0, reg_string, 0, c'', (-1))
 	addr_ge = sqlite3_vdbe_add_op3(v, 58, reg_string, 0, reg1)
-	0
 	if (op == 58 && arith == 107) || (op == 56 && arith == 108) {
 		sqlite3_vdbe_add_op3(v, op, reg2, lbl, reg1)
-		0
 	}
 	sqlite3_vdbe_add_op3(v, arith, reg_val, reg1, reg1)
 	sqlite3_vdbe_jump_here(v, addr_ge)
 	sqlite3_vdbe_add_op3(v, op, reg2, lbl, reg1)
-	0
 	p_coll = sqlite3_expr_nn_coll_seq(p_parse, c2v_at(&p_order_by.a[0], isize(0)).pExpr)
 	sqlite3_vdbe_append_p4(v, voidptr(p_coll), (-2))
 	sqlite3_vdbe_change_p5(v, U16(128))
 	sqlite3_vdbe_resolve_label(v, addr_done)
-	0
-	0
-	0
-	0
-	0
-	0
-	0
-	0
 	sqlite3_release_temp_reg(p_parse, reg1)
 	sqlite3_release_temp_reg(p_parse, reg2)
-	0
 }
 
 @[c:'windowCodeOp']
@@ -1714,7 +1668,6 @@ fn window_code_op(p &WindowCodeArg, op int, reg_countdown int, jump_on_eof int) 
 			}
 		} else {
 			sqlite3_vdbe_add_op3(v, 61, reg_countdown, lbl_done, 1)
-			0
 		}
 	}
 	if op == 1 && pmw_in.regStartRowid == 0 {
@@ -1728,11 +1681,9 @@ fn window_code_op(p &WindowCodeArg, op int, reg_countdown int, jump_on_eof int) 
 			sqlite3_vdbe_add_op2(v, 137, p.start.csr, reg_rowid1)
 			sqlite3_vdbe_add_op2(v, 137, p.end.csr, reg_rowid2)
 			sqlite3_vdbe_add_op3(v, 58, reg_rowid2, lbl_done, reg_rowid1)
-			0
 		} else if p.regRowid {
 			sqlite3_vdbe_add_op2(v, 137, p.end.csr, reg_rowid1)
 			sqlite3_vdbe_add_op3(v, 58, p.regRowid, lbl_done, reg_rowid1)
-			0
 		}
 		sqlite3_release_temp_reg(p_parse, reg_rowid1)
 		sqlite3_release_temp_reg(p_parse, reg_rowid2)
@@ -1769,11 +1720,9 @@ fn window_code_op(p &WindowCodeArg, op int, reg_countdown int, jump_on_eof int) 
 	}
 	if jump_on_eof {
 		sqlite3_vdbe_add_op2(v, 40, csr, sqlite3_vdbe_current_addr(v) + 2)
-		0
 		ret = sqlite3_vdbe_add_op0(v, 9)
 	} else {
 		sqlite3_vdbe_add_op2(v, 40, csr, sqlite3_vdbe_current_addr(v) + 1 + b_peer)
-		0
 		if b_peer {
 			sqlite3_vdbe_add_op2(v, 9, 0, lbl_done)
 		}
@@ -1944,15 +1893,12 @@ fn sqlite3_window_code_step(p_parse &Parse, p &Select, pwi_nfo &WhereInfo, reg_g
 		addr = sqlite3_vdbe_add_op3(v, 92, reg_new_part, pmw_in.regPart, n_part)
 		sqlite3_vdbe_append_p4(v, voidptr(p_key_info), (-9))
 		sqlite3_vdbe_add_op3(v, 14, addr + 2, addr + 4, addr + 2)
-		0
 		addr_gosub_flush = sqlite3_vdbe_add_op1(v, 10, reg_flush_part)
-		0
 		sqlite3_vdbe_add_op3(v, 82, reg_new_part, pmw_in.regPart, n_part - 1)
 	}
 	sqlite3_vdbe_add_op2(v, 129, csr_write, s.regRowid)
 	sqlite3_vdbe_add_op3(v, 130, csr_write, reg_record, s.regRowid)
 	addr_ne = sqlite3_vdbe_add_op3(v, 53, pmw_in.regOne, 0, s.regRowid)
-	0
 	s.regArg = window_init_accum(p_parse, pmw_in)
 	if reg_start {
 		sqlite3_expr_code(p_parse, pmw_in.pStart, reg_start)
@@ -1965,8 +1911,6 @@ fn sqlite3_window_code_step(p_parse &Parse, p &Select, pwi_nfo &WhereInfo, reg_g
 	if int(pmw_in.eFrmType) != 90 && int(pmw_in.eStart) == int(pmw_in.eEnd) && reg_start {
 		op := (if (int(pmw_in.eStart) == 87) { 58 } else { 56 })
 		addr_ge := sqlite3_vdbe_add_op3(v, op, reg_start, 0, reg_end)
-		0
-		0
 		window_agg_final(&s, 0)
 		sqlite3_vdbe_add_op1(v, 36, s.current.csr)
 		window_return_one_row(&s)
@@ -2039,7 +1983,6 @@ fn sqlite3_window_code_step(p_parse &Parse, p &Select, pwi_nfo &WhereInfo, reg_g
 			} else {
 				if reg_end {
 					addr = sqlite3_vdbe_add_op3(v, 61, reg_end, 0, 1)
-					0
 				}
 				window_code_op(&s, 1, 0, 0)
 				window_code_op(&s, 2, reg_start, 0)
@@ -2057,7 +2000,6 @@ fn sqlite3_window_code_step(p_parse &Parse, p &Select, pwi_nfo &WhereInfo, reg_g
 	}
 	s.regRowid = 0
 	addr_empty = sqlite3_vdbe_add_op1(v, 36, csr_write)
-	0
 	if int(pmw_in.eEnd) == 89 {
 		brps := int((int(pmw_in.eStart) == 89 && int(pmw_in.eFrmType) == 90))
 		window_code_op(&s, 3, reg_end, 0)
