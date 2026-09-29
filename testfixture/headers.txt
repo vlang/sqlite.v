@@ -1,0 +1,15 @@
+src ext/fts3/fts3.h
+src ext/fts3/fts3Int.h
+src ext/fts3/fts3_hash.h
+src ext/fts3/fts3_tokenizer.h
+build fts5.h
+src ext/fts5/fts5Int.h
+src ext/rtree/rtree.h
+src ext/misc/sqlite3_stdio.h
+src ext/expert/sqlite3expert.h
+src ext/intck/sqlite3intck.h
+src ext/rbu/sqlite3rbu.h
+src ext/recover/sqlite3recover.h
+src ext/rtree/sqlite3rtree.h
+build sqlite3session.h
+src ext/misc/windirent.h
